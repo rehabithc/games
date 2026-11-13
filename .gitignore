@@ -1,0 +1,6 @@
+# 共通の除外（rules/github-publish-checklist.md §1）
+**/.env
+**/token*.json
+**/credentials.json
+*.log
+.DS_Store

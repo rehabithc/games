@@ -1,0 +1,2262 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>山越え谷越え</title>
+<style>
+:root{
+  --bg:#f6f4ee; --panel:#ffffff; --ink:#1f2421; --sub:#5d655f; --line:#cfd3cc; --accent:#2f6b4f; --accent-ink:#ffffff;
+  --warn:#b4432f; --soft:#eef2ea; --hi:#fff3c4;
+  --t-st:#dfe3ea; --t-flat:#f3f1e6; --t-climb:#ead8c0; --t-ridge:#e3dbef; --t-down:#d9ead9;
+  --edge:#8a918b; --p0:#d64545; --p1:#3a6fd0; --p2:#c99600; --p3:#8a4fbf;
+  --halo:#fbfaf4; --pt-tree:rgba(38,92,52,.34); --pt-stone:rgba(96,74,48,.30); --pt-rock:rgba(70,72,90,.30); --pt-grass:rgba(60,120,60,.30);
+  --pt-soil:rgba(120,82,40,.32); --pt-plat:rgba(214,170,30,.55); --pt-deco:rgba(50,50,50,.30); --scene-shade:0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151816; --panel:#1f2420; --ink:#e7ebe6; --sub:#a3aca5; --line:#3a413c; --accent:#5fae86; --accent-ink:#0f1411;
+    --warn:#ef7a63; --soft:#262d28; --hi:#4a4220;
+    --t-st:#2f3540; --t-flat:#2c2c25; --t-climb:#3f3326; --t-ridge:#352f42; --t-down:#26382a;
+    --edge:#7d857f; --p0:#ff6b6b; --p1:#6c9bff; --p2:#f0c23a; --p3:#b98ae6;
+    --halo:#1f2420; --pt-tree:rgba(140,205,150,.22); --pt-stone:rgba(225,200,160,.20); --pt-rock:rgba(200,205,225,.20); --pt-grass:rgba(150,210,150,.20);
+    --pt-soil:rgba(220,170,110,.22); --pt-plat:rgba(240,200,60,.45); --pt-deco:rgba(235,235,225,.24); --scene-shade:.5;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151816; --panel:#1f2420; --ink:#e7ebe6; --sub:#a3aca5; --line:#3a413c; --accent:#5fae86; --accent-ink:#0f1411;
+  --warn:#ef7a63; --soft:#262d28; --hi:#4a4220;
+  --t-st:#2f3540; --t-flat:#2c2c25; --t-climb:#3f3326; --t-ridge:#352f42; --t-down:#26382a;
+  --edge:#7d857f; --p0:#ff6b6b; --p1:#6c9bff; --p2:#f0c23a; --p3:#b98ae6;
+  --halo:#1f2420; --pt-tree:rgba(140,205,150,.22); --pt-stone:rgba(225,200,160,.20); --pt-rock:rgba(200,205,225,.20); --pt-grass:rgba(150,210,150,.20);
+  --pt-soil:rgba(220,170,110,.22); --pt-plat:rgba(240,200,60,.45); --pt-deco:rgba(235,235,225,.24); --scene-shade:.5;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding:12px 16px 60px}
+header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+header h1{font-size:19px;margin:0 auto 0 0}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 12px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.primary.pulse{box-shadow:0 0 0 3px var(--hi)}
+button:disabled{opacity:.42;cursor:not-allowed}
+button.sel{outline:3px solid var(--accent);outline-offset:1px}
+select,input{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 6px;max-width:100%}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.panel h2{font-size:16px;margin:0 0 8px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.muted{color:var(--sub);font-size:13px}
+.guide{position:sticky;top:0;z-index:5;background:var(--hi);color:var(--ink);border-radius:10px;padding:8px 12px;font-weight:700;margin:8px 0;border:1px solid var(--line)}
+.guide small{font-weight:400;display:block;color:var(--ink);opacity:.85}
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.clock{display:flex;gap:2px;overflow-x:auto;padding-bottom:4px}
+.clock span{flex:0 0 auto;font-size:11px;padding:2px 3px;border-radius:4px;background:var(--soft);color:var(--sub);min-width:34px;text-align:center}
+.clock span.now{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.clock span.dark{background:#454b6b;color:#fff}
+.clock span.res{background:var(--warn);color:#fff}
+.fc{display:flex;gap:6px}
+.wc{flex:1;border:1px solid var(--line);border-radius:8px;padding:4px 6px;text-align:center;background:var(--soft);min-width:0}
+.wc b{display:block;font-size:17px}
+.wc .k{font-size:11px;color:var(--sub)}
+.wc.back{background:repeating-linear-gradient(45deg,var(--soft),var(--soft) 6px,var(--panel) 6px,var(--panel) 12px)}
+.bar{height:12px;background:var(--soft);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar i.low{background:var(--warn)}
+.objs{display:flex;gap:6px;flex-wrap:wrap}
+.objc{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--soft);font-size:13px;flex:1 1 140px}
+.objc b{display:block;font-size:14px}
+.boardbox{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.boardbox svg{display:block}
+svg .cell{stroke:var(--edge);stroke-width:1}
+svg .t-駅{fill:var(--t-st)} svg .t-平{fill:var(--t-flat)} svg .t-登り{fill:var(--t-climb)} svg .t-稜線{fill:var(--t-ridge)} svg .t-下り{fill:var(--t-down)}
+svg .hl{stroke:var(--accent);stroke-width:3}
+svg text{fill:var(--ink);font-family:inherit}
+svg .tid{font-size:10px;font-weight:700}
+svg .tnm{font-size:8.5px;fill:var(--sub)}
+svg .tmk{font-size:10px}
+svg .edge{stroke:var(--edge);stroke-width:2;fill:none}
+svg .split{stroke:var(--edge);stroke-width:1.2}
+svg .split.dash{stroke-dasharray:3 3}
+svg .done{font-size:8px;fill:var(--warn);font-weight:700}
+.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+.pl{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--panel);font-size:14px}
+.pl .sym{font-weight:800;font-size:17px}
+.talk{background:var(--soft);border-radius:6px;padding:3px 6px;margin-top:4px;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:6px}
+.card{border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--panel)}
+.card b{display:block;font-size:16px}
+.card small{display:block;font-size:11px;color:var(--sub);line-height:1.3}
+.opt{margin-top:8px;padding:8px;border-radius:8px;background:var(--soft)}
+.log{max-height:300px;overflow-y:auto;font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px}
+.log div{padding:1px 0;border-bottom:1px dotted var(--line)}
+.log .h{font-weight:700;color:var(--accent);border-bottom:none;margin-top:4px}
+.log .me{color:var(--p0)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.tblwrap{overflow-x:auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:20;padding:16px;overflow-y:auto}
+.modal.open{display:block}
+.modal .box{background:var(--panel);color:var(--ink);max-width:760px;margin:0 auto;border-radius:12px;padding:16px;border:1px solid var(--line)}
+.modal h3{margin:12px 0 4px;font-size:15px}
+.modal ul{margin:4px 0;padding-left:20px}
+.win{font-weight:800;color:var(--accent)}
+.hidden{display:none!important}
+.pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.pick .objc{cursor:pointer}
+.pick .objc.on{outline:3px solid var(--accent)}
+/* ---- 動き（アニメーション） ---- */
+:root{--sp:1}
+.mot{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--sub)}
+.mot select{padding:3px 4px}
+.tok text{font-size:13px;font-weight:800}
+.float{position:absolute;z-index:60;pointer-events:none;font-weight:800;font-size:14px;padding:1px 7px;border-radius:6px;background:var(--panel);border:1px solid var(--line);white-space:nowrap;transform:translate(-50%,-50%)}
+.float.up{color:var(--accent)} .float.down{color:var(--warn)} .float.clk{color:var(--ink)}
+#dusk{position:fixed;inset:0;background:#0b1030;opacity:0;pointer-events:none;z-index:55;display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;font-weight:800}
+body.busy #app{pointer-events:none}
+@keyframes flipIn{from{transform:perspective(400px) rotateY(90deg);opacity:.2}to{transform:none;opacity:1}}
+@keyframes slideIn{from{transform:translateX(45%);opacity:.15}to{transform:none;opacity:1}}
+.anim-flip{animation:flipIn calc(.4s * var(--sp)) ease-out both}
+.anim-slide{animation:slideIn calc(.4s * var(--sp)) ease-out both}
+.rev{display:inline-block}
+/* ---- チュートリアル ---- */
+#tutDim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:25;pointer-events:none;display:none}
+#tutDim.on{display:block}
+.tut-hl{position:relative;z-index:30;border-radius:10px;box-shadow:0 0 0 3px var(--hi),0 0 0 6px var(--accent)!important}
+.panel.tut-hl,.status.tut-hl,.players.tut-hl,.pl.tut-hl,.cards.tut-hl,.fc.tut-hl{background:var(--panel)}
+label.tut-hl{display:inline-block;background:var(--panel);padding:2px 4px}
+.mo-full .tut-hl{animation:tutPulse 1.4s ease-in-out infinite}
+@keyframes tutPulse{50%{box-shadow:0 0 0 5px var(--hi),0 0 0 9px var(--accent)}}
+.tut-hl2{position:relative;z-index:30;background:var(--panel)}
+svg .cell.tut-cell{stroke:#e8a000;stroke-width:5}
+.mo-full svg .cell.tut-cell{animation:tutCell 1.2s ease-in-out infinite}
+@keyframes tutCell{50%{stroke-width:2}}
+.tut-bub .see{display:block;color:var(--accent);font-weight:700;margin-bottom:2px}
+.tut-bub{position:fixed;z-index:70;background:var(--panel);color:var(--ink);border:2px solid var(--accent);border-radius:12px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.35);width:min(390px,calc(100vw - 24px));left:12px;top:12px}
+.tut-bub .st{font-size:12px;color:var(--sub);font-weight:700}
+.tut-bub p{margin:4px 0 8px;font-size:14px}
+.tut-bub .row{gap:6px}
+.tut-bub .row button{padding:5px 9px;font-size:13px}
+.tut-bub .who{font-weight:800;color:var(--accent)}
+/* ---- 絵: 奥の山並み（すべてコードで描く）。空の色はゲームの時計、雲・霧・雨・風は天気で変える ---- */
+@property --sky1{syntax:'<color>';inherits:true;initial-value:#9cc9ea}
+@property --sky2{syntax:'<color>';inherits:true;initial-value:#f3ead2}
+@property --r1{syntax:'<color>';inherits:true;initial-value:#a9bccb}
+@property --r2{syntax:'<color>';inherits:true;initial-value:#7f98a8}
+@property --r3{syntax:'<color>';inherits:true;initial-value:#56707a}
+@property --tr{syntax:'<color>';inherits:true;initial-value:#3c5a5c}
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;contain:strict;
+  --sky1:#9cc9ea;--sky2:#f3ead2;--r1:#a9bccb;--r2:#7f98a8;--r3:#56707a;--tr:#3c5a5c;
+  transition:--sky1 2s,--sky2 2s,--r1 2s,--r2 2s,--r3 2s,--tr 2s}
+#scene[data-sky="day"]{--sky1:#7fb8e6;--sky2:#d9eefc;--r1:#9db9c7;--r2:#6c92a3;--r3:#476a70;--tr:#2d4f45}
+#scene[data-sky="eve"]{--sky1:#46507e;--sky2:#f3a067;--r1:#b77f86;--r2:#835c72;--r3:#4f3c55;--tr:#2d2537}
+#scene[data-sky="night"]{--sky1:#0a0f2c;--sky2:#2b3762;--r1:#2f3b5e;--r2:#222b48;--r3:#161d33;--tr:#0e1323}
+.mo-off #scene,.mo-reduce #scene{transition:none}
+#scene .sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 78%)}
+#scene .sun{position:absolute;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:#fff3cf;box-shadow:0 0 40px 12px rgba(255,236,190,.55);left:16%;top:62%;transition:left 2s,top 2s,background 2s,box-shadow 2s}
+#scene[data-sky="day"] .sun{left:72%;top:16%;background:#fffbea}
+#scene[data-sky="eve"] .sun{left:84%;top:66%;background:#ffb15a;box-shadow:0 0 60px 20px rgba(255,150,80,.55)}
+#scene[data-sky="night"] .sun{left:78%;top:14%;width:34px;height:34px;margin:-17px 0 0 -17px;background:#e9ecf7;box-shadow:0 0 22px 4px rgba(220,225,255,.35)}
+#scene .stars{position:absolute;inset:0;width:100%;height:60%;opacity:0;transition:opacity 2s}
+#scene .stars circle{fill:#fff}
+#scene[data-sky="night"] .stars{opacity:.85}
+#scene svg.layer{position:absolute;left:0;bottom:0;width:100%;height:62%}
+#scene .r1{fill:var(--r1)} #scene .r2{fill:var(--r2)} #scene .r3{fill:var(--r3)} #scene .tr{fill:var(--tr)}
+#scene .haze{fill:var(--sky2);opacity:.35}
+#scene svg.trees{transform-origin:50% 100%}
+.mo-full #scene[data-wx="強風"] svg.trees{animation:sway calc(2.6s * var(--sp)) ease-in-out infinite alternate}
+.mo-reduce #scene[data-wx="強風"] svg.trees{transform:skewX(-1.2deg)}
+@keyframes sway{from{transform:skewX(-1.6deg)}to{transform:skewX(1.1deg)}}
+#scene .wx{position:absolute;inset:0;opacity:0;transition:opacity 1.5s}
+#scene .cloud{background:linear-gradient(180deg,#7d8590,#aab0b6 70%,#c3c7ca)}
+#scene .fog{background:linear-gradient(180deg,transparent 30%,rgba(236,238,240,.9) 60%,rgba(236,238,240,.65) 85%,transparent)}
+#scene .flash{background:#fff;transition:none}
+#scene[data-wx="くもり"] .cloud{opacity:.32}
+#scene[data-wx="ガス"] .cloud{opacity:.22} #scene[data-wx="ガス"] .fog{opacity:.85}
+#scene[data-wx="雨"] .cloud{opacity:.5} #scene[data-wx="雨"] .fog{opacity:.25}
+#scene[data-wx="強風"] .cloud{opacity:.18}
+#scene[data-wx="雷"] .cloud{opacity:.66}
+#scene[data-sky="night"] .cloud,#scene[data-sky="night"] .fog{filter:brightness(.35)}
+#scene canvas{position:absolute;inset:0;width:100%;height:100%}
+#scene .shade{position:absolute;inset:0;background:#05070a;opacity:var(--scene-shade)}
+.wrap{position:relative;z-index:1}
+header{background:color-mix(in srgb,var(--panel) 86%,transparent);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:34px}
+@media (min-width:700px){header{margin-top:64px}}
+.mot input[type=range]{width:84px;padding:0;accent-color:var(--accent)}
+#btnSnd[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* ---- 絵: 盤のマスの地面の柄（文字・番号・駒は縁取りで読みやすく） ---- */
+svg rect.cell{fill:transparent}
+svg .tid,svg .tnm,svg .tmk,svg .done,.tok text{paint-order:stroke;stroke:var(--halo);stroke-width:2.6px;stroke-linejoin:round}
+.tok text{stroke-width:3px}
+svg .pt-tree{fill:var(--pt-tree)} svg .pt-stone{fill:var(--pt-stone)} svg .pt-rock{fill:var(--pt-rock)}
+svg .pt-grass{stroke:var(--pt-grass);fill:none;stroke-width:1;stroke-linecap:round}
+svg .pt-soil{stroke:var(--pt-soil);fill:none;stroke-width:1.3;stroke-linecap:round} svg .pt-soild{fill:var(--pt-soil)}
+svg .pt-plat{fill:var(--pt-plat)} svg .pt-rail{stroke:var(--pt-deco);stroke-width:1;fill:none}
+svg .deco{fill:none;stroke:var(--pt-deco);stroke-width:1.2;stroke-linejoin:round} svg .deco.sign{stroke-width:1.5} svg .decof{fill:var(--pt-deco)}
+/* ---- 登山者の駒（帽子・リュック・杖の人型。リュックの形が人ごとに違う＝●▲■◆） ---- */
+.hk-h *{fill:var(--halo);stroke:var(--halo);stroke-width:2.4px;stroke-linejoin:round;stroke-linecap:round}
+.hk-h .pole,.hk-h .arm{fill:none;stroke-width:3.4px}
+.hk-b *{fill:var(--pc);stroke:none}
+.hk-b .pole,.hk-b .arm{fill:none;stroke:var(--pc);stroke-width:1.1px;stroke-linecap:round}
+.hk-b .pack{fill:var(--pd);stroke:var(--halo);stroke-width:.45px}
+svg.hk{display:inline-block;vertical-align:-0.28em;overflow:visible}
+.pl .sym svg.hk{vertical-align:-0.35em}
+svg .tnm.above{font-size:8.5px}
+.sndnote{display:block;font-size:11px;color:var(--sub);line-height:1.2;margin-top:2px}
+/* ---- ゲームの説明ページ ---- */
+.intro .lead{font-size:16px;line-height:1.75}
+.intro h2{font-size:17px;margin:0 0 6px}
+.intro p{margin:6px 0}
+.intro figure{margin:10px 0 4px}
+.intro figure svg{display:block;width:100%;height:auto;max-width:640px;margin:0 auto}
+.intro figcaption{font-size:12px;color:var(--sub);text-align:center;margin-top:2px}
+.intro .skip{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.intro .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.intro .chip{border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--soft);font-size:13px}
+.intro .say{border:2px solid var(--accent);border-radius:12px;padding:6px 10px;background:var(--panel);display:inline-block;font-weight:700;position:relative;margin:4px 0 4px 34px}
+.intro .say:before{content:"";position:absolute;left:-10px;top:12px;border:6px solid transparent;border-right-color:var(--accent)}
+.intro .say .hk{position:absolute;left:-34px;top:0}
+.intro ol{margin:6px 0;padding-left:22px}
+.intro ol li{margin:3px 0}
+.intro .go{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.intro svg text{font-family:inherit}
+.fig-ink{fill:var(--ink)} .fig-sub{fill:var(--sub)} .fig-acc{fill:var(--accent)} .fig-soft{fill:var(--soft)} .fig-panel{fill:var(--panel)}
+.fig-line{stroke:var(--line)} .fig-edge{stroke:var(--edge)} .fig-accs{stroke:var(--accent)}
+</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true" data-sky="morning" data-wx="">
+  <div class="sky"></div><svg class="stars" preserveAspectRatio="none" viewBox="0 0 100 60"></svg><div class="sun"></div>
+  <svg class="layer ridges" viewBox="0 0 1600 500" preserveAspectRatio="xMidYMax slice"></svg>
+  <svg class="layer trees" viewBox="0 0 1600 500" preserveAspectRatio="xMidYMax slice"></svg>
+  <div class="wx cloud"></div><div class="wx fog"></div><canvas id="wxCanvas"></canvas><div class="wx flash"></div><div class="shade"></div>
+</div>
+<div class="wrap">
+<header>
+  <h1>山越え谷越え</h1>
+  <button id="btnTut">はじめての人へ</button>
+  <button id="btnRules">ルールの早見</button>
+  <button id="btnTheme" title="画面の明るさ">明るさ</button>
+  <button id="btnRestart">最初から</button>
+  <span class="row" style="gap:10px;flex-basis:100%;justify-content:flex-end">
+    <label class="mot">動き <select id="sSpeed"><option value="normal">ふつう</option><option value="fast">はやい</option><option value="none">なし</option></select></label>
+    <label class="mot"><input type="checkbox" id="cReduce"> 動きを減らす</label>
+    <span class="mot"><button id="btnSnd" aria-pressed="false" title="鳥の声・風・雨・足音と短い旋律（最初は消音）">音 切</button><input type="range" id="rVol" min="0" max="100" value="50" aria-label="音量" title="音量"></span>
+    <span id="sndNote" class="sndnote hidden" style="flex-basis:100%;text-align:right;margin-top:-6px">iPhone で鳴らないときは、横の消音スイッチ（マナーモード）を切ってください <span id="sndState"></span></span>
+  </span>
+</header>
+<div id="guide" class="guide"></div>
+<div id="app"></div>
+<footer id="pubFoot" class="muted" style="margin:28px 0 12px;padding-top:12px;border-top:1px solid var(--line);line-height:1.7">
+  <p style="margin:0 0 6px">山・コース・距離・時間・難しさはゲームのために作り変えたものです。<b>実際の登山の参考にしないでください。</b>盤は作者が描いた概略図で、鉄道会社・自治体・施設とは関係ありません。</p>
+  <p style="margin:0 0 6px">© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東<br>無料で遊べます。個人で印刷して遊ぶのも自由です。無断での再配布・販売はご遠慮ください。</p>
+  <p style="margin:0 0 6px">通信はしません。動きと音の設定・説明を読んだか・練習の進み具合だけを、この端末のブラウザの中に保存します（外へは送りません）。</p>
+  <p style="margin:0">v2.4・2026-11-13<span id="pubFb">　<a href="https://docs.google.com/forms/d/e/1FAIpQLSe8c2f0-At9IVFHokOFdS9Dsy-F3Cw9IqpYzpq04Ea0lH1emg/viewform" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
+</footer>
+</div>
+<div id="tutDim"></div>
+<div id="tutBub" class="tut-bub hidden" role="dialog" aria-live="polite"></div>
+<div id="dusk" aria-hidden="true"></div>
+
+<div id="rules" class="modal"><div class="box">
+  <div class="row"><b style="font-size:17px;margin-right:auto">ルールの早見（半協力 v2.4）</b><button id="btnRulesClose" class="primary">閉じる</button></div>
+  <p>みんなで山を歩き、<b>最後の点が最も多い人の勝ち</b>。点＝自分の目的 2 枚（伏せたまま）＋仲間点＋支援点。<b>一緒に動く人が多いほど速く歩け、多く見つけられる</b>。</p>
+  <h3>1 手番の流れ（1 手番＝時計 +30分）</h3>
+  <ul>
+    <li><b>相談</b>: 合図（余裕＝体力 7 以上／ふつう＝4〜6／きつい＝3 以下。嘘は禁止）。続けて<b>意思表明</b>「行きたい／寄りたい／休みたい／帰りたい＋場所＋どうしても／できれば」を 1 回言える（<b>嘘でもよい</b>）。</li>
+    <li><b>選ぶ・公開</b>: 行動カードを伏せて同時に出し、一斉に表にする。分岐（8・9・13）で歩く人は行き先を指す。</li>
+    <li><b>解決</b>: その場の行動（休憩・眺める・調べる）→ 移動（歩く・急ぐ・引き返す）。<b>同じマスで同じカード（移動は同じ行き先）を出した人が「一緒に動いた人」</b>＝人数 n。</li>
+    <li><b>追加アクション</b>: 各自 1 回、行動食を渡す（同じマスの人へ体力 +2）／担ぐ（シェルパ）／支援（キャンプ・下山済みの人）。</li>
+    <li><b>体調</b>: 歩く・急ぐで動いた人は体調カードを 1 枚（体力 ±0×4・−1×2・+1×1・−2×1）。</li>
+    <li><b>時計と予報</b>: 時計 +30分、予報を 1 枚ずらす。</li>
+  </ul>
+  <h3>行動カード</h3>
+  <ul>
+    <li>歩く: 歩数 2・体力 −1。<b>n が 3 以上なら歩数 3</b>。 急ぐ: 歩数 3・体力 −3。</li>
+    <li>登り（3〜6）は a・b の 2 区画（各歩数 1）。<b>a に入るたび体力さらに −1（1 人なら −2）</b>。下り・稜線は雨（下り）／強風（稜線）のときに入ったら a・b、ほかは歩数 1。a では眺める・調べるはできない。</li>
+    <li>休憩: 体力 +3（12 番の休憩所では +5）。 眺める: 景色◎で最初の 1 回だけ。体力 +1、n≥2 なら仲間点 +1。</li>
+    <li>調べる: 林♣で最初の 1 回だけ。今の天気で取れる色を 1 個（n≥3 なら 2 個）。晴れ＝花・実り／くもり＝全色／ガス・雨＝生き物・実り／強風・雷＝実り。</li>
+    <li>引き返す: 出しはじめは体力 1 以上・日没前。<b>来た道を歩いて戻る</b>＝その手番から毎手番「引き返す」（または休憩）を出し、歩くと同じ歩数・体力で軍畑駅へ戻る。入るマスの<b>登りは下り・下りは登り</b>と読む（天気・体調カード・日没・遭難は歩くと同じ）。軍畑駅に着いたらキャンプで支援役。登り直しはできない。</li>
+    <li>体力 0 の人は休憩・歩く・引き返すだけ（引き返しの出しはじめは体力 1 以上）。行動食は自分の分ならいつでも体力 +2。<b>景色◎で同じ手番に 2 人以上が食べたら「一緒にお昼」</b>＝解決の前に各自 体力 +1・仲間点 +1。</li>
+  </ul>
+  <h3>天気・日没</h3>
+  <ul><li>ガス: 歩数 −1（最低 1）／雨: 動いたら体力さらに −1／雷: 解決の終わりに稜線にいたら体力 −3。</li>
+  <li>日没を過ぎたら、歩くは歩数 1・体力さらに −1、急ぐと引き返しの出しはじめは不可（引き返し中の人は続けてよい）。</li></ul>
+  <h3>引き返し・支援・遭難</h3>
+  <ul><li>引き返した人・先に下山した人は、毎手番の追加アクションで支援（予報＝その次を表に／無線＝だれかの体力 +1／物資＝自分の行動食を送る）。1 回 支援点 +1・上限 3点。</li>
+  <li>遭難: 体力が 0 未満、または日没から 1 時間半たっても下山口にいない。目的の点は半分（切り捨て）、さらに点 −3。同じマスの人は次の手番に動けず体力 −1。</li>
+  <li>同じ手番に同じ下山口へ着いた人数 n で、各自 仲間点 +(n−1)。全員が下山・引き返し・遭難のどれかで終了。同点は体力の残りが多い人。</li></ul>
+  <h3>目的カード（各 2 枚・16 枚から 3 枚配り、違う 2 枚を選ぶ）</h3>
+  <div class="tblwrap"><table><tr><th>目的</th><th>点</th></tr>
+  <tr><td>頂上制覇</td><td>通ったピーク（6・10A・13）1つ 1点／2つ 3点／3つ 6点。青梅駅に下山で +2（2 人戦は +1）</td></tr>
+  <tr><td>絶景撮影</td><td>自分がいた眺めの天気 晴れ 4点・くもり 2点（上限 10点）</td></tr>
+  <tr><td>花の写真／自然観察</td><td>花／生き物キューブ 1個 2点／2個 4点／3個 7点</td></tr>
+  <tr><td>資源採集</td><td>実りキューブ 1個 2点／2個 4点／3個 7点。2 個以上で動くたび体力さらに −1</td></tr>
+  <tr><td>山小屋グルメ</td><td>12 番で休憩した回数 1回 3点／2回 7点。行動食を残して下山で +3</td></tr>
+  <tr><td>早帰り</td><td>日没より前 30 分ごとに +3（上限 3人 7点・4人 11点）。二俣尾駅・宮ノ平駅は時計 +30分して数え −1</td></tr>
+  <tr><td>シェルパ</td><td>仲間と一緒に着いた下山口 青梅 3／宮ノ平 2／二俣尾 1点＋遭難 0人 3点・1人 1点。担ぐ・道案内（2 回）・行動食 +1</td></tr>
+  </table></div>
+  <h3>2 人で遊ぶとき</h3>
+  <ul><li>目的カードから<b>早帰り・シェルパの 4 枚を抜き</b>、12 枚から 3 枚配って違う 2 枚を選ぶ。</li>
+  <li><b>2 人一緒に動いたら「3 人以上」と同じ扱い</b>: 歩く 歩数 3・調べる 2 個まで。1 人なら歩数 2・1 個・登りの a 体力 −2。</li>
+  <li>山小屋グルメ <b>1回 4点・2回 8点</b>（行動食を残して下山 +3 はそのまま）。</li>
+  <li>2 人では無線・物資は相手を助ける。予報なら助けずに支援点。</li></ul>
+  <h3>この版で省いた・決めた所</h3>
+  <ul class="muted"><li>止まるマスは自分で選べる（歩数の途中で止まってよい）。</li>
+  <li>発見キューブの数の上限（各色 12 個）は数えていない。</li>
+  <li>コンピューターは他人の体力を合図からしか読まない。</li>
+  <li>コンピューターは、同じマスで一緒に動く人の意思表明だけを手の決め方に入れる。「できれば」は「どうしても」の半分の重み。</li></ul>
+</div></div>
+
+<script id="engine">
+'use strict';
+// ====== ルールの実装（sim_objectives.py の v23abx＝v2.3＋案X＋盤 a/b と同じ決まり） ======
+const OBJ = ['頂上制覇', '絶景撮影', '花の写真', '自然観察', '資源採集', '山小屋グルメ', '早帰り', 'シェルパ'];
+// 2 人（案7）: 早帰り・シェルパの 4 枚を抜いた 12 枚で配る
+const OBJ2 = OBJ.slice(0, 6);
+function objsOf(N) { return N === 2 ? OBJ2 : OBJ; }
+function makePT(N) {
+  return { peak: [0, 1, 3, 6], peak_oume: N === 2 ? 1 : 2, // 2 人戦は青梅 +1（v2.4）
+    photo: { '晴れ': 4, 'くもり': 2 }, photo_cap: 10,
+    flower: [0, 2, 4, 7], creature: [0, 2, 4, 7], fruit: [0, 2, 4, 7], fruit_weight_penalty: 1,
+    hut: N === 2 ? [0, 4, 8] : [0, 3, 7], hut_food: 3, early_per_turn: 3, early_cap: N === 3 ? 7 : 11, early_mid_minus: 1, early_delay: 1,
+    group_n: N === 2 ? 2 : 3, // 歩く 歩数 3・調べる 2 個になる人数（2 人では 2 人そろえば 3 人以上と同じ＝案7）
+    sherpa_station: { '18': 3, 'MN': 2, 'FM': 1 }, sherpa_rescue: { 0: 3, 1: 1 } };
+}
+const SUCC = { '1': ['2'], '2': ['3'], '3': ['4'], '4': ['5'], '5': ['6'], '6': ['7'], '7': ['8'],
+  '8': ['9', 'E1a'], '9': ['10A', '10B'], '10A': ['11A'], '11A': ['12'], '10B': ['12'],
+  '12': ['13'], '13': ['14', 'E2a'], '14': ['15'], '15': ['16'], '16': ['17'], '17': ['18'],
+  'E1a': ['E1b'], 'E1b': ['FM'], 'E2a': ['MN'], '18': [], 'FM': [], 'MN': [] };
+const STATIONS = new Set(['18', 'FM', 'MN']);
+const CLIMB = new Set(['3', '4', '5', '6']);
+const RIDGE = new Set(['7', '8', '10A', '11A']);
+const DOWN = new Set(['14', '15', '16', 'E1a', 'E1b', 'E2a']);
+const VIEW = new Set(['6', '8', '10A', '13']);
+const FOREST = new Set(['2', '4', '9', '10B', '14', '16', 'E1a', 'E2a']);
+const PEAKS = new Set(['6', '10A', '13']);
+const AHEAD = {};
+for (const c of ['1', '2', '3', '4', '5', '6', '7', '8']) AHEAD[c] = ['8', '9', '13'];
+AHEAD['9'] = ['9', '13'];
+for (const c of ['10A', '10B', '11A', '12', '13']) AHEAD[c] = ['13'];
+for (const c of ['14', '15', '16', '17', '18', 'E1a', 'E1b', 'E2a', 'FM', 'MN']) AHEAD[c] = [];
+const BRANCH = { '8': ['9', 'E1a'], '9': ['10A', '10B'], '13': ['14', 'E2a'] };
+const ORDER = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10A', '10B', '11A', '12', '13', '14', '15', '16', '17', 'E1a', 'E1b', 'E2a', '18', 'FM', 'MN'];
+const ORDER_KEY = {}; ORDER.forEach((c, i) => ORDER_KEY[c] = i);
+function base_cost(c) { return CLIMB.has(c) ? 2 : 1; }
+function cell_cost(c, w) {
+  if (CLIMB.has(c)) return 2;
+  if (w === '雨' && DOWN.has(c)) return 2;
+  if (w === '強風' && RIDGE.has(c)) return 2;
+  return 1;
+}
+const _dm = {};
+function dist(c) {
+  if (c in _dm) return _dm[c];
+  let r;
+  if (STATIONS.has(c)) r = 0;
+  else if (c === 'E1a' || c === 'E1b' || c === 'E2a') { const n = SUCC[c][0]; r = base_cost(n) + dist(n); }
+  else if (c === '8') r = 1 + dist('9');
+  else r = Math.min(...SUCC[c].filter(n => !n.startsWith('E')).map(n => base_cost(n) + dist(n)));
+  _dm[c] = r; return r;
+}
+const WEATHER = [].concat(Array(9).fill('晴れ'), Array(6).fill('くもり'), Array(3).fill('ガス'), Array(3).fill('雨'), Array(2).fill('強風'), ['雷']);
+const RESCUE_T = 3; // 日没から 1 時間半（3 手番）たっても山にいる人は遭難（v2.4・前は 2）
+const SUNSET = [20, 21, 19, 18]; // 春17:00 夏17:30 秋16:30 冬16:00（7:00 起点・30 分 1 手番）
+const SEASON_NAME = ['春', '夏', '秋', '冬'];
+const BODY = [0, 0, 0, 0, -1, -1, 1, -2];
+const ALLOWED = { '晴れ': ['flower', 'fruit'], 'くもり': ['flower', 'creature', 'fruit'], 'ガス': ['creature', 'fruit'],
+  '雨': ['creature', 'fruit'], '強風': ['fruit'], '雷': ['fruit'] };
+const POL = {
+  'P1隊列追従': { ant: 2, ret: 3, rest: 4, slack: 1, split: false, esc1: 5, esc2: 6, eat: 3 },
+  'P2目的優先': { ant: 1, ret: 2, rest: 3, slack: 0, split: true, esc1: 4, esc2: 5, eat: 2 },
+  'P3慎重': { ant: 3, ret: 4, rest: 5, slack: 2, split: false, esc1: 6, esc2: 7, eat: 4 },
+};
+const CUBE_OBJ = { '花の写真': 'flower', '自然観察': 'creature', '資源採集': 'fruit' };
+const PICK_EV = { 2: { '頂上制覇': 5.26, '絶景撮影': 4.29, '花の写真': 5.25, '自然観察': 4.53, '資源採集': 6.3, '山小屋グルメ': 4.03 }, // sim_2p.py 案7 の見込み点
+  3: { '頂上制覇': 4.72, '絶景撮影': 4.17, '花の写真': 4.67, '自然観察': 4.09, '資源採集': 5.89, '山小屋グルメ': 4.11, '早帰り': 3.28, 'シェルパ': 4.07 },
+  4: { '頂上制覇': 5.13, '絶景撮影': 4.11, '花の写真': 4.82, '自然観察': 4.24, '資源採集': 6.03, '山小屋グルメ': 3.82, '早帰り': 6.01, 'シェルパ': 4.26 } };
+const SIG_EST = { '余裕': 9, 'ふつう': 5, 'きつい': 2 }; // コンピューターが合図から読む体力の目安
+function sigOf(st) { return st >= 7 ? '余裕' : st >= 4 ? 'ふつう' : 'きつい'; }
+
+// ---- v2.4（2026-11-13）: 景色で一緒にお昼（B2）／歩いて戻る（案W）／遭難は日没から 1 時間半／2 人戦は青梅 +1
+function atView(p) { return p.part === null && VIEW.has(p.cell); }
+function eatFood(G, p) { p.food -= 1; p.st = Math.min(12, p.st + 2); G.eatsTurn.push(p); }
+// コンピューターが食べるか: 体力が危ないとき、または景色◎で行動食を持つ仲間が同じマスにいて体力 9 以下のとき
+function aiWantsEat(G, p) {
+  if (p.st <= G.pol.eat) return true;
+  if (!atView(p) || p.st > 9) return false;
+  return G.ps.some(q => q !== p && q.state === 'act' && q.cell === p.cell && q.part === null && q.food > 0);
+}
+// 一緒にお昼: 同じ手番に同じ◎で 2 人以上が自分の行動食を食べたら、解決の前に各自 体力 +1・仲間点 +1
+function lunchBonus(G) {
+  if (G.lunchDone === G.t) return;
+  G.lunchDone = G.t;
+  const by = new Map();
+  for (const p of G.eatsTurn) if (p.state === 'act' && atView(p)) { if (!by.has(p.cell)) by.set(p.cell, new Set()); by.get(p.cell).add(p); }
+  for (const [cell, grp] of by) {
+    if (grp.size < 2) continue;
+    for (const p of grp) { p.st = Math.min(12, p.st + 1); p.gp += 1; }
+    G.lunchLog = (G.lunchLog || 0) + grp.size;
+    addLog(G, [...grp].map(p => SYM[p.i]).join('') + ' が ' + cname(cell) + ' で一緒にお昼（各自 体力 +1・仲間点 +1）', [...grp].some(p => p.human) ? 'me' : '');
+  }
+}
+// 歩いて戻る（案W）: 「引き返す」を出した手番から、来た道を逆に歩いて出発の軍畑駅へ戻る。着いたらキャンプ（支援役）。
+// 戻るときは入るマスの種類を逆に読む（登り→下り・下り→登り）。歩数・体力・天気・体調カード・日没・遭難は歩くと同じ。登り直しはできない
+const HOME = '1';
+const PRED = {}; for (const c in SUCC) for (const n of SUCC[c]) if (!(n in PRED)) PRED[n] = c;
+function chainFromHome(c) { const out = [c]; while (out[0] !== HOME && PRED[out[0]]) out.unshift(PRED[out[0]]); return out; }
+function prevOf(p) { const h = p.hist; if (h && h.length >= 2 && h[h.length - 1] === p.cell) return h[h.length - 2]; return PRED[p.cell] || null; }
+function back_cost(c, w) {
+  if (c === HOME) return 1;
+  if (DOWN.has(c)) return 2; // 下りのマスは登りに読む（いつも a・b）
+  if (CLIMB.has(c)) return w === '雨' ? 2 : 1; // 登りのマスは下りに読む（雨のとき a・b）
+  if (w === '強風' && RIDGE.has(c)) return 2;
+  return 1;
+}
+// 軍畑駅までの戻り道（晴れのとき）: [歩数, 登りに読むマスの数]
+function backRoute(p) {
+  let steps = 0, ups = 0, i = p.hist.length - 1;
+  if (p.part) { steps += 1; if (p.partBack) i -= 1; }
+  for (; i >= 1; i--) { const c = p.hist[i - 1]; steps += back_cost(c, '晴れ'); if (DOWN.has(c)) ups += 1; }
+  return [steps, ups];
+}
+const _fw = {};
+function fwdRoute(c) { // いちばん近い下山口まで先へ進むとき: [歩数, 登りのマスの数]
+  if (c in _fw) return _fw[c];
+  let r = null;
+  if (STATIONS.has(c)) r = [0, 0];
+  else for (const n of SUCC[c]) { const f = fwdRoute(n), v = [f[0] + base_cost(n), f[1] + (CLIMB.has(n) ? 1 : 0)]; if (!r || v[0] < r[0]) r = v; }
+  _fw[c] = r; return r;
+}
+// コンピューターが引き返すか: 残りの時間と体力で、戻り切れる見込みが先へ進むより良いときだけ
+function aiShouldReturn(G, p) {
+  const [sb, ub] = backRoute(p);
+  const fr = (p.part && !p.partBack) ? fwdRoute(p.part) : fwdRoute(p.cell);
+  const sf = fr[0] + ((p.part && !p.partBack) ? 1 : 0), uf = fr[1];
+  const tb = Math.ceil(sb / 2), tf = Math.ceil(sf / 2);
+  const left = G.S + RESCUE_T - 1 - G.t; // 遭難（日没から 1 時間）までに使える手番
+  const needB = tb * 1.4 + ub * 2, needF = tf * 1.4 + uf * 2; // 1 人で歩いたときの体力の見込み（体調カードの平均を含む）
+  if (tb > left) return false;
+  const mB = p.st - needB, mF = p.st - needF; // 着いたときに残る体力の見込み
+  if (tf > left) return mB >= -1;
+  return mB > mF + 0.5 && mB >= -1; // 戻る方が体力の残りが多く、戻り切れる見込みがあるときだけ
+}
+function startBack(G, p) {
+  p.back = true; p.retT = G.t; G.events.retStart += 1;
+  addLog(G, pname(G, p) + ' は ' + where(p) + ' から引き返しはじめた（来た道を軍畑駅へ戻る）', p.human ? 'me' : '');
+}
+// 戻る 1 手番ぶん。返り値は「登りに読んだマス」の体力の追加
+function moveBack(G, p, mp, n, w, arr) {
+  let ups = 0;
+  while (mp > 0 && p.cell !== HOME) {
+    if (p.part && !p.partBack) { p.part = null; mp -= 1; if (G.trace) G.trace.push([p.i, p.cell, null]); continue; } // 入りかけたマスから元のマスへ
+    let nx, cost;
+    if (p.part) { nx = p.part; cost = 1; }
+    else {
+      nx = prevOf(p); if (!nx) break;
+      cost = back_cost(nx, w);
+      if (cost === 2) { p.part = nx; p.partBack = true; mp -= 1; if (DOWN.has(nx)) ups += (n === 1 ? 2 : 1); if (G.trace) G.trace.push([p.i, p.cell, p.part]); continue; }
+    }
+    p.cell = nx; p.part = null; p.partBack = false; mp -= cost;
+    p.hist.pop(); if (p.hist[p.hist.length - 1] !== nx) p.hist = chainFromHome(nx);
+    if (G.trace) G.trace.push([p.i, p.cell, null]);
+    if (p.cell === HOME) { arr.push(p); break; }
+  }
+  return ups;
+}
+
+// 乱数（種で再現できる）
+function makeRng(seed) {
+  let a = seed >>> 0;
+  return function () { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function randbelow(rng, n) { return Math.floor(rng() * n); }
+function shuffle(a, rng) { for (let i = a.length - 1; i > 0; i--) { const j = randbelow(rng, i + 1); const x = a[i]; a[i] = a[j]; a[j] = x; } }
+
+function newP(i, objs, rng, human) {
+  const body = BODY.slice(); shuffle(body, rng);
+  return { i, objs, human: !!human, cell: '1', st: 10, food: objs.includes('シェルパ') ? 2 : 1, state: 'act', body,
+    cnt: { flower: 0, creature: 0, fruit: 0 }, peaks: new Set(), photo: 0, huts: 0, gp: 0, sp: 0, photos: [],
+    fin_turn: null, fin_station: null, fin_n: 1, skip_until: -1, guide: 0, part: null, sig: '余裕', usedSherpa: false,
+    hist: ['1'], back: false, partBack: false };
+}
+function pdist(p) { return p.part ? 1 + dist(p.part) : dist(p.cell); }
+function want_cube(p, al) {
+  for (const o in CUBE_OBJ) { const k = CUBE_OBJ[o]; if (p.objs.includes(o) && al.includes(k) && p.cnt[k] < 3) return true; }
+  return false;
+}
+function pick_cube(p, al) {
+  const mine = p.objs.filter(o => o in CUBE_OBJ).map(o => CUBE_OBJ[o]);
+  const first = mine.filter(k => al.includes(k) && p.cnt[k] < 3 && p.cnt[k] < 2);
+  const later = mine.filter(k => al.includes(k) && p.cnt[k] < 3);
+  for (const k of first.concat(later)) { p.cnt[k] += 1; return k; }
+  return null;
+}
+function draw_body(G, p) {
+  if (!p.body.length) { p.body = BODY.slice(); shuffle(p.body, G.rng); }
+  return p.body.pop();
+}
+function reach(cell, b, k) {
+  let c = cell;
+  for (let i = 0; i < k + 1; i++) { if (c === b) return true; if (!SUCC[c] || !SUCC[c].length) return false; c = SUCC[c][0]; }
+  return false;
+}
+function mayou(p, b, pol, sunset, slack) {
+  if (sunset) return false;
+  const o = new Set(p.objs);
+  if (b === '9') return !(o.has('頂上制覇') || o.has('絶景撮影'));
+  if (b === '13') return slack >= 0 && p.st > pol.esc2 && !(o.has('早帰り') || o.has('頂上制覇') || o.has('シェルパ'));
+  if (b === '8') return slack >= -1 && pol.ret < p.st && p.st <= pol.esc1 + 2 && !(o.has('頂上制覇') || o.has('絶景撮影'));
+  return false;
+}
+function pick_two(h, tbl) {
+  let best = null;
+  for (let a = 0; a < 3; a++) for (let b = a + 1; b < 3; b++) {
+    if (h[a] === h[b]) continue;
+    const v = tbl[h[a]] + tbl[h[b]];
+    if (best === null || v > best[0]) best = [v, [h[a], h[b]]];
+  }
+  return best[1];
+}
+function early_score(fin, stn, S, pt) {
+  const d = stn !== '18' ? pt.early_delay : 0;
+  let v = Math.max(0, Math.min(pt.early_cap, (S - fin - d) * pt.early_per_turn));
+  if (stn !== '18') v = Math.max(0, v - pt.early_mid_minus);
+  return v;
+}
+function early_route(p, node, t, S, pt, pol, n, alone) {
+  const pre = Math.max(0, pdist(p) - dist(node));
+  let dE, stE, dM;
+  if (node === '8') { dE = 1 + dist('E1a'); stE = 'FM'; dM = 1 + dist('9'); }
+  else { dE = 1 + dist('E2a'); stE = 'MN'; dM = 1 + dist('14'); }
+  const spM = alone ? 2 : (n >= pt.group_n ? 3 : 2);
+  const pen = 1;
+  const fin = (steps, sp, pen_) => { const k = Math.ceil((pre + steps) / sp); const short = 3 - (p.st - k * pen_); return t + k + (short > 0 ? Math.ceil(short / 3) : 0); };
+  const fE = fin(dE, 2, 1), fM = fin(dM, spM, pen);
+  const vE = early_score(fE, stE, S, pt), vM = early_score(fM, '18', S, pt);
+  const left = p.st - Math.ceil((pre + dM) / spM) * (pen + 0.3) - pol.ret;
+  let q = left >= 3 ? 1.0 : (left >= 0 ? 0.6 : 0.25);
+  if (fM > S - 1) q *= 0.5;
+  const o = new Set(p.objs); let b = 0;
+  if (o.has('頂上制覇')) { const k0 = p.peaks.size, add = node === '8' ? 2 : 0; b += pt.peak[Math.min(k0 + add, 3)] - pt.peak[Math.min(k0, 3)] + pt.peak_oume; }
+  if (o.has('絶景撮影') && node === '8') b += Math.min(pt.photo_cap, p.photo + 4) - p.photo;
+  for (const ob in CUBE_OBJ) { const k = CUBE_OBJ[ob]; if (o.has(ob) && p.cnt[k] < 3) b += Math.min(3 - p.cnt[k], node === '8' ? 3 : 1); }
+  if (o.has('山小屋グルメ') && node === '8') b += pt.hut[Math.min(p.huts + 1, 2)] - pt.hut[Math.min(p.huts, 2)];
+  if (!alone) b += n - 1;
+  return vE >= q * (vM + b) - 1;
+}
+function obj_points(o, p, S, resc, pt) {
+  const done = p.state === 'done';
+  if (o === '頂上制覇') { let v = pt.peak[Math.min(p.peaks.size, 3)]; if (done && p.fin_station === '18') v += pt.peak_oume; return v; }
+  if (o === '絶景撮影') return Math.min(pt.photo_cap, p.photo);
+  if (o === '花の写真') return pt.flower[Math.min(p.cnt.flower, 3)];
+  if (o === '自然観察') return pt.creature[Math.min(p.cnt.creature, 3)];
+  if (o === '資源採集') return pt.fruit[Math.min(p.cnt.fruit, 3)];
+  if (o === '山小屋グルメ') { let v = pt.hut[Math.min(p.huts, 2)]; if (done && p.food >= 1) v += pt.hut_food; return v; }
+  if (o === '早帰り') return done ? early_score(p.fin_turn, p.fin_station, S, pt) : 0;
+  if (o === 'シェルパ') {
+    let v = 0;
+    if (done && p.fin_n >= 2) v += pt.sherpa_station[p.fin_station] || 0;
+    if (done && resc <= 1) v += pt.sherpa_rescue[Math.min(resc, 1)] || 0;
+    return v;
+  }
+  return 0;
+}
+
+// ---- 名前・表示用
+const NAMES = { '1': '軍畑駅（登山口）', '2': '車道', '3': '榎峠', '4': '急登', '5': '急登', '6': '雷電山', '7': '尾根', '8': '辛垣城跡', '9': '名郷峠',
+  '10A': '三方山', '11A': '尾根道', '10B': '巻き道', '12': '休憩所', '13': '矢倉台', '14': '下り', '15': '下り', '16': '下り', '17': '永山公園',
+  '18': '青梅駅', 'E1a': 'エスケープ', 'E1b': 'エスケープ', 'FM': '二俣尾駅', 'E2a': 'エスケープ', 'MN': '宮ノ平駅' };
+function cname(c) { return (c === 'FM' || c === 'MN') ? NAMES[c] : (c === '18' ? '18 青梅駅' : c + ' ' + NAMES[c]); }
+function where(p) {
+  if (p.part) return p.part + 'a（' + NAMES[p.part] + '）';
+  if (CLIMB.has(p.cell)) return p.cell + 'b（' + NAMES[p.cell] + '）';
+  return cname(p.cell);
+}
+const SYM = ['●', '▲', '■', '◆'];
+const CARD_NAME = { walk: '歩く', rush: '急ぐ', rest: '休憩', view: '眺める', search: '調べる', retreat: '引き返す' };
+const COLOR_NAME = { flower: '花', creature: '生き物', fruit: '実り' };
+function tstr(t) { const m = 7 * 60 + 30 * t; return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
+function pname(G, p) { return SYM[p.i] + (p.human ? ' あなた' : ' コンピューター' + p.i); }
+function addLog(G, s, cls) { if (!G.quiet) G.log.push({ s, cls: cls || '' }); }
+const REACH_SET = {};
+function reachable(s) {
+  if (REACH_SET[s]) return REACH_SET[s];
+  const r = new Set([s]); const st = [s];
+  while (st.length) { const c = st.pop(); for (const n of SUCC[c] || []) if (!r.has(n)) { r.add(n); st.push(n); } }
+  REACH_SET[s] = r; return r;
+}
+function branchPref(place) {
+  const pref = {};
+  for (const b in BRANCH) { const ins = BRANCH[b].filter(s => reachable(s).has(place)); if (ins.length === 1) pref[b] = ins[0]; }
+  return pref;
+}
+function pathAlong(p, heads, k) { // この先 k 歩のマス（行き先の指定どおり）
+  const out = []; let c = p.cell;
+  if (p.part) { out.push(p.part); c = p.part; }
+  while (out.length < k && SUCC[c] && SUCC[c].length) { const nx = (c in BRANCH && heads && heads[c]) ? heads[c] : SUCC[c][0]; out.push(nx); c = nx; if (STATIONS.has(nx)) break; }
+  return out;
+}
+
+// ---- 準備
+function newGame(o) {
+  const N = o.N, rng = makeRng(o.seed >>> 0), pt = makePT(N);
+  const OB = objsOf(N);
+  const cards = OB.slice(); shuffle(cards, rng); // 乱数の使い方を試算にそろえる（中身は使わない）
+  const deck16 = OB.concat(OB); shuffle(deck16, rng);
+  const hands = []; for (let i = 0; i < N; i++) hands.push(deck16.slice(3 * i, 3 * i + 3));
+  const ps = [];
+  for (let i = 0; i < N; i++) { const human = !!o.human && i === 0; ps.push(newP(i, human ? [] : pick_two(hands[i], PICK_EV[N]), rng, human)); }
+  const deck = WEATHER.slice(); shuffle(deck, rng);
+  let S = SUNSET[randbelow(rng, 4)];
+  if (o.season !== null && o.season !== undefined && o.season !== '') S = SUNSET[+o.season];
+  const G = { N, pt, rng, pol: POL[o.pol], polName: o.pol, ps, deck, S, t: 0, viewed: new Set(), searched: new Set(),
+    events: { retreat: 0, retStart: 0, rescue: 0, finish: 0 }, eatsTurn: [], lunchDone: -1, log: [], quiet: !!o.quiet, hands, lies: o.lies !== false,
+    trng: makeRng(((o.seed >>> 0) ^ 0x9e3779b9) >>> 0), revealed: new Set(), talk: {}, aiOrders: [], over: false, seed: o.seed >>> 0,
+    season: SUNSET.indexOf(S), lieLog: [], viewLog: [] };
+  for (const p of ps) p.sig = sigOf(p.st);
+  return G;
+}
+function setHumanObjs(G, objs) { const H = G.ps[0]; H.objs = objs.slice(); H.food = objs.includes('シェルパ') ? 2 : 1; }
+
+// ---- 手番のはじめ: コンピューターの行動食・引き返し、天気
+function startTurn(G) {
+  const t = G.t; G.w = G.deck[t % 24]; G.sunset = t >= G.S; G.eatsTurn = [];
+  addLog(G, '── ' + tstr(t) + '（手番 ' + (t + 1) + '）天気「' + G.w + '」' + (G.sunset ? '・日没後' : '') + ' ──', 'h');
+  for (const p of G.ps) {
+    if (!p.human && p.state === 'act' && p.food > 0 && aiWantsEat(G, p)) { eatFood(G, p); addLog(G, pname(G, p) + ' が行動食を食べた' + (atView(p) ? '（' + cname(p.cell) + '）' : '')); }
+  }
+  for (const p of G.ps) {
+    if (p.human || p.state !== 'act' || p.skip_until === t) continue;
+    if (!p.back && p.st <= G.pol.ret && !G.sunset && !STATIONS.has(p.cell)) {
+      if (p.cell === '12') continue;
+      if (dist(p.cell) <= 2 && p.st >= 2) continue;
+      if (p.cell === '8' && p.st >= 3) continue;
+      if (aiShouldReturn(G, p)) startBack(G, p);
+    }
+  }
+  for (const p of G.ps) if (p.state === 'act') p.sig = sigOf(p.st);
+}
+
+// ---- コンピューターの作戦（試算の隊列ごとの決め方。あなたは合図と意思表明で数に入る。意思表明は同じマスで一緒に動く人のものだけ聞き、「できれば」は重み半分）
+function planAI(G, ht) {
+  const t = G.t, S = G.S, pol = G.pol, w = G.w, sunset = G.sunset, pt = G.pt, deck = G.deck;
+  const H = G.ps.find(p => p.human);
+  const hIn = H && H.state === 'act' && H.skip_until !== t && !H.back;
+  const act = G.ps.filter(p => !p.human && p.state === 'act' && p.skip_until !== t && !p.back);
+  const parties = new Map();
+  for (const p of act) { const k = p.cell + '|' + (p.part || ''); if (!parties.has(k)) parties.set(k, []); parties.get(k).push(p); }
+  const stOf = p => p.human ? SIG_EST[p.sig] : p.st;
+  const orders = [];
+  for (const ai of parties.values()) {
+    const cell = ai[0].cell, part = ai[0].part;
+    const withH = hIn && H.cell === cell && H.part === part;
+    const party = withH ? ai.concat([H]) : ai;
+    const n = party.length, sp_ = n >= pt.group_n ? 3 : 2;
+    const need = Math.ceil(pdist(ai[0]) / sp_);
+    const here = part === null;
+    const slack = (S - t) - need;
+    const votes = new Map([['move', 0.5 * n]]);
+    const add = (k, v) => votes.set(k, (votes.get(k) || 0) + v);
+    const ok = slack >= pol.slack;
+    const wish = {};
+    const antc = ['2', '3', '4', '5'].includes(cell) ? pol.ant : 0;
+    for (const p of party) {
+      const wp = {};
+      if (stOf(p) <= pol.rest + antc) { add('rest', 4); wp.rest = 4; }
+      if (cell === '12' && stOf(p) <= 9) add('rest', 1);
+      if (p.human) {
+        if (here && VIEW.has(cell) && !G.viewed.has(cell) && stOf(p) <= 6 && ok) add('view', 0.5);
+        if (ht && ht.verb) {
+          const s = ht.strong ? 1 : 0.5, atHere = ht.place === 'here' || ht.place === cell;
+          if (ht.verb === '休みたい' && atHere) add('rest', 4 * s);
+          if (ht.verb === '寄りたい' && atHere && here) {
+            if (VIEW.has(cell) && !G.viewed.has(cell)) add('view', 3 * s);
+            if (FOREST.has(cell) && !G.searched.has(cell)) add('search', 3 * s);
+          }
+          if ((ht.verb === '行きたい' || ht.verb === '帰りたい') && !atHere) add('move', 2 * s);
+        }
+        continue;
+      }
+      if (cell === '12' && !p.objs.includes('シェルパ') && p.objs.includes('山小屋グルメ') && p.huts < 2 && slack >= 0) { add('rest', 3); wp.rest = 3; }
+      if (p.objs.includes('早帰り')) add('move', 0.75);
+      if (here && VIEW.has(cell) && !G.viewed.has(cell)) {
+        if (p.objs.includes('絶景撮影') && (w === '晴れ' || w === 'くもり')) { if (ok) add('view', 3); wp.view = 3; }
+        else if (n >= 2 && slack >= pol.slack + 1) add('view', 0.5);
+        if (p.st <= 6 && ok) add('view', 0.5);
+      }
+      if (here && FOREST.has(cell) && !G.searched.has(cell)) {
+        if (want_cube(p, ALLOWED[w])) { if (ok) add('search', 3); wp.search = 3; }
+      }
+      wish[p.i] = wp;
+    }
+    let best = null, bv = -Infinity;
+    for (const [k, v] of votes) if (v > bv) { best = k; bv = v; }
+    if (best !== 'rest' && party.some(p => stOf(p) <= pol.rest + antc)) best = 'rest';
+    if (best === 'rest' && slack < -1 && party.every(p => stOf(p) > pol.ret + 1)) best = 'move';
+    const p10a = ai.some(p => p.objs.includes('頂上制覇') && slack >= 1.5 && p.st >= 6);
+    const late_rush = (!sunset) && need > (S - t) && party.every(p => stOf(p) >= 7);
+    const wn = deck[(t + 1) % 24];
+    const stops_for = p => {
+      const s = new Set();
+      if (slack < pol.slack) return s;
+      if (p.objs.includes('絶景撮影') && (wn === '晴れ' || wn === 'くもり')) for (const c of VIEW) if (!G.viewed.has(c)) s.add(c);
+      if (want_cube(p, ALLOWED[wn])) for (const c of FOREST) if (!G.searched.has(c)) s.add(c);
+      return s;
+    };
+    const stopmap = {};
+    if (pol.split) { for (const p of ai) stopmap[p.i] = stops_for(p); }
+    else { const u = new Set(); for (const p of ai) for (const c of stops_for(p)) u.add(c); for (const p of ai) stopmap[p.i] = u; }
+    if (withH && ht && ht.verb === '寄りたい' && ht.place !== 'here' && ht.place !== cell && slack >= pol.slack && !pol.split) {
+      for (const p of ai) stopmap[p.i] = new Set([...stopmap[p.i], ht.place]);
+    }
+    const acts = {};
+    for (const p of ai) {
+      let a = best;
+      if (pol.split && a !== 'move') { const mine = wish[p.i]; for (const k of ['view', 'search']) if ((k in mine) && k !== best && slack >= 0) a = k; }
+      if (pol.split && (a === 'view' || a === 'search' || a === 'rest') && p.objs.includes('早帰り') && p.st >= 6 && !(a === 'rest' && p.st <= pol.rest)) a = 'move';
+      acts[p.i] = a;
+    }
+    const hpref = (withH && ht && (ht.verb === '行きたい' || ht.verb === '帰りたい') && ht.place !== 'here') ? branchPref(ht.place) : {};
+    for (const p of ai) {
+      const a = acts[p.i];
+      const heads = {};
+      for (const node of AHEAD[cell]) {
+        if (node === '8') {
+          let go;
+          if (p.objs.includes('早帰り')) go = sunset || slack < -1 || early_route(p, '8', t, S, pt, pol, n, pol.split);
+          else go = sunset || slack < -1 || (pol.ret < p.st && p.st <= pol.esc1);
+          heads['8'] = go ? 'E1a' : '9';
+        } else if (node === '9') {
+          const c10 = pol.split ? (p.objs.includes('頂上制覇') && slack >= 1.5 && p.st >= 6) : p10a;
+          heads['9'] = (c10 && !sunset) ? '10A' : '10B';
+        } else if (node === '13') {
+          let go;
+          if (p.objs.includes('早帰り')) go = sunset || slack < 0 || early_route(p, '13', t, S, pt, pol, n, pol.split);
+          else go = sunset || slack < 0 || p.st <= pol.esc2;
+          heads['13'] = go ? 'E2a' : '14';
+        }
+      }
+      for (const b in hpref) if (b in heads && mayou(p, b, pol, sunset, slack)) heads[b] = hpref[b]; // 迷う人は、あなたの言う方へ付いていく
+      let card = 'walk';
+      if (a === 'move') { if (sunset) card = 'walk'; else if (late_rush) card = 'rush'; }
+      else card = a;
+      heads._stop = stopmap[p.i];
+      orders.push([p, card, heads]);
+    }
+  }
+  for (const p of G.ps) if (!p.human && p.state === 'act' && p.back && p.skip_until !== t) { // 引き返し中: 体力が尽きそうで時間に余裕があれば休む
+    const tb = Math.ceil(backRoute(p)[0] / 2);
+    orders.push([p, (p.st <= 1 && tb + 1 <= S + RESCUE_T - 1 - t) ? 'rest' : 'retreat', { _stop: new Set() }]);
+  }
+  G.aiOrders = orders;
+  G.talk = {};
+  if (!G.quiet) for (const [p, card, heads] of orders) G.talk[p.i] = aiTalk(G, p, card, heads);
+}
+
+function aiTalk(G, p, card, heads) {
+  let v = null;
+  if (card === 'rest') v = { verb: '休みたい', place: 'here', strong: p.st <= 3 };
+  else if (card === 'view') v = { verb: '寄りたい', place: 'here', strong: p.objs.includes('絶景撮影') };
+  else if (card === 'search') v = { verb: '寄りたい', place: 'here', strong: p.objs.some(o => o in CUBE_OBJ) };
+  else if (card === 'retreat') v = { verb: '帰りたい', place: HOME, strong: true };
+  else {
+    const path = pathAlong(p, heads, 6);
+    const esc = path.find(c => c === 'E1a' || c === 'E2a');
+    const stop = path.find(c => heads._stop && heads._stop.has(c));
+    if (esc) v = { verb: '帰りたい', place: esc === 'E1a' ? 'FM' : 'MN', strong: card === 'rush' };
+    else if (stop) v = { verb: '寄りたい', place: stop, strong: false };
+    else if (path.includes('10A')) v = { verb: '行きたい', place: '10A', strong: true };
+    else { const nx = path.find(c => VIEW.has(c) || c === '12' || STATIONS.has(c) || BRANCH[c]) || path[path.length - 1]; v = { verb: '行きたい', place: nx || 'here', strong: card === 'rush' }; }
+  }
+  v.lie = false;
+  if (G.lies && G.trng() < 0.15) { // 意思表明は嘘でもよい（合図は正直）
+    const nxt = pathAlong(p, { '8': '9', '9': '10B', '13': '14' }, 3).pop() || 'here';
+    let alt;
+    if (v.verb === '帰りたい') alt = { verb: '行きたい', place: '13', strong: false };
+    else if (v.verb === '休みたい') alt = { verb: '行きたい', place: nxt, strong: false };
+    else if (v.verb === '寄りたい') alt = { verb: '行きたい', place: nxt, strong: true };
+    else alt = { verb: '休みたい', place: 'here', strong: false };
+    alt.lie = true; alt.truth = talkStr(v); v = alt;
+  }
+  return v;
+}
+function talkStr(v) {
+  if (!v || !v.verb) return '（なにも言わない）';
+  const pl = v.place === 'here' ? 'ここ' : cname(v.place);
+  return '「' + v.verb + '・' + pl + '・' + (v.strong ? 'どうしても' : 'できれば') + '」';
+}
+
+// ---- 解決（ho＝あなたの選んだこと。全員コンピューターなら null）
+function resolve(G, ho) {
+  const t = G.t, S = G.S, w = G.w, sunset = G.sunset, pt = G.pt, ps = G.ps;
+  const H = ps.find(p => p.human);
+  const stOf = p => p.human ? SIG_EST[p.sig] : p.st;
+  lunchBonus(G);
+  const orders = G.aiOrders.slice();
+  const hActs = H && H.state === 'act' && H.skip_until !== t;
+  if (H && ho) {
+    if (hActs && ho.card) {
+      const heads = Object.assign({}, ho.heads || {}); heads._stop = new Set(ho.stop ? [ho.stop] : []);
+      orders.unshift([H, ho.card, heads]);
+    }
+    const r = ho.react;
+    if (r && r.type === 'food' && H.food > 0 && r.target && r.target.state === 'act') {
+      H.food -= 1; r.target.st = Math.min(12, r.target.st + 2); addLog(G, pname(G, H) + ' が ' + pname(G, r.target) + ' に行動食を渡した（体力 +2）', 'me');
+    }
+  }
+  // 公開
+  if (!G.quiet) {
+    const shown = orders.map(([p, c, h]) => {
+      let s = SYM[p.i] + CARD_NAME[c];
+      if (c === 'walk' || c === 'rush') { const b = Object.keys(BRANCH).find(b => reach(p.part || p.cell, b, 2) && h[b]); if (b) s += '（' + b + '→' + h[b] + '）'; }
+      return s;
+    });
+    addLog(G, '公開: ' + shown.join('　'));
+  }
+  // その場の行動
+  const by = new Map(); const movers = [];
+  for (const [p, card, heads] of orders) {
+    if (card === 'retreat' && !p.back) startBack(G, p); // 引き返すは移動（来た道を戻る）
+    if (card === 'rest' || card === 'view' || card === 'search') { const k = p.cell + '|' + card; if (!by.has(k)) by.set(k, []); by.get(k).push(p); }
+    else movers.push([p, card, heads]);
+  }
+  for (const [k, grp] of by) {
+    const [cell, card] = k.split('|'); const n = grp.length;
+    if (card === 'rest') {
+      for (const p of grp) { p.st = Math.min(12, p.st + (cell === '12' ? 5 : 3)); if (cell === '12') p.huts += 1; }
+      addLog(G, grp.map(p => SYM[p.i]).join('') + ' が休憩（体力 +' + (cell === '12' ? 5 : 3) + '）');
+    } else if (card === 'view') {
+      if (G.viewed.has(cell)) continue;
+      G.viewed.add(cell);
+      for (const p of grp) { p.st = Math.min(12, p.st + 1); if (n >= 2) p.gp += 1; p.photo += pt.photo[w] || 0; p.photos.push(cell + ':' + w); }
+      G.viewLog.push({ cell, w, who: grp.map(p => p.i) });
+      addLog(G, grp.map(p => SYM[p.i]).join('') + ' が ' + cname(cell) + ' で眺めた（天気「' + w + '」・体力 +1' + (n >= 2 ? '・仲間点 +1' : '') + '）');
+    } else if (card === 'search') {
+      if (G.searched.has(cell)) continue;
+      G.searched.add(cell);
+      const al = ALLOWED[w]; const picks = n >= pt.group_n ? 2 : 1;
+      for (const p of grp) {
+        if (p.human) {
+          const got = [];
+          for (const c of (ho && ho.colors || []).slice(0, picks)) if (c && al.includes(c)) { p.cnt[c] += 1; got.push(COLOR_NAME[c]); }
+          addLog(G, pname(G, p) + ' は ' + cname(cell) + ' を調べて ' + (got.length ? got.join('・') + ' を取った' : 'なにも取らなかった'), 'me');
+        } else { let m = 0; for (let i = 0; i < picks; i++) if (pick_cube(p, al)) m++; addLog(G, pname(G, p) + ' が ' + cname(cell) + ' を調べた（' + m + ' 個こっそり取った）'); }
+      }
+    }
+  }
+  // 移動（前のマスの人から）
+  const groups = new Map();
+  for (const [p, card, heads] of movers) {
+    const hk = Object.keys(heads).filter(k => k !== '_stop' && reach(p.cell, k, 4)).sort().map(k => k + '=' + heads[k]).join(',');
+    const key = [p.cell, p.part || '', card, hk].join('|');
+    if (!groups.has(key)) groups.set(key, { cell: p.cell, part: p.part, card, members: [] });
+    groups.get(key).members.push([p, heads]);
+  }
+  const arrivals = [], backArr = [];
+  const gl = [...groups.values()].sort((a, b) => (ORDER_KEY[b.cell] - ORDER_KEY[a.cell]) || ((a.part === null ? 1 : 0) - (b.part === null ? 1 : 0)));
+  for (const g of gl) {
+    const members = g.members, n = members.length, card = g.card;
+    const sherpaAI = members.map(m => m[0]).filter(p => !p.human && p.objs.includes('シェルパ'));
+    let bonus = 0;
+    const hm = members.find(m => m[0].human);
+    if (hm && H.objs.includes('シェルパ') && ho && ho.guide && H.guide < 2 && n >= 2) {
+      bonus = 1; H.guide += 1; H.st -= 1; H.usedSherpa = true; addLog(G, pname(G, H) + ' が道案内（一緒に動いた人の歩数 +1・自分は体力さらに −1）', 'me');
+    } else if (sherpaAI.length) {
+      const sh = sherpaAI[0];
+      if (sh.guide < 2 && sh.st >= 5 && n >= 2 && (S - t) - Math.ceil(pdist(members[0][0]) / (n >= pt.group_n ? 3 : 2)) < 1) {
+        bonus = 1; sh.guide += 1; sh.st -= 1; sh.usedSherpa = true; addLog(G, pname(G, sh) + ' が道案内（シェルパ）。一緒の人の歩数 +1');
+      }
+    }
+    for (const [p, heads] of members) {
+      const from = where(p);
+      let mp = card === 'rush' ? 3 : (n >= pt.group_n ? 3 : 2);
+      if (sunset && (card === 'walk' || card === 'retreat')) mp = 1;
+      mp += bonus;
+      if (w === 'ガス') mp -= 1;
+      mp = Math.max(mp, 1);
+      let first = true, climbs = 0;
+      if (card === 'retreat') climbs = moveBack(G, p, mp, n, w, backArr);
+      else while (mp > 0 && !STATIONS.has(p.cell)) {
+        let nx, cost;
+        if (p.part) { nx = p.part; cost = 1; }
+        else {
+          const sc = SUCC[p.cell]; if (!sc.length) break;
+          nx = (p.cell in BRANCH) ? (heads[p.cell] || sc[0]) : sc[0];
+          cost = cell_cost(nx, w);
+          if (cost === 2) { p.part = nx; mp -= 1; first = false; if (CLIMB.has(nx)) climbs += (n === 1 ? 2 : 1); if (G.trace) G.trace.push([p.i, p.cell, p.part]); continue; }
+        }
+        if (mp < cost) { p.part = nx; mp = 0; if (G.trace) G.trace.push([p.i, p.cell, p.part]); break; }
+        if (mp >= cost) {
+          p.cell = nx; p.part = null; mp -= cost; first = false; p.hist.push(nx);
+          if (G.trace) G.trace.push([p.i, p.cell, null]); // 画面の動き用の記録だけ（決まりには触れない）
+          if (PEAKS.has(nx)) p.peaks.add(nx);
+          if (STATIONS.has(nx)) { arrivals.push(p); break; }
+          if (heads._stop && heads._stop.has(nx)) break;
+        } else break;
+      }
+      let dec = card === 'rush' ? 3 : 1;
+      if (sunset && (card === 'walk' || card === 'retreat')) dec += 1;
+      if (w === '雨') dec += 1;
+      if (p.objs.includes('資源採集') && p.cnt.fruit >= 2) dec += pt.fruit_weight_penalty;
+      p.st -= dec + climbs;
+      const bc = draw_body(G, p);
+      p.st += bc;
+      const lbl = (n >= 2 ? '一緒 ' + n + ' 人で' : '1 人で') + CARD_NAME[card];
+      if (p.human) addLog(G, pname(G, p) + ': ' + lbl + ' ' + from + ' → ' + where(p) + '（体力 −' + (dec + climbs) + '、体調カード 体力 ' + (bc > 0 ? '+' : bc < 0 ? '−' : '±') + Math.abs(bc) + '）', 'me');
+      else addLog(G, pname(G, p) + ': ' + lbl + ' ' + from + ' → ' + where(p));
+    }
+    if (sherpaAI.length && n >= 2) {
+      const sh = sherpaAI[0];
+      const others = members.map(m => m[0]).filter(p => p !== sh && p.state === 'act');
+      if (others.length) {
+        let wk = others[0]; for (const q of others) if (stOf(q) < stOf(wk)) wk = q;
+        if (sh.st >= 5 && stOf(wk) <= 4) { wk.st += 1; sh.st -= 1; sh.usedSherpa = true; addLog(G, pname(G, sh) + ' が ' + pname(G, wk) + ' を担いだ（シェルパ・体力の減少を 1 肩代わり）'); }
+      }
+    }
+  }
+  if (H && ho && ho.react && ho.react.type === 'carry' && H.objs.includes('シェルパ') && H.state === 'act' && ho.react.target && ho.react.target.state === 'act') {
+    const q = ho.react.target; q.st += 1; H.st -= 1; H.usedSherpa = true; addLog(G, pname(G, H) + ' が ' + pname(G, q) + ' を担いだ（体力の減少を 1 肩代わり）', 'me');
+  }
+  // 下山
+  const bySt = new Map();
+  for (const p of arrivals) { if (!bySt.has(p.cell)) bySt.set(p.cell, []); bySt.get(p.cell).push(p); }
+  for (const [stn, grp] of bySt) {
+    const n = grp.length;
+    for (const p of grp) { p.state = 'done'; p.fin_turn = t + 1; p.fin_station = stn; p.fin_n = n; p.gp += n - 1; G.events.finish += 1; }
+    addLog(G, grp.map(p => SYM[p.i]).join('') + ' が ' + NAMES[stn] + ' に下山（' + tstr(t + 1) + (n >= 2 ? '・一緒に下山 仲間点 +' + (n - 1) : '') + '）');
+  }
+  // 引き返して下山（軍畑駅に戻り着いた人はキャンプで支援役）
+  for (const p of backArr) { p.state = 'camp'; G.events.retreat += 1; addLog(G, pname(G, p) + ' は 軍畑駅まで戻り、引き返して下山した（キャンプで支援役に）', p.human ? 'me' : ''); }
+  // 雷・遭難
+  for (const p of ps) if (p.state === 'act' && w === '雷' && RIDGE.has(p.cell)) { p.st = Math.max(0, p.st - 3); addLog(G, pname(G, p) + ' は稜線で雷に遭った（体力 −3）', p.human ? 'me' : ''); }
+  for (const p of ps) {
+    if (p.state === 'act' && (p.st < 0 || (t + 1 >= S + RESCUE_T))) {
+      p.resc_reason = p.st < 0 ? 'stamina' : 'time'; if (p.back) p.retFail = true;
+      p.state = 'rescued'; G.events.rescue += 1;
+      addLog(G, pname(G, p) + ' が遭難した（' + (p.st < 0 ? '体力切れ' : '日没から 1 時間半') + '）。同じマスの人は次の手番に動けず体力 −1', 'me');
+      for (const q of ps) if (q.state === 'act' && q.cell === p.cell && q.part === p.part && q !== p) { q.skip_until = t + 1; q.st -= 1; }
+    }
+  }
+  for (const p of ps) p.st = Math.min(p.st, 12);
+  // 支援（キャンプ・下山済み）
+  const actives = ps.filter(p => p.state === 'act');
+  if (actives.length) {
+    for (const p of ps) {
+      if ((p.state === 'camp' || p.state === 'done') && p.sp < 3) {
+        if (p.human) {
+          const r = ho && ho.react;
+          if (!r || !['yoho', 'musen', 'busshi'].includes(r.type)) continue;
+          if (r.type === 'yoho') { G.revealed.add(t + 2); p.sp += 1; addLog(G, pname(G, p) + ' の支援: 予報（その次の天気「' + G.deck[(t + 2) % 24] + '」を表に）支援点 +1', 'me'); }
+          else if (r.type === 'musen' && r.target && r.target.state === 'act') { r.target.st = Math.min(12, r.target.st + 1); p.sp += 1; addLog(G, pname(G, p) + ' の支援: 無線で ' + pname(G, r.target) + ' の体力 +1（支援点 +1）', 'me'); }
+          else if (r.type === 'busshi' && p.food > 0 && r.target && r.target.state === 'act') { p.food -= 1; r.target.food += 1; p.sp += 1; addLog(G, pname(G, p) + ' の支援: 物資で ' + pname(G, r.target) + ' に行動食（支援点 +1）', 'me'); }
+          continue;
+        }
+        p.sp += 1;
+        let wk = actives[0]; for (const q of actives) if (stOf(q) < stOf(wk)) wk = q;
+        if (stOf(wk) <= 7) { wk.st = Math.min(12, wk.st + 1); addLog(G, pname(G, p) + ' の支援: 無線で ' + pname(G, wk) + ' の体力 +1'); }
+        else addLog(G, pname(G, p) + ' の支援: 予報を見た');
+      }
+    }
+  }
+  G.t += 1;
+  for (const p of ps) if (p.state === 'act') p.sig = sigOf(p.st);
+  if (!ps.some(p => p.state === 'act') || G.t >= 60) G.over = true;
+}
+
+function score(G) {
+  const resc = G.ps.filter(p => p.state === 'rescued').length;
+  const out = G.ps.map(p => {
+    const per = {};
+    for (const o of p.objs) per[o] = obj_points(o, p, G.S, resc, G.pt);
+    if (p.state === 'rescued') for (const o in per) per[o] = Math.floor(per[o] / 2);
+    const total = Object.values(per).reduce((a, b) => a + b, 0) + p.gp + p.sp - (p.state === 'rescued' ? 3 : 0);
+    return { p, per, total, st: p.st, state: p.state };
+  });
+  let best = null;
+  for (const r of out) if (!best || r.total > best.total || (r.total === best.total && r.st > best.st)) best = r;
+  for (const r of out) r.win = r.total === best.total && r.st === best.st;
+  return out;
+}
+
+function playAIGame(N, polName, seed) {
+  const G = newGame({ N, pol: polName, seed, human: false, quiet: true, lies: false });
+  while (!G.over) { startTurn(G); planAI(G, null); resolve(G, null); }
+  return G;
+}
+// 速回し: 人数×遊び方ごとに games 局。目的ごとの勝率（同点は等分）・平均点・終わりの手番
+function simulate(N, polNames, games, seed0) {
+  const acc = { wins: {}, pts: {}, obs: {}, turns: 0, games: 0, done: 0, camp: 0, resc: 0, players: 0 };
+  for (const o of objsOf(N)) { acc.wins[o] = 0; acc.pts[o] = 0; acc.obs[o] = 0; }
+  let k = 0;
+  for (const pn of polNames) for (let g = 0; g < games; g++) {
+    const G = playAIGame(N, pn, (seed0 + (k++) * 2654435761) >>> 0);
+    const sc = score(G); const nw = sc.filter(r => r.win).length;
+    for (const r of sc) {
+      for (const o in r.per) { acc.pts[o] += r.per[o]; acc.obs[o] += 1; if (r.win) acc.wins[o] += 1 / nw; }
+      acc.players += 1; acc[r.state === 'done' ? 'done' : r.state === 'camp' ? 'camp' : 'resc'] += 1;
+    }
+    acc.turns += G.t; acc.games += 1;
+  }
+  return acc;
+}
+if (typeof module !== 'undefined') module.exports = { newGame, startTurn, planAI, resolve, score, simulate, playAIGame, setHumanObjs, OBJ, OBJ2, objsOf, makePT };
+</script>
+
+<script>
+'use strict';
+// ====== 画面 ======
+const REF = { // v2.4＝案_レーション/試算/sim3.js（ブラウザ版の決まりそのものを Node で・2〜4 人 × 遊び方 3 通り × 各 3000 局）
+  2: { win: { '頂上制覇': 57.1, '絶景撮影': 49.1, '花の写真': 51.6, '自然観察': 46.6, '資源採集': 46.2, '山小屋グルメ': 40.5 },
+    mean: { '頂上制覇': 5.3, '絶景撮影': 4.82, '花の写真': 5.48, '自然観察': 4.88, '資源採集': 6.44, '山小屋グルメ': 4.01 }, turns: 18.78, done: 94.0, camp: 1.9 },
+  3: { win: { '頂上制覇': 44.1, '絶景撮影': 34, '花の写真': 32.1, '自然観察': 27.3, '資源採集': 33.6, '山小屋グルメ': 27.7, '早帰り': 28.2, 'シェルパ': 29.1 },
+    mean: { '頂上制覇': 5.75, '絶景撮影': 4.68, '花の写真': 5.12, '自然観察': 4.59, '資源採集': 6.33, '山小屋グルメ': 3.57, '早帰り': 3.65, 'シェルパ': 4.76 }, turns: 19.35, done: 95.2, camp: 1.3 },
+  4: { win: { '頂上制覇': 26.5, '絶景撮影': 25.3, '花の写真': 22.6, '自然観察': 18.8, '資源採集': 24.5, '山小屋グルメ': 17.1, '早帰り': 34, 'シェルパ': 20.5 },
+    mean: { '頂上制覇': 5.55, '絶景撮影': 4.62, '花の写真': 5.01, '自然観察': 4.46, '資源採集': 6.09, '山小屋グルメ': 3.15, '早帰り': 6.77, 'シェルパ': 4.57 }, turns: 18.99, done: 96.7, camp: 1.4 } };
+const POL_LABEL = { 'P1隊列追従': 'ふつう（隊列に合わせる）', 'P2目的優先': '攻め（自分の目的を優先）', 'P3慎重': '慎重（早めに休む・引き返す）' };
+// 盤（make.py と同じ並び。紙 5 枚・A4 横、x は紙の中の mm）
+const SQ = [
+  ['1', '軍畑駅', '駅', ['☆'], 1, 8, 1], ['2', '車道', '平', ['♣'], 1, 48, 1], ['3', '榎峠', '登り', [], 1, 88, 1], ['4', '急登', '登り', ['♣'], 1, 164, 1],
+  ['5', '急登', '登り', [], 2, 8, 1], ['6', '雷電山', '登り', ['△', '◎'], 2, 84, 1], ['7', '尾根', '稜線', [], 2, 160, 1], ['8', '辛垣城跡', '稜線', ['◎', '⑂'], 3, 8, 1],
+  ['9', '名郷峠', '平', ['♣', '⑂'], 3, 84, 1], ['E1a', 'エスケープ', '下り', ['♣'], 3, 32, 0], ['E1b', 'エスケープ', '下り', [], 3, 108, 0], ['FM', '二俣尾駅', '駅', ['★'], 3, 184, 0],
+  ['10A', '三方山', '稜線', ['△', '◎'], 3, 124, 2], ['11A', '尾根道', '稜線', [], 3, 200, 2], ['10B', '巻き道', '平', ['♣'], 3, 182, 1], ['12', '休憩所', '平', ['♨'], 4, 8, 1],
+  ['13', '矢倉台', '平', ['△', '◎', '⑂'], 4, 48, 1], ['14', '下り', '下り', ['♣'], 4, 88, 1], ['15', '下り', '下り', [], 4, 164, 1], ['E2a', 'エスケープ', '下り', ['♣'], 4, 64, 2],
+  ['MN', '宮ノ平駅', '駅', ['★'], 4, 140, 2], ['16', '下り', '下り', ['♣'], 5, 8, 1], ['17', '永山公園', '平', [], 5, 84, 1], ['18', '青梅駅', '駅', ['★'], 5, 124, 1]];
+const EDGES = [['1', '2'], ['2', '3'], ['3', '4'], ['4', '5'], ['5', '6'], ['6', '7'], ['7', '8'], ['8', '9'], ['8', 'E1a'], ['E1a', 'E1b'], ['E1b', 'FM'], ['9', '10A'], ['10A', '11A'], ['11A', '12'],
+  ['9', '10B'], ['10B', '12'], ['12', '13'], ['13', '14'], ['14', '15'], ['15', '16'], ['16', '17'], ['17', '18'], ['13', 'E2a'], ['E2a', 'MN']];
+const ROWY = { 0: 10, 1: 66, 2: 122 };
+const GEO = {};
+for (const [id, nm, tr, mk, pg, x, row] of SQ) GEO[id] = { id, nm, tr, mk, x: (pg - 1) * 297 + x, y: ROWY[row], w: ['登り', '稜線', '下り'].includes(tr) ? 72 : 36, h: 34 };
+
+let G = null, UI = null, LAST = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// ---------- 登山者の駒（帽子・頭・体・脚・杖、背中のリュックの形が人ごとに違う＝● 丸 ▲ 三角 ■ 四角 ◆ ひし形）
+// 原点＝駒の真ん中。幅 およそ 13・高さ およそ 17。色はプレイヤー色
+const P_COLOR = ['赤', '青', '黄', '紫'];
+const HK_PACK = [
+  '<circle class="pack" cx="-3.7" cy="-0.4" r="2.5"/>',
+  '<path class="pack" d="M-3.7 -3.4 L-0.9 2 L-6.5 2 Z"/>',
+  '<rect class="pack" x="-6" y="-2.8" width="4.6" height="4.8" rx=".5"/>',
+  '<path class="pack" d="M-3.7 -3.6 L-0.9 -0.5 L-3.7 2.6 L-6.5 -0.5 Z"/>'];
+function hkShape(i) {
+  return '<path d="M-3.4 -6.3 H3.4 V-5.5 H-3.4 Z M-1.9 -6.3 L-1.4 -8.4 H1.4 L1.9 -6.3 Z"/>' // 帽子
+    + '<circle cx="0" cy="-3.8" r="1.75"/>' // 頭
+    + '<path d="M-1.9 -1.7 Q0 -2.4 1.9 -1.7 L1.7 2.6 H-1.7 Z"/>' // 体
+    + '<path d="M-1.7 2.3 H-0.2 L-1.1 7.8 H-2.7 Z M0.2 2.3 H1.7 L2.9 7.8 H1.3 Z"/>' // 脚
+    + '<path d="M1.5 -0.9 L3.5 0.4" class="arm"/>' // 腕
+    + '<path class="pole" d="M3.6 -1.2 L5 8.2"/>' // 杖
+    + HK_PACK[i];
+}
+// 盤の中で使う <g>（縁取り→色の 2 重。重なっても形が読める）
+function hkG(i) {
+  const s = hkShape(i);
+  return `<g class="hk-h">${s}</g><g class="hk-b" style="--pc:var(--p${i});--pd:color-mix(in srgb,var(--p${i}) 60%,#000)">${s}</g>`;
+}
+// 文の中で使う小さな絵（高さ px）
+function hkSvg(i, px) {
+  const h = px || 18;
+  return `<svg class="hk" viewBox="-7 -9.5 14 18.5" width="${(h * 14 / 18.5).toFixed(1)}" height="${h}" role="img" aria-label="${P_COLOR[i]}の登山者"><g>${hkG(i)}</g></svg>`;
+}
+// 決まりの側（ログ・練習の吹き出し）が使う記号 ●▲■◆ を、見せるときだけ登山者の絵に差し替える
+const SYM_RE = /[●▲■◆]/g;
+function symHtml(html, px) { return String(html).replace(SYM_RE, c => hkSvg(SYM.indexOf(c), px || 19)); }
+function whoName(q) { return P_COLOR[q.i] + '（' + (q.human ? 'あなた' : 'コンピューター' + q.i) + '）'; }
+
+function setGuide(main, sub) { $('#guide').innerHTML = esc(main) + (sub ? '<small>' + esc(sub) + '</small>' : ''); }
+
+// ---------- 準備の画面
+function showSetup(n) {
+  tutStop();
+  G = null; UI = null; SIM_MODE = false;
+  setGuide('① 遊び方を選んで「はじめる」を押す', 'あなた 1 人＋コンピューター 1〜3 人。2 人戦は 2 人用の決まり（早帰り・シェルパ抜き・2 人一緒で歩数 3・調べる 2 個・グルメ 4／8点）。ルールは右上の「ルールの早見」。');
+  const ts = tutLoad();
+  const cont = ts.stage > 0 && !ts.done && ts.stage < TUT_STAGES.length;
+  $('#app').innerHTML = `
+  <div class="panel"><h2>はじめての人へ</h2>
+   <div>まず「ゲームの説明」（1 ページ・3 分）で世界観と勝ち方を見て、次に練習の 1 局（2 人戦・場面と天気は決め打ち・11 ステップ）。練習は吹き出しのとおりに押すだけ。</div>
+   <div class="row" style="margin-top:8px"><button id="btnIntro" class="${introSeen() || ts.done ? '' : 'primary pulse'}">ゲームの説明</button><button id="btnTutStart" class="${!introSeen() || ts.done ? '' : 'primary pulse'}">練習をはじめる</button>
+   ${cont ? `<button id="btnTutCont">続きから（ステップ ${ts.stage + 1}「${TUT_STAGES[ts.stage].name}」）</button>` : ''}
+   ${ts.done ? '<span class="muted">練習は一度終えている</span>' : ''}</div></div>
+  <div class="panel"><h2>準備</h2>
+   <div class="row" style="margin-bottom:8px"><label>人数 <select id="sN"><option value="2">2 人戦（コンピューター 1 人）</option><option value="3" selected>3 人戦（コンピューター 2 人）</option><option value="4">4 人戦（コンピューター 3 人）</option></select></label></div>
+   <div class="row" style="margin-bottom:8px"><label>季節 <select id="sSeason"><option value="">ランダム</option><option value="0">春（日没 17:00）</option><option value="1">夏（日没 17:30）</option><option value="2">秋（日没 16:30）</option><option value="3">冬（日没 16:00）</option></select></label></div>
+   <div class="row" style="margin-bottom:8px"><label>コンピューターの遊び方 <select id="sPol"><option value="P1隊列追従">ふつう（隊列に合わせる）</option><option value="P2目的優先">攻め（自分の目的を優先）</option><option value="P3慎重">慎重（早めに休む・引き返す）</option></select></label></div>
+   <div class="row" style="margin-bottom:8px"><label>意思表明の嘘 <select id="sLie"><option value="1">あり（コンピューターも時々嘘をつく）</option><option value="0">なし</option></select></label></div>
+   <div class="row" style="margin-bottom:12px"><label>乱数の種 <input id="sSeed" inputmode="numeric" placeholder="空なら毎回ちがう" style="width:170px"></label><span class="muted">同じ種・同じ選び方なら同じ局になる</span></div>
+   <button id="btnStart" class="${ts.done ? 'primary pulse' : ''}">はじめる</button>
+  </div>`;
+  if (n) $('#sN').value = String(n);
+  $('#btnIntro').onclick = showIntro;
+  $('#btnTutStart').onclick = () => tutStart(0);
+  if (cont) $('#btnTutCont').onclick = () => tutStart(ts.stage);
+  sceneUpdate();
+  $('#btnStart').onclick = () => {
+    const seedTxt = $('#sSeed').value.trim();
+    const seed = seedTxt === '' ? Math.floor(Math.random() * 1e9) : (parseInt(seedTxt, 10) >>> 0);
+    LAST = { N: +$('#sN').value, pol: $('#sPol').value, season: $('#sSeason').value, human: true, lies: $('#sLie').value === '1' };
+    G = newGame(Object.assign({ seed }, LAST));
+    UI = { phase: 'pick', pick: [] };
+    addLog(G, '準備: ' + G.N + ' 人・' + SEASON_NAME[G.season] + '（日没 ' + tstr(G.S) + '）・コンピューター ' + POL_LABEL[G.polName] + '・乱数の種 ' + G.seed, 'h');
+    render();
+  };
+}
+
+// ---------- ゲームの説明（世界観・勝ち方・1 手番・意思表明と追加アクション）。練習の前に読む 1 ページ
+const INTRO_KEY = 'tozan.intro';
+function introSeen() { try { return localStorage.getItem(INTRO_KEY) === '1'; } catch (e) { return false; } }
+function introMark() { try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) { } }
+function showFirst() { // はじめて開いた人には説明ページから
+  const ts = tutLoad();
+  if (!introSeen() && !ts.done && !(ts.stage > 0)) showIntro(); else showSetup();
+}
+function hkAt(i, x, y, k) { return `<g transform="translate(${x},${y}) scale(${k || 1.4})">${hkG(i)}</g>`; }
+function introFigWorld() {
+  return `<svg viewBox="0 0 360 196" role="img" aria-label="登山口から山を越えて、日が沈む前に駅へ下りる道の図">
+  <path d="M0 122 L52 86 L96 104 L150 40 L204 88 L246 62 L300 100 L360 84 V196 H0 Z" style="fill:var(--t-ridge)"/>
+  <path d="M0 168 Q90 128 176 146 T360 156 V196 H0 Z" style="fill:var(--t-down)"/>
+  <path d="M30 172 L64 134 L104 108 L150 46 L204 92 L246 68 L296 116 L330 170" class="fig-accs" style="fill:none;stroke-width:3;stroke-dasharray:6 4;stroke-linecap:round"/>
+  <path d="M204 92 L222 132 L250 172" class="fig-edge" style="fill:none;stroke-width:2;stroke-dasharray:3 4"/>
+  <circle cx="318" cy="30" r="13" style="fill:#f3a067"/>
+  <path d="M300 22 Q276 30 284 56" class="fig-edge" style="fill:none;stroke-width:1.6"/><path d="M279 50 L284 58 L289 50" class="fig-edge" style="fill:none;stroke-width:1.6"/>
+  <text x="270" y="16" class="fig-sub" style="font-size:12px" text-anchor="end">日が沈む前に</text>
+  <path d="M150 46 V26 M150 26 h16 v9 h-16" class="fig-ink" style="stroke:var(--ink);fill:none;stroke-width:1.4"/>
+  <text x="150" y="20" class="fig-ink" style="font-size:12px;font-weight:700" text-anchor="middle">ピーク</text>
+  <text x="208" y="112" class="fig-sub" style="font-size:11px">分かれ道</text>
+  <rect x="6" y="172" width="70" height="20" rx="5" class="fig-panel" style="stroke:var(--edge)"/><text x="41" y="186" class="fig-ink" style="font-size:12px;font-weight:700" text-anchor="middle">登山口 7:00</text>
+  <rect x="290" y="172" width="64" height="20" rx="5" class="fig-panel" style="stroke:var(--edge)"/><text x="322" y="186" class="fig-ink" style="font-size:12px;font-weight:700" text-anchor="middle">下山口の駅</text>
+  ${hkAt(1, 62, 122)}${hkAt(0, 80, 112)}${hkAt(2, 116, 88)}
+  </svg>`;
+}
+function introFigTurn() {
+  const box = (x, y, n, t1, t2, t3) => `<rect x="${x}" y="${y}" width="158" height="78" rx="10" class="fig-soft" style="stroke:var(--line)"/>
+   <circle cx="${x + 18}" cy="${y + 19}" r="11" class="fig-acc"/><text x="${x + 18}" y="${y + 24}" style="font-size:13px;font-weight:800;fill:var(--accent-ink)" text-anchor="middle">${n}</text>
+   <text x="${x + 36}" y="${y + 24}" class="fig-ink" style="font-size:14px;font-weight:800">${t1}</text>
+   <text x="${x + 10}" y="${y + 48}" class="fig-sub" style="font-size:11.5px">${t2}</text><text x="${x + 10}" y="${y + 66}" class="fig-sub" style="font-size:11.5px">${t3}</text>`;
+  const ar = d => `<path d="${d}" class="fig-accs" style="fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"/>`;
+  return `<svg viewBox="0 0 360 214" role="img" aria-label="1 手番の流れ: 相談、行動カード、公開と追加アクション、解決で時計が 30 分進む">
+  ${box(4, 6, '1', '相談', '合図（体力どおり）と', '意思表明を 1 回')}
+  ${box(198, 6, '2', '行動カード', '6 枚から 1 枚を', '伏せて同時に出す')}
+  ${box(198, 128, '3', '公開', '表にして、追加アクション', 'を 1 回まで')}
+  ${box(4, 128, '4', '解決', '一緒に動いた人数で得', '時計 +30分・天気が進む')}
+  ${ar('M166 45 H192 M186 39 L192 45 L186 51')}${ar('M277 88 V122 M271 116 L277 122 L283 116')}${ar('M194 167 H168 M174 161 L168 167 L174 173')}${ar('M83 124 V90 M77 96 L83 90 L89 96')}
+  <text x="92" y="111" class="fig-sub" style="font-size:11px">次の手番</text>
+  </svg>`;
+}
+function introFigScore() {
+  return `<svg viewBox="0 0 360 106" role="img" aria-label="点の内訳: 目的カード 2 枚の点、仲間点、支援点。遭難すると減る">
+  <rect x="4" y="8" width="200" height="34" rx="6" style="fill:var(--accent)"/><text x="104" y="30" style="font-size:13px;font-weight:800;fill:var(--accent-ink)" text-anchor="middle">目的カード 2 枚の点</text>
+  <rect x="208" y="8" width="78" height="34" rx="6" style="fill:var(--p1)"/><text x="247" y="30" style="font-size:13px;font-weight:800;fill:#fff" text-anchor="middle">仲間点</text>
+  <rect x="290" y="8" width="66" height="34" rx="6" style="fill:var(--p2)"/><text x="323" y="30" style="font-size:13px;font-weight:800;fill:#1f2421" text-anchor="middle">支援点</text>
+  <text x="104" y="60" class="fig-sub" style="font-size:11px" text-anchor="middle">自分だけが知っている</text>
+  <text x="247" y="60" class="fig-sub" style="font-size:11px" text-anchor="middle">一緒に眺める</text>
+  <text x="247" y="74" class="fig-sub" style="font-size:11px" text-anchor="middle">・下山</text>
+  <text x="323" y="60" class="fig-sub" style="font-size:11px" text-anchor="middle">後ろから</text>
+  <text x="323" y="74" class="fig-sub" style="font-size:11px" text-anchor="middle">手伝う</text>
+  <text x="180" y="98"style="font-size:12px;font-weight:700;fill:var(--warn)" text-anchor="middle">遭難すると 目的の点が半分・さらに −3</text>
+  </svg>`;
+}
+function showIntro() {
+  tutStop(); closeRules();
+  G = null; UI = null; SIM_MODE = false;
+  introMark();
+  setGuide('ゲームの説明（1 ページ）', '読んだら、いちばん下の「練習をはじめる」へ。知っている人は上の「とばす」から。');
+  $('#app').innerHTML = `<div class="intro">
+  <div class="panel skip"><span class="muted">説明をとばす:</span><button id="inSkipTut">練習へ</button><button id="inSkipGame">本番の準備へ</button></div>
+  <div class="panel">
+   <h2>山越え谷越え　―　仲間と、日が沈む前に</h2>
+   <p class="lead">秋の朝 7 時。2〜4 人の仲間が、ふもとの駅から低い山並みへ歩き出す。ピークを踏む人、花や生き物を探す人、山小屋でひと休みしたい人。めざすものは人それぞれ。でも、<b>日が沈む前に駅まで下りたい</b>のはみんな同じ。</p>
+   <figure>${introFigWorld()}<figcaption>道は 1 本の尾根。途中の分かれ道から早めに下りる道もある</figcaption></figure>
+   <p>体力も天気も思いどおりにならない。<b>一緒に歩けば速く楽に進み、見つかる物も増える</b>。けれど行きたい所は少しずつ違う。だれに合わせ、どこで離れるか。それがこのゲーム。</p>
+  </div>
+  <div class="panel">
+   <h2>勝ち方</h2>
+   <p><b>最後の点がいちばん多い人の勝ち。</b>全員そろって下山しなくてもよい。</p>
+   <figure>${introFigScore()}</figure>
+   <ul style="margin:6px 0;padding-left:20px">
+    <li><b>目的カード</b>: 最初に 3 枚配られ、違う 2 枚を選んで伏せて持つ（頂上制覇・絶景撮影・花の写真・自然観察・資源採集・山小屋グルメ・早帰り・シェルパ。2 人では早帰りとシェルパを使わない）。</li>
+    <li><b>仲間点</b>: 景色の所で 2 人以上で眺める、同じ駅に一緒に下山する、で入る。</li>
+    <li><b>支援点</b>: 早めにキャンプへ引き返した人や、先に下山した人が、山の仲間を手伝うと入る（上限 3 点）。引き返しは<b>来た道を歩いて軍畑駅まで戻る</b>ので、奥まで来てからでは間に合わないことも、戻る途中で遭難することもある。</li>
+    <li>日没から 1 時間半たっても山にいると<b>遭難</b>。無理は禁物、早めの見切りも手。</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h2>1 手番の流れ（1 手番＝30 分）</h2>
+   <figure>${introFigTurn()}</figure>
+   <ol>
+    <li><b>相談</b>: 体力から<b>合図</b>（余裕・ふつう・きつい）が自動で出る。これは嘘をつけない。続けて<b>意思表明</b>を 1 回言える。</li>
+    <li><b>行動カード</b>: 歩く・急ぐ・休憩・眺める・調べる・引き返す から 1 枚を選び、伏せて全員同時に出す。</li>
+    <li><b>公開</b>: 一斉に表にする。ここで<b>追加アクション</b>を 1 回まで使える。</li>
+    <li><b>解決</b>: <b>同じマスで同じカードを出した人</b>が「一緒に動いた人」。3 人以上（2 人戦は 2 人）で歩くと歩数が増え、一緒に調べると多く見つかる。最後に時計が 30 分進み、天気が 1 枚進む。</li>
+   </ol>
+  </div>
+  <div class="panel">
+   <h2>意思表明　―　言葉で仲間を動かす</h2>
+   <div class="chips"><span class="chip">行きたい</span><span class="chip">寄りたい</span><span class="chip">休みたい</span><span class="chip">帰りたい</span><span class="muted">＋ 場所 ＋</span><span class="chip">どうしても</span><span class="chip">できれば</span></div>
+   <div class="say">${hkSvg(0, 30)}「13 番に行きたい。どうしても」</div>
+   <ul style="margin:6px 0;padding-left:20px">
+    <li><b>嘘でもよい</b>。ただし体力の数字と目的の名前は言わない。</li>
+    <li>コンピューターは<b>同じマスにいる人</b>の意思表明だけを聞いて手を決める。「できれば」は効き目が半分。</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h2>追加アクション　―　公開のあとに 1 回だけ</h2>
+   <ul style="margin:6px 0;padding-left:20px">
+    <li><b>山にいる人</b>: 同じマスの仲間に行動食を渡す（体力 +2）。シェルパの人は仲間を担げる。行動食は景色◎で仲間と同じ手番に食べると「一緒にお昼」で 体力 +1・仲間点 +1。</li>
+    <li><b>キャンプやふもとにいる人</b>: 予報（先の天気を表に）・無線（だれかの体力 +1）・物資（行動食を送る）。1 回ごとに支援点 +1。</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h2>次は練習で、実際にやってみよう</h2>
+   <p>2 人戦の 1 局を、吹き出しのとおりに押して進める（11 ステップ・場面と天気は決め打ち）。分からなくなったら右上の「ルールの早見」。</p>
+   <div class="go"><button id="inTut" class="primary pulse">練習をはじめる（11 ステップ）</button><button id="inGame">本番の準備へ</button></div>
+  </div></div>`;
+  $('#inSkipTut').onclick = $('#inTut').onclick = () => tutStart(0);
+  $('#inSkipGame').onclick = $('#inGame').onclick = () => { showSetup(); scrollTo(0, 0); };
+  sceneUpdate();
+  scrollTo(0, 0);
+}
+
+// ---------- 共通の表示
+function weatherCard(k, w, back) {
+  return `<div class="wc ${back ? 'back' : ''}"><span class="k">${k}</span><b>${back ? '？' : esc(w)}</b><span class="k">${back ? '裏' : esc(wEffect(w))}</span></div>`;
+}
+function wEffect(w) { return { '晴れ': '花・実り', 'くもり': '全色', 'ガス': '歩数−1', '雨': '体力−1', '強風': '稜線2区画', '雷': '稜線で体力−3' }[w]; }
+function clockHtml() {
+  let s = '<div class="clock">';
+  for (let k = 0; k <= 24; k++) { // 夏の遭難の時刻 19:00 まで
+    const cls = k === G.t ? 'now' : (k >= G.S + RESCUE_T ? 'res' : (k >= G.S ? 'dark' : ''));
+    s += `<span class="${cls}">${tstr(k)}</span>`;
+  }
+  return s + '</div><div class="muted">日没 ' + tstr(G.S) + '（' + SEASON_NAME[G.season] + '）・日没から 1 時間半（' + tstr(G.S + RESCUE_T) + '）で山にいる人は遭難。いま ' + tstr(G.t) + (G.t < G.S ? '・日没まで ' + (G.S - G.t) + ' 手番' : '・日没後') + '</div>';
+}
+function cubeStr(p) { return '花 ' + p.cnt.flower + '・生き物 ' + p.cnt.creature + '・実り ' + p.cnt.fruit; }
+function stateStr(p) {
+  if (p.state === 'done') return NAMES[p.fin_station] + ' に下山（' + tstr(p.fin_turn) + '）';
+  if (p.state === 'camp') return 'キャンプ（支援役）';
+  if (p.state === 'rescued') return '遭難';
+  return where(p) + (p.back ? '・引き返し中（軍畑駅へ）' : '') + (p.skip_until === G.t ? '・救助の手伝いで動けない' : '');
+}
+function boardSvg() {
+  const H = G.ps[0];
+  let s = `<svg viewBox="0 0 1485 168" width="1900" height="215" role="img" aria-label="山のボード">` + BOARD_DEFS;
+  for (const [a, b] of EDGES) {
+    const A = GEO[a], B = GEO[b];
+    const x1 = A.x + A.w, y1 = A.y + A.h / 2, x2 = B.x, y2 = B.y + B.h / 2;
+    if (x2 > x1) s += `<path class="edge" d="M${x1},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2},${y2}"/>`;
+    else s += `<path class="edge" d="M${A.x + A.w / 2},${y1 + (y2 > y1 ? A.h / 2 : -A.h / 2)} L${B.x + B.w / 2},${y2 + (y2 > y1 ? -B.h / 2 : B.h / 2)}"/>`;
+  }
+  const hereSet = new Set();
+  if (H.state === 'act') hereSet.add(H.part || H.cell);
+  for (const id in GEO) {
+    const g = GEO[id];
+    s += `<rect class="t-${g.tr}" x="${g.x}" y="${g.y}" width="${g.w}" height="${g.h}" rx="4"/>` + cellArt(id, g)
+      + `<rect class="cell ${hereSet.has(id) ? 'hl' : ''}" data-id="${id}" x="${g.x}" y="${g.y}" width="${g.w}" height="${g.h}" rx="4"/>`;
+    if (g.w > 36) s += `<line class="split ${g.tr === '登り' ? '' : 'dash'}" x1="${g.x + 36}" y1="${g.y + 2}" x2="${g.x + 36}" y2="${g.y + g.h - 2}"/>`
+      + `<text class="tnm" x="${g.x + 3}" y="${g.y + g.h - 3}">a</text><text class="tnm" x="${g.x + 39}" y="${g.y + g.h - 3}">b</text>`;
+    const lbl = (id === 'FM' || id === 'MN') ? '' : id;
+    s += `<text class="tid" x="${g.x + 3}" y="${g.y + 11}">${lbl}</text><text class="tnm above" x="${g.x + 2}" y="${g.y - 2.5}">${esc(g.nm)}</text>`; // 名前はマスの上の外（番号と重ねない）
+    s += `<text class="tmk" x="${g.x + g.w - 3}" y="${g.y + 22}" text-anchor="end">${g.mk.join('')}</text>`;
+    if (G.viewed.has(id)) s += `<text class="done" x="${g.x + g.w - 3}" y="${g.y + g.h - 3}" text-anchor="end">眺め済</text>`;
+    if (G.searched.has(id)) s += `<text class="done" x="${g.x + g.w - 3}" y="${g.y + g.h - 3 - (G.viewed.has(id) ? 8 : 0)}" text-anchor="end">調べ済</text>`;
+  }
+  const pos = tokLayout(G.ps.filter(p => p.state === 'act' || p.state === 'done').map(p => ({ i: p.i, cell: p.cell, part: p.part })));
+  for (const i in pos) s += `<g class="tok" data-i="${i}" style="transform:translate(${pos[i][0]}px,${pos[i][1]}px)"><g transform="translate(6.5,0.5)">${hkG(+i)}</g></g>`;
+  return s + '</svg>';
+}
+// マスの地面の柄（種類ごと）。林＝木立／登り＝石段／稜線＝岩と笹／下り＝土の道／駅＝ホーム／その他の平地＝草。
+// 上に重ねる印: 山頂＝見晴らしの札、景色（山頂でない）＝遠くの山の額、休憩所＝小屋。どれも薄く描き、文字は縁取りで読ませる
+const BOARD_DEFS = `<defs>
+ <pattern id="pg-forest" width="13" height="12" patternUnits="userSpaceOnUse"><path class="pt-tree" d="M3.5 10 L6.5 3 L9.5 10 Z M5.8 10 h1.4 v1.6 h-1.4 Z"/><path class="pt-tree" d="M8.5 6 L10.5 1.5 L12.5 6 Z"/></pattern>
+ <pattern id="pg-climb" width="12" height="7" patternUnits="userSpaceOnUse"><rect class="pt-stone" x="0" y="5" width="12" height="1.6"/><rect class="pt-stone" x="5" y="0" width="1.2" height="5"/></pattern>
+ <pattern id="pg-ridge" width="17" height="13" patternUnits="userSpaceOnUse"><path class="pt-rock" d="M1 11 L4 7.5 L8 8.5 L10 11 Z"/><path class="pt-grass" d="M12 12 L11 7 M13.5 12 L14 6.5 M15 12 L16.5 8"/></pattern>
+ <pattern id="pg-down" width="22" height="12" patternUnits="userSpaceOnUse"><path class="pt-soil" d="M0 9 Q5.5 4 11 7 T22 5" stroke-dasharray="3 2"/><circle class="pt-soild" cx="4" cy="2.5" r=".9"/><circle class="pt-soild" cx="16" cy="10.5" r=".9"/></pattern>
+ <pattern id="pg-flat" width="14" height="12" patternUnits="userSpaceOnUse"><path class="pt-grass" d="M3 10 l1 -3 l1 3 M10 4 l1 -3 l1 3"/></pattern>
+</defs>`;
+function cellArt(id, g) {
+  const x = g.x, y = g.y, w = g.w, h = g.h;
+  let k = FOREST.has(id) ? 'forest' : { '登り': 'climb', '稜線': 'ridge', '下り': 'down', '平': 'flat' }[g.tr];
+  let s = '';
+  if (g.tr === '駅') { // ホーム: 端の黄色い点字の帯と線路
+    s += `<rect class="pt-plat" x="${x + 2}" y="${y + h - 9}" width="${w - 4}" height="2.6" rx="1"/><path class="pt-rail" d="M${x + 2} ${y + h - 4.5} H${x + w - 2} M${x + 2} ${y + h - 2.5} H${x + w - 2}"/>`;
+  } else if (k) s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="url(#pg-${k})"/>`;
+  const bx = x + w - 15, by = y + h - 4; // 右下に薄い印
+  if (PEAKS.has(id)) { const sx = w > 36 ? x + 44 : x + 6; s += `<path class="deco sign" d="M${sx + 6} ${y + h - 2} V${y + h - 13} M${sx} ${y + h - 19} h12 v6.5 h-12 Z M${sx + 2.5} ${y + h - 15.7} h7"/>`; } // 見晴らしの札
+  else if (VIEW.has(id)) s += `<path class="deco" d="M${bx - 2} ${by - 1} h14 v-12 h-14 Z M${bx} ${by - 3} l4 -5 l3 3 l2 -2 l3 4"/>`; // 景色の額
+  else if (id === '12') s += `<path class="deco" d="M${bx - 2} ${by - 7} l7 -7 l7 7 M${bx} ${by - 7} v7 h10 v-7"/>`; // 小屋
+  return s;
+}
+// 駒の置き場所（同じ区画に何人いるかで少しずらす）
+function tokXY(id, isPart, k) {
+  const g = GEO[id];
+  const cx = isPart ? g.x + 18 : (CLIMB.has(id) ? g.x + 54 : g.x + g.w / 2);
+  return [cx - 12 + (k % 2) * 13, g.y + 20 + Math.floor(k / 2) * 10 - 4];
+}
+function tokLayout(list) {
+  const slot = {}, out = {};
+  for (const q of list) {
+    const id = q.part || q.cell, key = id + (q.part ? 'a' : '');
+    const k = (slot[key] = (slot[key] || 0) + 1) - 1;
+    out[q.i] = tokXY(id, !!q.part, k);
+  }
+  return out;
+}
+function scrollBoard() {
+  const box = $('#boardbox'); if (!box || !G) return;
+  const H = G.ps[0]; const g = GEO[H.part || H.cell] || GEO['1'];
+  box.scrollLeft = Math.max(0, g.x * (1900 / 1485) - box.clientWidth / 2 + 30);
+}
+function playersHtml() {
+  return '<div class="players">' + G.ps.map(p => {
+    const tk = G.talk[p.i];
+    const showTalk = UI.phase !== 'talk' && tk;
+    return `<div class="pl"><span class="sym">${hkSvg(p.i, 24)}</span> <b>${p.human ? 'あなた' : 'コンピューター' + p.i}</b>
+      <div class="muted">${esc(stateStr(p))}</div>
+      ${p.state === 'act' ? '<div>合図: <b>' + p.sig + '</b>' + (p.human ? '（体力 ' + p.st + '）' : '') + '</div>' : ''}
+      ${p.usedSherpa && !p.human ? '<div class="muted">技を使った＝シェルパ</div>' : ''}
+      ${showTalk ? '<div class="talk">意思表明 ' + esc(talkStr(tk)) + '</div>' : ''}
+      ${UI.phase === 'react' && UI.revealed && UI.revealed[p.i] ? '<div class="talk">出したカード: <b class="rev">' + esc(UI.revealed[p.i]) + '</b></div>' : ''}
+    </div>`;
+  }).join('') + '</div>';
+}
+function meHtml() {
+  const H = G.ps[0];
+  const pct = Math.max(0, Math.min(100, H.st / 12 * 100));
+  return `<div class="panel" id="mePanel"><h2>${hkSvg(0, 22)} あなた（赤）</h2>
+   <div class="row"><b>体力 ${H.st} / 12</b><span class="muted">合図「${sigOf(H.st)}」</span></div>
+   <div class="bar"><i class="${H.st <= 3 ? 'low' : ''}" style="width:${pct}%"></i></div>
+   <div style="margin-top:6px">行動食 ${H.food}・キューブ ${cubeStr(H)}・仲間点 ${H.gp}・支援点 ${H.sp}${H.objs.includes('シェルパ') ? '・道案内 残り ' + (2 - H.guide) + ' 回' : ''}</div>
+   <div class="muted">通ったピーク ${[...H.peaks].join('・') || 'なし'}・眺め ${H.photos.map(x => x.replace(':', '（') + '）').join('、') || 'なし'}・休憩所で休憩 ${H.huts} 回</div>
+   <div class="objs" style="margin-top:6px">${H.objs.map(o => `<div class="objc"><b>${o}</b>${objText(o)}<br><span class="muted">いまの見込み ${obj_points(o, H, G.S, G.ps.filter(p => p.state === 'rescued').length, G.pt)} 点</span></div>`).join('')}</div>
+   ${H.state === 'act' && H.food > 0 && ['talk', 'card'].includes(UI.phase) ? '<div style="margin-top:8px"><button id="btnEat">行動食を食べる（体力 +2）</button>' + (atView(H) ? '<div class="muted">景色◎: 同じ手番にここで食べる仲間がいれば さらに 体力 +1・仲間点 +1' + (G.eatsTurn.filter(p => p !== H && p.cell === H.cell && p.part === null).length ? '（もう食べた人: ' + G.eatsTurn.filter(p => p !== H && p.cell === H.cell && p.part === null).map(p => SYM[p.i]).join('') + '）' : '') + '</div>' : '') + '</div>' : ''}
+  </div>`;
+}
+function objText(o) { return (G && G.N === 2 && o === '山小屋グルメ') ? '12 番で休憩した回数 1回 4点／2回 8点（2 人用）。行動食を残して下山で +3' : OBJ_TEXT[o]; }
+const OBJ_TEXT = {
+  '頂上制覇': '通ったピーク（6・10A・13）1つ 1点／2つ 3点／3つ 6点。青梅駅に下山で +2（2 人戦は +1）',
+  '絶景撮影': '自分がいた眺めの天気 晴れ 4点・くもり 2点（上限 10点）',
+  '花の写真': '花キューブ 1個 2点／2個 4点／3個 7点',
+  '自然観察': '生き物キューブ 1個 2点／2個 4点／3個 7点',
+  '資源採集': '実りキューブ 1個 2点／2個 4点／3個 7点。2 個以上で動くたび体力さらに −1',
+  '山小屋グルメ': '12 番で休憩した回数 1回 3点／2回 7点。行動食を残して下山で +3',
+  '早帰り': '日没より前 30 分ごとに +3（上限 3人 7点・4人 11点）。二俣尾駅・宮ノ平駅は時計 +30分して数え −1',
+  'シェルパ': '仲間と一緒に着いた下山口 青梅 3／宮ノ平 2／二俣尾 1点＋遭難 0人 3点・1人 1点。担ぐ・道案内 2 回・行動食 +1' };
+
+// ---------- 手番の操作
+const PLACES = ['here', '2', '3', '4', '5', '6', '7', '8', '9', '10A', '11A', '10B', '12', '13', '14', '15', '16', '17', '18', 'E1a', 'E1b', 'FM', 'E2a', 'MN'];
+function talkPanel() {
+  const opts = PLACES.map(c => `<option value="${c}">${c === 'here' ? 'ここ（いまいるマス）' : esc(cname(c))}</option>`).join('');
+  return `<div class="panel"><h2>相談</h2>
+   <div>あなたの合図は <b>「${sigOf(G.ps[0].st)}」</b>（体力どおり・嘘はできない）。続けて<b>意思表明</b>を 1 回言える（嘘でもよい）。同じマスで一緒に動くコンピューターはそれを聞いて手を決める（「できれば」は効き目が半分）。</div>
+   <div class="row" style="margin-top:8px">
+    <select id="tVerb"><option value="">言わない</option><option>行きたい</option><option>寄りたい</option><option>休みたい</option><option>帰りたい</option></select>
+    <select id="tPlace">${opts}</select>
+    <select id="tStr"><option value="0">できれば</option><option value="1">どうしても</option></select>
+   </div>
+   <div style="margin-top:10px"><button id="btnTalk" class="primary pulse">合図と意思表明を出す</button></div></div>`;
+}
+function humanCan(card) {
+  const H = G.ps[0], here = H.part === null;
+  if (H.back) return (card === 'retreat' || card === 'rest') ? [true, ''] : [false, '引き返し中は出せない'];
+  if (card === 'walk' || card === 'rest') return [true, ''];
+  if (H.st <= 0 && card !== 'retreat') return [false, '体力 0 では出せない'];
+  if (card === 'rush') return G.sunset ? [false, '日没後は出せない'] : [true, ''];
+  if (card === 'retreat') return G.sunset ? [false, '日没後は引き返しはじめられない'] : (H.st >= 1 ? [true, ''] : [false, '体力 1 以上が要る']);
+  if (card === 'view') { if (!here) return [false, 'a 区画ではできない']; if (!VIEW.has(H.cell)) return [false, '景色◎のマスでない']; if (G.viewed.has(H.cell)) return [false, '眺め済み']; return [true, '']; }
+  if (card === 'search') { if (!here) return [false, 'a 区画ではできない']; if (!FOREST.has(H.cell)) return [false, '林♣のマスでない']; if (G.searched.has(H.cell)) return [false, '調べ済み']; return [true, '']; }
+  return [false, ''];
+}
+const CARD_HELP = { walk: '歩数 2・体力 −1（一緒 3 人以上で歩数 3）', rush: '歩数 3・体力 −3', rest: '体力 +3（12 番は +5）', view: '◎ 体力 +1・2 人以上で仲間点 +1', search: '♣ キューブ 1 個（3 人以上で 2 個）', retreat: '来た道を軍畑駅へ戻る（歩くと同じ歩数・体力。登りは下り・下りは登り）。着いたらキャンプで支援役' };
+function cardHelp(c) {
+  if (c === 'retreat') { const [sb] = backRoute(G.ps[0]); return (G.ps[0].back ? '引き返し中: ' : '') + CARD_HELP.retreat + '・軍畑駅まで あと ' + sb + ' 歩（晴れのとき）'; }
+  if (G.N === 2 && c === 'walk') return '歩数 2・体力 −1（2 人一緒なら歩数 3）';
+  if (G.N === 2 && c === 'search') return '♣ キューブ 1 個（2 人一緒なら 2 個）';
+  return CARD_HELP[c];
+}
+function cardPanel() {
+  const H = G.ps[0];
+  let s = `<div class="panel"><h2>行動カードを選ぶ</h2><div class="cards">`;
+  for (const c of ['walk', 'rush', 'rest', 'view', 'search', 'retreat']) {
+    const [ok, why] = humanCan(c);
+    s += `<button class="card ${UI.card === c ? 'sel' : ''}" data-card="${c}" ${ok ? '' : 'disabled'}><b>${CARD_NAME[c]}</b><small>${ok ? cardHelp(c) : why}</small></button>`;
+  }
+  s += '</div>';
+  if (UI.card === 'walk' || UI.card === 'rush') {
+    for (const b of ['8', '9', '13']) {
+      if (!reach(H.cell, b, 4)) continue;
+      const cur = UI.heads[b] || BRANCH[b][0];
+      s += `<div class="opt">分岐 ${cname(b)} を通るなら: ` + BRANCH[b].map(x => `<label style="margin-right:10px"><input type="radio" name="hd${b}" value="${x}" ${cur === x ? 'checked' : ''}> ${esc(cname(x))}</label>`).join('') + '</div>';
+    }
+    const path = pathAlong(H, UI.heads, 4).filter(c => !STATIONS.has(c));
+    s += `<div class="opt">どこまで進む: <select id="cStop"><option value="">進めるだけ進む</option>${path.map(c => `<option value="${c}" ${UI.stop === c ? 'selected' : ''}>${esc(cname(c))} で止まる</option>`).join('')}</select></div>`;
+    if (H.objs.includes('シェルパ') && H.guide < 2) s += `<div class="opt"><label><input type="checkbox" id="cGuide" ${UI.guide ? 'checked' : ''}> 道案内を使う（一緒に動いた人の歩数 +1・自分は体力さらに −1・残り ${2 - H.guide} 回）</label></div>`;
+  }
+  if (UI.card === 'search') {
+    const al = ALLOWED[G.w];
+    const o = '<option value="">取らない</option>' + al.map(c => `<option value="${c}">${COLOR_NAME[c]}</option>`).join('');
+    s += `<div class="opt">今の天気「${G.w}」で取れる色: ${al.map(c => COLOR_NAME[c]).join('・')}。1 個目 <select id="cCol1">${o}</select> 2 個目（一緒に調べた人が ${G.N === 2 ? '2 人' : '3 人以上'}のとき）<select id="cCol2">${o}</select></div>`;
+  }
+  s += `<div style="margin-top:10px"><button id="btnPlay" class="primary ${UI.card ? 'pulse' : ''}" ${UI.card ? '' : 'disabled'}>伏せて出す → 公開</button></div></div>`;
+  return s;
+}
+function reactPanel() {
+  const H = G.ps[0];
+  const opts = ['<option value="">使わない</option>'];
+  const same = G.ps.filter(q => q !== H && q.state === 'act' && q.cell === H.cell && q.part === H.part);
+  const acts = G.ps.filter(q => q !== H && q.state === 'act');
+  if (H.state === 'act') {
+    if (H.food > 0) for (const q of same) opts.push(`<option value="food:${q.i}">行動食を ${whoName(q)} に渡す（体力 +2）</option>`);
+    if (H.objs.includes('シェルパ')) for (const q of same) opts.push(`<option value="carry:${q.i}">${whoName(q)} を担ぐ（その人 体力 +1・自分 −1）</option>`);
+  } else if ((H.state === 'camp' || H.state === 'done') && H.sp < 3 && G.ps.some(q => q.state === 'act')) {
+    opts.push('<option value="yoho:">予報（その次の天気を表に）支援点 +1</option>');
+    for (const q of G.ps.filter(q => q.state === 'act')) opts.push(`<option value="musen:${q.i}">無線で ${whoName(q)} の体力 +1（支援点 +1）</option>`);
+    if (H.food > 0) for (const q of acts) opts.push(`<option value="busshi:${q.i}">物資で ${whoName(q)} に行動食（支援点 +1）</option>`);
+  }
+  let s = `<div class="panel"><h2>追加アクション</h2>`;
+  if (G.N === 2 && H.state !== 'act' && opts.length > 1) s += '<div class="muted">2 人では無線・物資は相手を助ける。予報なら助けずに支援点 +1。</div>';
+  if (UI.revealed) s += '<div>公開されたカード: ' + G.ps.map(p => UI.revealed[p.i] ? `<span class="rev">${hkSvg(p.i, 20)} ${esc(UI.revealed[p.i])}</span>` : '').filter(Boolean).join('　') + '</div>';
+  s += opts.length > 1 ? `<div class="row" style="margin-top:8px">1 回だけ: <select id="rSel">${opts.join('')}</select></div>` : '<div class="muted" style="margin-top:6px">いま使える追加アクションはない。</div>';
+  s += `<div style="margin-top:10px"><button id="btnResolve" class="primary pulse">解決する（時計 +30分）</button>`;
+  if (H.state !== 'act') s += ` <button id="btnFast">終わりまで進める</button>`;
+  return s + '</div></div>';
+}
+function pickPanel() {
+  const h = G.hands[0];
+  return `<div class="panel"><h2>目的カードを選ぶ</h2><div>3 枚配られた。<b>違う目的を 2 枚</b>選ぶ（伏せて持つ。他の人と同じ目的になることはある）。</div>
+   <div class="pick" style="margin-top:8px">${h.map((o, k) => `<div class="objc ${UI.pick.includes(k) ? 'on' : ''}" data-k="${k}"><b>${o}</b>${objText(o)}</div>`).join('')}</div>
+   <div style="margin-top:10px"><button id="btnPick" class="primary pulse" ${pickOk() ? '' : 'disabled'}>この 2 枚で始める</button></div></div>`;
+}
+function pickOk() { return UI.pick.length === 2 && G.hands[0][UI.pick[0]] !== G.hands[0][UI.pick[1]]; }
+
+function endPanel() {
+  const sc = score(G);
+  const resc = G.ps.filter(p => p.state === 'rescued').length;
+  let s = `<div class="panel" id="endPanel"><h2>終了と点数</h2><div class="tblwrap"><table><tr><th>人</th><th>目的（点）</th><th>仲間点</th><th>支援点</th><th>遭難</th><th>合計</th><th>終わり方</th></tr>`;
+  for (const r of sc) {
+    const p = r.p;
+    s += `<tr><td>${hkSvg(p.i, 20)} ${p.human ? 'あなた' : 'コンピューター' + p.i}${r.win ? ' <span class="win">勝ち</span>' : ''}</td>
+     <td>${Object.entries(r.per).map(([o, v]) => esc(o) + ' ' + v + '点').join('<br>')}${p.state === 'rescued' ? '<br><span class="muted">（遭難で半分）</span>' : ''}</td>
+     <td>${p.gp}</td><td>${p.sp}</td><td>${p.state === 'rescued' ? '−3' : ''}</td><td><b>${r.total}</b></td>
+     <td>${esc(stateStr(p))}<br><span class="muted">体力 ${p.st}・${cubeStr(p)}・ピーク ${p.peaks.size}・眺め ${p.photos.length}</span></td></tr>`;
+  }
+  s += `</table></div><div class="muted" style="margin-top:6px">遭難者 ${resc} 人。同点は体力の残りが多い人の勝ち。乱数の種 ${G.seed}（同じ種・同じ選び方で同じ局）。</div>`;
+  if (G.lieLog.length) s += '<h2 style="margin-top:10px">コンピューターの嘘</h2>' + G.lieLog.map(x => '<div class="muted">' + esc(x) + '</div>').join('');
+  if (!G.tut) s += `<div style="margin-top:10px"><button id="btnAgain" class="primary pulse">もう一度（同じ設定・新しい種）</button> <button id="btnBack">準備へ</button></div>`;
+  s += '</div>';
+  return s;
+}
+
+function render() {
+  if (!G) return;
+  const H = G.ps[0];
+  let main = '';
+  if (UI.phase === 'pick') {
+    setGuide('② 目的カードを 2 枚選ぶ', 'カードを押して 2 枚選び、「この 2 枚で始める」を押す。');
+    main = pickPanel();
+  } else {
+    if (UI.phase === 'talk') setGuide('③ 相談: 意思表明を決めて「合図と意思表明を出す」を押す', '合図は体力どおりに自動で出る。コンピューターも合図と意思表明を出す。');
+    else if (UI.phase === 'card') setGuide('④ 行動カードを 1 枚選び「伏せて出す → 公開」を押す', 'コンピューターはもう伏せて出した。歩く・急ぐは分岐の行き先と止まるマスも選べる。');
+    else if (UI.phase === 'react') setGuide('⑤ 追加アクション: 必要なら 1 つ選び「解決する」を押す', H.state === 'act' ? '解決のあと時計が 30 分進む。' : (H.state === 'rescued' ? 'あなたは遭難したので見守るだけ。' : 'キャンプ・ふもとから支援できる（1 回 支援点 +1・上限 3点）。'));
+    else if (UI.phase === 'end') setGuide('⑥ 終了。点数と全員の目的を見る', G.tut ? '練習の 1 局の終わり。' : '「もう一度」で次の局。');
+    const fcBack = !G.revealed.has(G.t + 2);
+    const top = `<div class="status">
+      <div class="panel" style="margin:0"><h2>時計</h2>${clockHtml()}</div>
+      <div class="panel" style="margin:0"><h2>天気の予報</h2><div class="fc">${weatherCard('今', G.deck[G.t % 24])}${weatherCard('次', G.deck[(G.t + 1) % 24])}${weatherCard('その次', G.deck[(G.t + 2) % 24], fcBack)}</div></div></div>`;
+    main = top + `<div class="panel"><h2>山のボード</h2><div class="boardbox" id="boardbox">${boardSvg()}</div><div class="muted" style="margin-top:4px">横にずらせる。a・b は区画（登りは実線・下り/稜線は点線）。◎景色 ♣林 △ピーク ⑂分岐 ♨休憩所 ★下山口。緑の枠＝あなたの居場所。</div></div>`;
+    if (UI.phase === 'talk') main += talkPanel();
+    else if (UI.phase === 'card') main += cardPanel();
+    else if (UI.phase === 'react') main += reactPanel();
+    else if (UI.phase === 'end') main = endPanel() + main;
+    main += meHtml() + playersHtml();
+    main += `<div class="panel" id="logPanel"><h2>ログ</h2><div class="log" id="log">${G.log.map(l => `<div class="${l.cls}">${symHtml(esc(l.s))}</div>`).join('')}</div></div>`;
+  }
+  $('#app').innerHTML = main;
+  bind();
+  const lg = $('#log'); if (lg) lg.scrollTop = lg.scrollHeight;
+  scrollBoard();
+  // カードを配る・めくる（初めて出た時だけ）
+  if (motionMode() === 'full') {
+    if (UI.phase === 'pick' && !UI.dealt) document.querySelectorAll('.pick .objc').forEach((e, k) => { e.classList.add('anim-flip'); e.style.animationDelay = (k * 0.12 * spf()) + 's'; });
+    if (UI.phase === 'react' && !UI.flipped) document.querySelectorAll('.rev').forEach(e => e.classList.add('anim-flip'));
+  }
+  if (UI.phase === 'pick') UI.dealt = true;
+  if (UI.phase === 'react') UI.flipped = true;
+  sceneUpdate();
+  tutAfterRender();
+}
+
+function bind() {
+  const on = (sel, f) => { const e = $(sel); if (e) e.onclick = f; };
+  document.querySelectorAll('.pick .objc').forEach(e => e.onclick = () => {
+    const k = +e.dataset.k; const i = UI.pick.indexOf(k);
+    if (i >= 0) UI.pick.splice(i, 1); else { UI.pick.push(k); if (UI.pick.length > 2) UI.pick.shift(); }
+    render();
+  });
+  on('#btnPick', () => {
+    if (!pickOk()) return;
+    setHumanObjs(G, UI.pick.map(k => G.hands[0][k]));
+    addLog(G, 'あなたの目的: ' + G.ps[0].objs.join('・') + '（伏せて持つ）', 'me');
+    beginTurn();
+  });
+  on('#btnEat', () => {
+    const H = G.ps[0];
+    if (H.food > 0) { eatFood(G, H); addLog(G, 'あなたは行動食を食べた（体力 +2）' + (atView(H) ? '。この手番にここで食べた仲間がいれば、解決の前に 体力 +1・仲間点 +1' : ''), 'me'); render(); floatAt(humanAnchor(), '体力 +2', 'up', 0); }
+  });
+  on('#btnTalk', () => {
+    const v = $('#tVerb').value;
+    UI.ht = v ? { verb: v, place: $('#tPlace').value, strong: $('#tStr').value === '1' } : null;
+    G.ps[0].sig = sigOf(G.ps[0].st);
+    G.talk = {};
+    addLog(G, 'あなた: 合図「' + G.ps[0].sig + '」' + (UI.ht ? talkStr(UI.ht) : ''), 'me');
+    planAI(G, UI.ht);
+    if (TUT) tutAI(G.t); // 練習では コンピューターの出す手を決め打ちにする
+    G.talk[0] = UI.ht || { verb: null };
+    for (const p of G.ps) if (!p.human && G.talk[p.i]) {
+      addLog(G, pname(G, p) + ': 合図「' + p.sig + '」' + talkStr(G.talk[p.i]));
+      if (G.talk[p.i].lie) G.lieLog.push(tstr(G.t) + ' ' + pname(G, p) + ' ' + talkStr(G.talk[p.i]) + '（本当は ' + G.talk[p.i].truth + '）');
+    }
+    UI.phase = 'card'; UI.card = null; UI.heads = UI.heads || {}; UI.stop = ''; UI.guide = false;
+    render();
+  });
+  document.querySelectorAll('[data-card]').forEach(e => e.onclick = () => { UI.card = e.dataset.card; UI.stop = ''; render(); });
+  document.querySelectorAll('input[type=radio][name^=hd]').forEach(e => e.onchange = () => { UI.heads[e.name.slice(2)] = e.value; UI.stop = ''; render(); });
+  const cs = $('#cStop'); if (cs) cs.onchange = () => { UI.stop = cs.value; };
+  const cg = $('#cGuide'); if (cg) cg.onchange = () => { UI.guide = cg.checked; };
+  on('#btnPlay', () => {
+    if (!UI.card) return;
+    UI.colors = [$('#cCol1') && $('#cCol1').value, $('#cCol2') && $('#cCol2').value].filter(Boolean);
+    UI.revealed = {};
+    UI.revealed[0] = CARD_NAME[UI.card];
+    for (const [p, c] of G.aiOrders) UI.revealed[p.i] = CARD_NAME[c];
+    UI.phase = 'react'; UI.flipped = false; render();
+  });
+  on('#btnResolve', () => doResolve());
+  on('#btnFast', async () => {
+    const g0 = G;
+    await doResolve();
+    if (motionMode() === 'off') { while (G === g0 && !G.over) { beginTurn(true); doResolve(true); } if (G === g0) render(); return; }
+    while (G === g0 && !G.over && UI.phase === 'react') await doResolve(); // 1 手番ずつ、動きが終わってから次へ
+  });
+  on('#btnAgain', () => {
+    const o = Object.assign({}, LAST, { seed: Math.floor(Math.random() * 1e9) });
+    G = newGame(o); UI = { phase: 'pick', pick: [] };
+    addLog(G, '準備: ' + G.N + ' 人・' + SEASON_NAME[G.season] + '（日没 ' + tstr(G.S) + '）・コンピューター ' + POL_LABEL[G.polName] + '・乱数の種 ' + G.seed, 'h');
+    render();
+  });
+  on('#btnBack', showSetup);
+}
+
+function beginTurn(silent) {
+  startTurn(G);
+  const H = G.ps[0];
+  UI.revealed = null; UI.card = null; UI.ht = null;
+  if (H.state === 'act' && H.skip_until !== G.t) { UI.phase = 'talk'; G.talk = {}; }
+  else {
+    if (H.state === 'act') addLog(G, 'あなたは救助を手伝うため、この手番は動けない', 'me');
+    planAI(G, null);
+    for (const p of G.ps) if (!p.human && G.talk[p.i]) addLog(G, pname(G, p) + ': 合図「' + p.sig + '」' + talkStr(G.talk[p.i]));
+    UI.revealed = {}; for (const [p, c] of G.aiOrders) UI.revealed[p.i] = CARD_NAME[c];
+    UI.phase = 'react';
+  }
+  if (!silent) render();
+}
+async function doResolve(silent) {
+  const H = G.ps[0];
+  const sel = $('#rSel') ? $('#rSel').value : '';
+  let react = null;
+  if (sel && !silent) { const [type, id] = sel.split(':'); react = { type, target: id !== '' ? G.ps[+id] : null }; }
+  const hd = {}; for (const b of AHEAD[H.cell] || []) hd[b] = (UI.heads && UI.heads[b]) || BRANCH[b][0]; // 分岐の行き先（選ばなければ本道）
+  const ho = { card: (H.state === 'act' && H.skip_until !== G.t) ? UI.card : null, heads: hd, stop: UI.stop || null, colors: UI.colors || [], guide: !!UI.guide, react };
+  const sn = silent ? null : snapOf();
+  G.trace = silent ? null : [];
+  resolve(G, ho);
+  UI.colors = [];
+  if (!silent && motionMode() !== 'off') setBusy(true);
+  if (G.over) { addLog(G, '全員が下山・引き返し・遭難のどれかになったので終了', 'h'); UI.phase = 'end'; if (!silent) { render(); await playAnim(sn); } return; }
+  if (!silent) { beginTurn(); await playAnim(sn); }
+}
+
+// ====== 動き（アニメーション）。決まりには触れず、解決の前後の差を見せるだけ ======
+const MOTION = (function () { const m = { speed: 'normal', reduce: null }; try { const v = JSON.parse(localStorage.getItem('tozan.motion') || 'null'); if (v) Object.assign(m, v); } catch (e) { } return m; })();
+function saveMotion() { try { localStorage.setItem('tozan.motion', JSON.stringify(MOTION)); } catch (e) { } }
+function prefersReduce() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+function motionMode() { if (MOTION.speed === 'none') return 'off'; const r = MOTION.reduce === null ? prefersReduce() : MOTION.reduce; return r ? 'reduce' : 'full'; }
+function spf() { return MOTION.speed === 'fast' ? 0.5 : 1; }
+function applyMotion() {
+  const r = document.documentElement, m = motionMode();
+  r.classList.remove('mo-full', 'mo-reduce', 'mo-off'); r.classList.add('mo-' + m);
+  r.style.setProperty('--sp', String(spf()));
+  $('#sSpeed').value = MOTION.speed;
+  $('#cReduce').checked = MOTION.reduce === null ? prefersReduce() : MOTION.reduce;
+}
+let BUSY = false;
+function setBusy(b) { BUSY = b; document.body.classList.toggle('busy', b); if (b) tutHide(); }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function snapOf() {
+  const me = G.ps.find(p => p.human);
+  const r = me ? score(G).find(x => x.p === me) : null;
+  return { t: G.t, ps: G.ps.map(p => ({ i: p.i, cell: p.cell, part: p.part, st: p.st, state: p.state })), pts: r ? r.total : 0, st: me ? me.st : 0 };
+}
+function humanAnchor() { return document.querySelector('.tok[data-i="0"]') || $('#mePanel .bar'); }
+function floatAt(anchor, text, cls, delay) {
+  const m = motionMode(); if (m === 'off' || !anchor) return;
+  const r = anchor.getBoundingClientRect(); if (!r.width && !r.height) return;
+  const d = document.createElement('div'); d.className = 'float ' + (cls || ''); d.textContent = text;
+  d.style.left = (r.left + r.width / 2 + scrollX) + 'px'; d.style.top = (r.top + scrollY) + 'px'; d.style.opacity = '0';
+  document.body.appendChild(d);
+  const f = spf();
+  const kf = m === 'full'
+    ? [{ opacity: 0, transform: 'translate(-50%,-30%)' }, { opacity: 1, transform: 'translate(-50%,-90%)', offset: 0.3 }, { opacity: 0, transform: 'translate(-50%,-190%)' }]
+    : [{ opacity: 0 }, { opacity: 1, offset: 0.3 }, { opacity: 0 }];
+  const a = d.animate(kf, { duration: (m === 'full' ? 700 : 500) * f, delay: delay || 0, easing: 'ease-out', fill: 'both' });
+  a.onfinish = () => d.remove();
+}
+function duskAnim() {
+  const m = motionMode(); if (m === 'off') return 0;
+  const el = $('#dusk'); el.textContent = '日没'; const ms = 600 * spf();
+  el.animate([{ opacity: 0 }, { opacity: 0.62, offset: 0.4 }, { opacity: 0 }], { duration: ms, easing: 'ease-in-out' });
+  return ms;
+}
+async function playAnim(sn) {
+  try {
+    const m = motionMode();
+    if (G && sn && G.trace && G.trace.length) { // 足音（音が入のときだけ。あなたの駒が動いた歩数ぶん）
+      const mine = G.trace.filter(x => x[0] === 0).length, most = Math.max(...G.trace.map(x => G.trace.filter(y => y[0] === x[0]).length));
+      sndSteps(mine || most, m === 'full' ? Math.min(300, Math.max(200, 1200 / most)) * spf() : 170);
+    }
+    if (m === 'off' || !G || !sn) return;
+    const f = spf();
+    if (G.t !== sn.t) {
+      floatAt(document.querySelector('.clock span.now'), '時計 +30分', 'clk', 0);
+      if (m === 'full') document.querySelectorAll('.fc .wc').forEach((e, k) => { e.classList.add('anim-slide'); e.style.animationDelay = (k * 0.06 * f) + 's'; });
+    }
+    // 駒を 1 歩ずつ
+    let moveMs = 0;
+    if (m === 'full' && G.trace && G.trace.length) {
+      const steps = {};
+      for (const [i, c, pt] of G.trace) (steps[i] = steps[i] || []).push(pt ? [pt, true] : [c, false]);
+      const n = Math.max(...Object.values(steps).map(a => a.length));
+      const d = Math.min(300, Math.max(200, 1200 / n)) * f; moveMs = n * d;
+      const start = tokLayout(sn.ps.filter(q => q.state === 'act' || q.state === 'done').map(q => ({ i: q.i, cell: q.cell, part: q.part })));
+      const end = tokLayout(G.ps.filter(p => p.state === 'act' || p.state === 'done').map(p => ({ i: p.i, cell: p.cell, part: p.part })));
+      for (const i in steps) {
+        const el = document.querySelector(`.tok[data-i="${i}"]`); if (!el || !start[i] || !end[i]) continue;
+        const seq = [start[i]].concat(steps[i].map(([id, isPart]) => tokXY(id, isPart, +i)));
+        seq[seq.length - 1] = end[i];
+        while (seq.length < n + 1) seq.push(end[i]);
+        el.animate(seq.map((p, k) => ({ transform: `translate(${p[0]}px,${p[1]}px)`, offset: k / n, easing: 'ease-in-out' })), { duration: moveMs });
+      }
+      const box = $('#boardbox'); const H = G.ps[0];
+      if (box && start[0] && end[0]) { const sx = box.scrollLeft; scrollBoard(); const tx = box.scrollLeft; box.scrollLeft = sx; box.scrollTo({ left: tx, behavior: 'smooth' }); }
+    }
+    if (moveMs) await sleep(moveMs);
+    // 数字が浮いて消える（あなたの体力・点。相手の体力と点は伏せたまま）
+    const me = G.ps.find(p => p.human); let floatMs = 0;
+    if (me) {
+      const after = snapOf(); const dst = after.st - sn.st, dpt = after.pts - sn.pts;
+      if (dst) { floatAt(humanAnchor(), '体力 ' + (dst > 0 ? '+' : '−') + Math.abs(dst), dst > 0 ? 'up' : 'down', 0); floatMs = 700 * f; }
+      if (dpt) { floatAt($('#mePanel .objs') || $('#mePanel'), '点 ' + (dpt > 0 ? '+' : '−') + Math.abs(dpt), dpt > 0 ? 'up' : 'down', 120 * f); floatMs = 820 * f; }
+    }
+    let duskMs = 0;
+    if (sn.t < G.S && G.t >= G.S) duskMs = duskAnim();
+    const rest = Math.max(floatMs * 0.6, duskMs, G.t !== sn.t ? 400 * f : 0);
+    if (rest) await sleep(rest);
+  } finally {
+    setBusy(false);
+    tutCheck();
+  }
+}
+
+// ====== チュートリアル（練習の 1 局・2 人戦）======
+// 決まりはゲーム本体の関数（newGame・startTurn・resolve・score）をそのまま使う。ここで決め打ちにするのは
+// 配る目的カード・天気の山札・季節・体調カード・コンピューターの出す手、と「早送り」の場面だけ。
+let TUT = null;
+const TUT_KEY = 'tozan.tut';
+function tutLoad() { try { return JSON.parse(localStorage.getItem(TUT_KEY) || 'null') || {}; } catch (e) { return {}; } }
+function tutSave(o) { try { localStorage.setItem(TUT_KEY, JSON.stringify(o)); } catch (e) { } }
+// 天気の山札（本物と同じ 24 枚＝晴れ 9・くもり 6・ガス 3・雨 3・強風 2・雷 1 を並べ決め打ち）
+const TUT_DECK = ['晴れ', '晴れ', '晴れ', 'くもり', '強風', 'くもり', '晴れ', 'ガス', 'くもり', '晴れ', '雨', 'くもり',
+  '晴れ', 'ガス', '強風', '雨', 'くもり', '晴れ', '晴れ', '晴れ', '雷', '雨', 'ガス', 'くもり'];
+// 手番ごとの決め打ち（ai＝コンピューターの出すカード、ho＝あなたに出してもらうカード）
+const TUT_TURNS = {
+  0: { ai: 'rest', talk: { verb: '休みたい', place: 'here', strong: false }, ho: 'walk', hoStop: '2' },
+  1: { ai: 'walk', aiStop: '2', talk: { verb: '行きたい', place: '2', strong: false }, ho: 'search', hoColors: ['flower'] },
+  2: { ai: 'walk', talk: { verb: '行きたい', place: '6', strong: true }, ho: 'walk' },
+  3: { ai: 'walk', talk: { verb: '行きたい', place: '6', strong: false }, ho: 'walk', eat: true },
+  4: { ai: 'walk', talk: { verb: '行きたい', place: '8', strong: false }, ho: 'walk' },
+  5: { ai: 'rest', free: true, htalk: { verb: '休みたい', place: 'here', strong: false }, ho: 'rest' }, // コンピューターの手は本体の作戦で決める（あなたの意思表明を聞いて休む）
+  18: { ai: 'walk', aiHeads: { '13': 'E2a' }, talk: { verb: '帰りたい', place: 'MN', strong: true }, ho: 'walk', hoHeads: { '13': 'E2a' } },
+  19: { ai: 'walk', talk: { verb: '帰りたい', place: 'MN', strong: true }, ho: 'walk' } };
+function tutHeads(cell, want) { const h = {}; for (const b of AHEAD[cell] || []) h[b] = (want && want[b]) || BRANCH[b][0]; return h; }
+function tutAI(t) {
+  const T = TUT_TURNS[t]; if (!T || !G) return;
+  const A = G.ps[1];
+  if (T.free) { // 本体の作戦（planAI）にあなたの意思表明を渡して決めさせる。決め打ちと違ったら決め打ちに戻す（練習の場面を崩さない）
+    planAI(G, T.htalk);
+    const o = G.aiOrders.find(x => x[0] === A);
+    if (o && o[1] === T.ai && G.talk[1]) return;
+  }
+  const heads = tutHeads(A.cell, T.aiHeads);
+  heads._stop = new Set(T.aiStop ? [T.aiStop] : []);
+  G.aiOrders = [[A, T.ai, heads]];
+  G.talk[1] = Object.assign({ lie: false }, T.talk);
+}
+function tutNewGame() {
+  // コンピューターは「攻め」（休むのは体力 3 以下）。決め打ちでない手番 5 で、あなたの意思表明が無ければ歩き、あれば休む場面にするため
+  G = newGame({ N: 2, pol: 'P2目的優先', season: '3', seed: 20261113, human: true, lies: false });
+  G.tut = true;
+  G.hands[0] = ['頂上制覇', '花の写真', '山小屋グルメ'];
+  const A = G.ps[1]; A.objs = ['絶景撮影', '山小屋グルメ']; A.food = 1;
+  G.deck = TUT_DECK.slice(); G.S = 18; G.season = 3;
+  for (const p of G.ps) { p.body = Array(40).fill(0); p.sig = sigOf(p.st); } // 体調カードは練習ではすべて ±0
+  UI = { phase: 'pick', pick: [] };
+  addLog(G, '練習の 1 局: 2 人・冬（日没 16:00）・場面と天気は決め打ち', 'h');
+}
+function tutAutoTurn(t) { // 「とばす」で進めるとき、その手番を本体の resolve で進める
+  const T = TUT_TURNS[t], H = G.ps[0];
+  if (T.eat && H.food > 0) { H.food -= 1; H.st = Math.min(12, H.st + 2); addLog(G, 'あなたは行動食を食べた（体力 +2）', 'me'); }
+  G.talk = {}; tutAI(t);
+  if (T.htalk) addLog(G, '（とばした手番）あなたの意思表明 ' + talkStr(T.htalk), 'me');
+  addLog(G, '（とばした手番）あなた ' + CARD_NAME[T.ho] + '・' + pname(G, G.ps[1]) + ' ' + CARD_NAME[T.ai], 'me');
+  resolve(G, { card: T.ho, heads: tutHeads(H.cell, T.hoHeads), stop: T.hoStop || null, colors: T.hoColors || [], guide: false, react: null });
+  if (G.over) { addLog(G, '全員が下山・引き返し・遭難のどれかになったので終了', 'h'); UI.phase = 'end'; } else beginTurn(true);
+}
+function tutScene() { // ステップ 8: 夕方まで早送り
+  const H = G.ps[0], A = G.ps[1];
+  for (const p of [H, A]) { p.cell = '13'; p.part = null; p.food = 0; p.huts = 1; p.gp = 1; p.photo = 2; p.photos = ['10A:くもり']; p.peaks = new Set(['6', '10A', '13']); p.skip_until = -1; p.state = 'act'; p.hist = chainFromHome('13'); p.back = false; p.partBack = false; }
+  H.st = 7; A.st = 8; H.cnt = { flower: 1, creature: 0, fruit: 0 };
+  G.viewed = new Set(['10A']); G.searched = new Set(['2']); G.t = 18;
+  addLog(G, '（練習のため 10:00〜15:30 を早送り: 9 名郷峠 → 10A 三方山で 2 人で眺め〔くもり・仲間点 +1〕→ 12 休憩所で休憩 → 13 矢倉台）', 'h');
+  beginTurn(true);
+}
+const tq = s => typeof s === 'function' ? s() : document.querySelector(s);
+const pressTalk = (t) => ({ sel: '#btnTalk', text: '相談。今回は意思表明を「言わない」のまま「合図と意思表明を出す」を押す。', done: () => UI.phase !== 'talk' || G.t > t });
+const pressWalk = (t, txt) => ({ sel: '[data-card="walk"]', text: txt || '「歩く」を押す。', done: () => UI.card === 'walk' || G.t > t });
+const pressPlay = (t) => ({ sel: '#btnPlay', text: '「伏せて出す → 公開」を押す。', done: () => UI.phase === 'react' || G.t > t });
+const pressResolve = (t, txt) => ({ sel: '#btnResolve', text: txt || '「解決する」を押す。', done: () => (G.t > t || UI.phase === 'end') && !BUSY });
+const TUT_STAGES = [
+  { name: 'はじめに', beats: [
+    { next: true, text: '山を歩いて、<b>最後の点がいちばん多い人の勝ち</b>。点は、自分だけが持つ「目的カード」2 枚の点と、仲間と一緒に動いてもらえる点。<br>この練習は 2 人戦（あなた ● とコンピューター ▲）。光っている所だけ押せる。' },
+    { next: true, hl: '#guide', text: 'いちばん上の黄色い帯は、今やることの案内。ふだんの対戦ではここを見れば進められる。' }] },
+  { name: '準備', auto: () => { setHumanObjs(G, ['頂上制覇', '花の写真']); addLog(G, 'あなたの目的: 頂上制覇・花の写真（伏せて持つ）', 'me'); beginTurn(true); }, beats: [
+    { sel: '.pick .objc[data-k="0"]', text: '目的カードが 3 枚配られた。<b>違う 2 枚を残す</b>。まず「頂上制覇」を押す。', done: () => UI.phase !== 'pick' || UI.pick.includes(0) },
+    { sel: '.pick .objc[data-k="1"]', text: '次に「花の写真」を押す（残りの 1 枚は使わない）。', done: () => UI.phase !== 'pick' || UI.pick.includes(1) },
+    { sel: '#btnPick', text: '「この 2 枚で始める」を押す。目的は伏せたまま。相手の目的も最後まで見えない。', done: () => UI.phase !== 'pick' }] },
+  { name: '歩く', auto: () => tutAutoTurn(0), beats: [
+    { next: true, hl: '.status', text: '<b>1 手番＝時計 +30分</b>。いま 7:00、天気は「晴れ」。予報は「次」まで表、「その次」は裏。' },
+    { sel: '#btnTalk', text: '手番はまず相談。合図（体力から自動で決まる）と、<b>意思表明</b>（行きたい・休みたい など）を 1 回言える（意思表明は嘘でもよい）。言い方はあとのステップで練習するので、今回は「言わない」のまま「合図と意思表明を出す」を押す。', done: () => UI.phase !== 'talk' || G.t > 0 },
+    { next: true, hl: '.players .pl:nth-child(2)', text: '<b>コンピューターの意思表明はここ</b>（人の欄の ▲）。相談が終わると毎手番ここに出る（開く操作は要らない）。今は 意思表明「休みたい・ここ・できれば」＝この手番は休みたい、という意味。すぐ上の「合図」は体力どおりで嘘はつけない。意思表明は嘘のこともある（練習では本当）。<br><b>返事のしかた</b>: 乗るなら同じカードを出す（休むなら「休憩」、歩くなら同じ行き先）と一緒に動ける。言葉で返すなら次の相談であなたの意思表明を出す。今回は乗らずに歩いてみる。' },
+    { sel: '[data-card="walk"]', text: '次に行動カードを 1 枚選ぶ。コンピューターはもう伏せて出した。「歩く」を押す。', done: () => UI.card === 'walk' || G.t > 0 },
+    { sel: '#cStop', want: '2', cells: ['2'], text: '1 人で歩くと<b>歩数 2・体力 −1</b>。今回は手前で止まってみる。「2 車道 で止まる」を選ぶ。', done: () => UI.stop === '2' || G.t > 0 },
+    pressPlay(0),
+    pressResolve(0, '追加アクション（行動食を渡すなど）は今は使わない。「解決する」を押す。'),
+    { next: true, hl: '#mePanel', cells: ['1', '2'], text: '2 番 車道へ 1 歩進み、体力 10 → 9。動いた人は体調カードを 1 枚引く（練習では ±0）。コンピューターは 1 番で休憩した。' },
+    { next: true, hl: '#logPanel', text: '<b>相手が何をしたかはここに出ます</b>（画面のいちばん下の「ログ」）。「公開: ●歩く　▲休憩」が、いまの手番で 2 人が出したカード。その下に、だれがどこへ動いたか・何をしたかが順に出る。公開から解決までの間は、上の人の欄にも「出したカード」が出る。' }] },
+  { name: '調べる', auto: () => tutAutoTurn(1), beats: [
+    pressTalk(1),
+    { sel: '[data-card="search"]', cells: ['2'], text: '2 番は林♣のマス。「調べる」を押す。林で、そのマスの最初の 1 回だけできる。', done: () => UI.card === 'search' || G.t > 1 },
+    { sel: '#cCol1', want: 'flower', text: '取れる色は天気で決まる（晴れ＝花・実り）。目的「花の写真」のために、1 個目で「花」を選ぶ。', done: () => G.t > 1 || UI.phase === 'react' || (!!$('#cCol1') && $('#cCol1').value === 'flower') },
+    pressPlay(1),
+    pressResolve(1),
+    { next: true, hl: '#mePanel', cells: ['2'], text: '花を 1 個取った（花の写真は 1 個 2点）。2 人一緒に調べれば 2 個まで取れる。コンピューターが追いついて、同じ 2 番に来た。' }] },
+  { name: '合流と登り', auto: () => tutAutoTurn(2), beats: [
+    { next: true, hl: '.players', text: '<b>合流</b>: 同じマスで同じカード（歩くなら同じ行き先）を出した人が「一緒に動いた人」。2 人戦では 2 人そろうと<b>歩数 3</b>（1 人なら 2）。' },
+    pressTalk(2),
+    pressWalk(2, '「歩く」を押す。コンピューターも歩くので一緒に動ける。'),
+    { sel: '#btnPlay', text: '止まる所は「進めるだけ進む」のまま、「伏せて出す → 公開」を押す。', done: () => UI.phase === 'react' || G.t > 2 },
+    pressResolve(2),
+    { next: true, hl: '#boardbox', cells: ['3', '4'], text: '一緒に 3 歩: 3 番 a → 3 番 b → 4 番 a。<b>登り（3〜6）は a・b の 2 区画</b>。a に入るたび体力さらに −1（1 人なら −2）。a に 2 回入ったので、歩く −1 と合わせて体力 −3。' }] },
+  { name: '食べ物', auto: () => tutAutoTurn(3), beats: [
+    { sel: '#btnEat', text: '体力が 6 に減った。<b>行動食</b>（1 個）はいつでも食べられて体力 +2。「行動食を食べる」を押す。', done: () => G.ps[0].food === 0 || G.t > 3 },
+    pressTalk(3), pressWalk(3), pressPlay(3), pressResolve(3)] },
+  { name: '天気', auto: () => tutAutoTurn(4), beats: [
+    { next: true, hl: '.fc', cells: ['7', '8', '10A', '11A'], text: '今の天気は「強風」。<b>強風の手番は稜線（7・8・10A・11A）が a・b の 2 区画</b>、雨の手番は下り（14〜16・エスケープ）が 2 区画。ほかに ガス＝歩数 −1、雨＝動いたら体力さらに −1、雷＝稜線にいると体力 −3。' },
+    pressTalk(4), pressWalk(4), pressPlay(4), pressResolve(4),
+    { next: true, hl: '#boardbox', cells: ['6', '7'], text: '6 番 雷電山（ピーク＝頂上制覇の 1 つ目）を通り、7 番 尾根は強風で 2 区画なので a で止まった。稜線・下りの a では、登りのような体力の追加は無い。' }] },
+  { name: '意思表明', auto: () => tutAutoTurn(5), beats: [
+    { sel: '#tVerb', want: '休みたい', text: '強風の稜線で体力が減った。今度は<b>あなたが意思表明を出す</b>。1 つ目の欄で「休みたい」を選ぶ。', done: () => G.t > 5 || UI.phase !== 'talk' || (!!$('#tVerb') && $('#tVerb').value === '休みたい') },
+    { sel: '#btnTalk', text: '場所は「ここ（いまいるマス）」、強さは「できれば」のまま。「合図と意思表明を出す」を押す。', done: () => UI.phase !== 'talk' || G.t > 5 },
+    { next: true, hl: '.players .pl:nth-child(2)', text: '▲ の意思表明も「休みたい・ここ」＝<b>あなたの意思表明に乗ってきた</b>。コンピューターは<b>同じマスで一緒に動く人の意思表明だけ</b>を聞いて手を決める（離れたマスの人の意思表明は聞かない）。「どうしても」なら満額、<b>「できれば」は効き目が半分</b>。今回は ▲ に急ぐ理由が無かったので、半分でも乗ってきた。' },
+    { sel: '[data-card="rest"]', text: '約束どおり、あなたも「休憩」を押す。', done: () => UI.card === 'rest' || G.t > 5 },
+    pressPlay(5), pressResolve(5),
+    { next: true, hl: '#mePanel', text: '2 人とも休憩して体力 +3。公開で同じカードがそろった＝一緒に動いた。意思表明は嘘でもよいので、最後に頼りになるのは公開されたカード。' }] },
+  { name: '日没と時間', enter: tutScene, auto: tutScene, after: () => duskAnim(), beats: [
+    { next: true, hl: '#boardbox', cells: ['9', '10A', '12', '13'], text: 'ここから先は早送りした。9 名郷峠 → 10A 三方山で 2 人で眺め（仲間点 +1）→ 12 休憩所で休憩 → 13 矢倉台。ピークは 6・10A・13 の 3 つ。' },
+    { next: true, hl: '.clock', text: 'いま 16:00＝<b>日没</b>（冬）。紺が日没後、赤が「日没から 1 時間半」。日没後は 歩く＝歩数 1・体力さらに −1、急ぐ・引き返すは出せない。<b>17:30 に下山口にいない人は遭難</b>（目的の点が半分・さらに点 −3）。' },
+    pressTalk(18),
+    { next: true, hl: '.cards', text: '日没後なので「急ぐ」「引き返す」は灰色で出せない。' }] },
+  { name: '途中下山', auto: () => { tutAutoTurn(18); tutAutoTurn(19); }, beats: [
+    pressTalk(18),
+    pressWalk(18),
+    { sel: () => { const i = $('input[name="hd13"][value="E2a"]'); return i && i.closest('label'); }, cells: ['13', 'E2a', 'MN', '14'], text: '13 矢倉台は分岐。本道の青梅駅まではあと 5 マス、エスケープなら宮ノ平駅まで 2 マス。日没後は 1 手番 1 歩なので、本道では 17:30 に間に合わない。「エスケープ」を選ぶ。', done: () => (UI.heads && UI.heads['13'] === 'E2a') || G.t > 18 },
+    pressPlay(18), pressResolve(18),
+    { next: true, hl: '.clock', cells: ['E2a', 'MN'], text: '日没後なので 1 歩だけ（体力は −2）。いま 16:30。あと 1 歩で宮ノ平駅。' },
+    pressTalk(19), pressWalk(19), pressPlay(19),
+    pressResolve(19, '「解決する」を押す。宮ノ平駅に下山する。'),
+    { next: true, cells: ['MN', 'FM'], text: '途中の駅（二俣尾駅・宮ノ平駅）に下りるのが<b>途中下山</b>。2 人戦では点の差は「頂上制覇の青梅駅 +1 が付かない」だけ。3〜4 人で目的「早帰り」を持つ人は、下山した時刻に<b>時計 +30分</b>してから数え、最後に<b>点 −1</b>（温泉は青梅だけ。電車の時間と電車賃）。' }] },
+  { name: '得点', beats: [
+    { next: true, hl: '#endPanel .tblwrap', text: '<b>点＝目的カードの点＋仲間点＋支援点</b>（遭難は −3）。あなた: 頂上制覇 ピーク 3 つで 6点・花の写真 1 個で 2点・仲間点 2（一緒に眺め +1・一緒に下山 +1）＝10点。' },
+    { next: true, nextLabel: '対戦をはじめる', onNext: () => tutFinish(), text: '相手の目的はここで初めて分かる。合計が多い人の勝ち、同点なら体力の残りが多い人。これで練習はおしまい。次は本番の対戦へ（人数・季節を選べる）。' }] }];
+function tutStart(k) { closeRules(); TUT = { stage: 0, beat: 0, el: null, target: null }; tutSetup(k); }
+function tutSetup(k) {
+  if (!TUT) return;
+  tutNewGame();
+  for (let s = 0; s < k; s++) if (TUT_STAGES[s].auto) TUT_STAGES[s].auto();
+  tutEnter(k);
+}
+function tutEnter(k) {
+  TUT.stage = k; TUT.beat = 0;
+  tutSave({ stage: k, done: false });
+  const st = TUT_STAGES[k];
+  if (st.enter) st.enter();
+  render();
+  if (st.after) st.after();
+}
+function tutCheck() {
+  if (!TUT || !G) return;
+  const st = TUT_STAGES[TUT.stage];
+  let b = st.beats[TUT.beat];
+  while (b && !b.next && b.done && b.done()) { TUT.beat += 1; b = st.beats[TUT.beat]; }
+  if (!b) { if (TUT.stage + 1 < TUT_STAGES.length) tutEnter(TUT.stage + 1); else tutFinish(); return; }
+  if (BUSY) { tutHide(); return; }
+  tutShow(b);
+}
+function tutAfterRender() { if (TUT) tutCheck(); }
+function tutHide() { document.querySelectorAll('.tut-hl, .tut-hl2, .tut-cell').forEach(e => e.classList.remove('tut-hl', 'tut-hl2', 'tut-cell')); $('#tutDim').classList.remove('on'); const b = $('#tutBub'); if (b) b.classList.add('hidden'); if (TUT) { TUT.el = null; TUT.target = null; } }
+function tutShow(b) {
+  const bub = $('#tutBub'), st = TUT_STAGES[TUT.stage];
+  document.querySelectorAll('.tut-hl, .tut-hl2, .tut-cell').forEach(e => e.classList.remove('tut-hl', 'tut-hl2', 'tut-cell'));
+  const el = b.sel ? tq(b.sel) : (b.hl ? tq(b.hl) : null);
+  TUT.el = el; TUT.target = b.sel ? el : null;
+  if (el) el.classList.add('tut-hl');
+  $('#tutDim').classList.toggle('on', !!el);
+  const PH = { pick: '準備（目的カード）', talk: '相談', card: '行動カード選び', react: '追加アクションと解決', end: '得点' };
+  const who = (b.cells ? '<span class="see">↑ 盤で現在地（緑の枠）と光っているマスを見てください（盤は横にずらせる）。</span>' : '')
+    + (b.sel ? `<span class="who">今は「${PH[UI.phase] || ''}」の番。</span>` : '');
+  bub.innerHTML = `<div class="st">ステップ ${TUT.stage + 1}/${TUT_STAGES.length}・${esc(st.name)}</div><p>${who}${symHtml(b.text)}</p>
+    <div class="row">${b.next ? `<button class="primary" id="tutNext">${esc(b.nextLabel || '次へ')}</button>` : ''}
+    <button id="tutSkip">${TUT.stage + 1 < TUT_STAGES.length ? 'このステップをとばす' : 'とばす'}</button><button id="tutRe">最初から</button><button id="tutQuit">やめる</button></div>`;
+  bub.dataset.want = b.want || ''; bub.dataset.kind = b.next ? 'next' : 'press'; bub.dataset.stage = String(TUT.stage); bub.dataset.beat = String(TUT.beat);
+  bub.classList.remove('hidden');
+  const nx = $('#tutNext'); if (nx) nx.onclick = () => { if (b.onNext) b.onNext(); else { TUT.beat += 1; tutCheck(); } };
+  $('#tutSkip').onclick = () => { if (TUT.stage + 1 < TUT_STAGES.length) tutSetup(TUT.stage + 1); else tutFinish(); };
+  $('#tutRe').onclick = () => tutSetup(0);
+  $('#tutQuit').onclick = () => showSetup(); // 進み具合はステップに入った時に覚えてある（次は「続きから」）
+  if (b.cells) tutShowCells(b.cells, el);
+  else if (el) { const r = el.getBoundingClientRect(); if (r.top < 70 || r.bottom > innerHeight - 30) el.scrollIntoView({ block: 'center' }); }
+  tutPlace();
+}
+// 吹き出しがマスの名前・番号を言うとき: 盤の該当マスを光らせ、盤（と押す所）が見える位置へ送る
+function tutShowCells(ids, el) {
+  const box = $('#boardbox'); if (!box) return;
+  const bp = box.closest('.panel');
+  if (bp !== el) bp.classList.add('tut-hl2');
+  for (const id of ids) { const c = box.querySelector(`rect.cell[data-id="${id}"]`); if (c) c.classList.add('tut-cell'); }
+  // 横: 自分の現在地を先に、言ったマスを順に、盤の幅に収まるだけ入れて真ん中に寄せる（収まらない分は横にずらすと見える）
+  const H = G.ps[0], k = 1900 / 1485, room = box.clientWidth - 16;
+  const want = (H.state === 'act' && GEO[H.part || H.cell] ? [GEO[H.part || H.cell]] : []).concat(ids.map(id => GEO[id]).filter(Boolean));
+  let lo = Infinity, hi = -Infinity;
+  for (const g of want) {
+    const l = Math.min(lo, g.x), h = Math.max(hi, g.x + g.w);
+    if (lo !== Infinity && (h - l) * k > room) continue;
+    lo = l; hi = h;
+  }
+  if (lo !== Infinity) box.scrollLeft = Math.max(0, ((lo + hi) / 2) * k - box.clientWidth / 2);
+  const gh = ($('#guide') ? $('#guide').offsetHeight : 0) + 14;
+  const br = bp.getBoundingClientRect();
+  const er = el && el !== bp && !bp.contains(el) ? el.getBoundingClientRect() : null;
+  const top = er ? Math.min(br.top, er.top) : br.top, bot = er ? Math.max(br.bottom, er.bottom) : br.bottom;
+  if (top >= gh && bot <= innerHeight - 10) return; // もう全部見えている
+  let dy = br.top - gh; // 盤の上端を案内の帯のすぐ下へ
+  if (er && er.bottom - dy > innerHeight - 10 && er.top < br.top) dy = top - gh;
+  scrollBy(0, dy);
+}
+function tutPlace() {
+  if (!TUT) return;
+  const bub = $('#tutBub'); if (bub.classList.contains('hidden')) return;
+  const vw = document.documentElement.clientWidth, vh = innerHeight, bw = bub.offsetWidth, bh = bub.offsetHeight;
+  let left = (vw - bw) / 2, top = vh - bh - 10;
+  const el = TUT.el && document.body.contains(TUT.el) ? TUT.el : null;
+  if (el) {
+    const r = el.getBoundingClientRect();
+    left = Math.min(Math.max(8, r.left + r.width / 2 - bw / 2), vw - bw - 8);
+    if (r.bottom + 12 + bh <= vh - 8) top = r.bottom + 12;
+    else if (r.top - 12 - bh >= 8) top = r.top - 12 - bh;
+  }
+  bub.style.left = Math.max(8, left) + 'px'; bub.style.top = Math.max(8, top) + 'px';
+}
+function tutStop() { if (!TUT) return; tutHide(); TUT = null; }
+function tutFinish() {
+  tutSave({ stage: 0, done: true });
+  showSetup(2);
+  setGuide('練習はおしまい。人数や季節を選んで「はじめる」で対戦へ', '分からなくなったら右上の「ルールの早見」。練習はいつでも「はじめての人へ」からやり直せる。');
+}
+function tutAllowed(t) {
+  if (!(t instanceof Element)) return true;
+  if (t.closest('#tutBub, #btnTheme, .mot')) return true;
+  return !!(TUT.target && TUT.target.contains(t));
+}
+for (const ev of ['click', 'pointerdown', 'mousedown', 'dblclick', 'contextmenu']) document.addEventListener(ev, e => {
+  if (!TUT || tutAllowed(e.target)) return;
+  e.preventDefault(); e.stopPropagation();
+  if (ev === 'click' && motionMode() === 'full') { const b = $('#tutBub'); if (b && !b.classList.contains('hidden')) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }], { duration: 260 }); }
+}, true);
+document.addEventListener('keydown', e => {
+  if (!TUT || e.key === 'Tab') return;
+  const a = document.activeElement;
+  if (!a || a === document.body || tutAllowed(a)) return;
+  e.preventDefault(); e.stopPropagation();
+}, true);
+document.addEventListener('change', () => setTimeout(tutCheck, 0));
+document.addEventListener('click', () => setTimeout(tutCheck, 0));
+addEventListener('scroll', () => requestAnimationFrame(tutPlace), { passive: true });
+addEventListener('resize', () => requestAnimationFrame(tutPlace));
+
+// ---------- 速回し（試験用・全員コンピューター）
+function showSim() {
+  tutStop();
+  closeRules();
+  G = null; SIM_MODE = true; sceneUpdate(); // 速回しの画面では音を鳴らさず、背景も動かさない
+  setGuide('試験用: 全員コンピューターで速回し', '人数ごとに 遊び方 3 通り × 局数 を回し、試算（2 人＝sim_2p.py 案7、3・4 人＝sim_objectives.py）の数字と並べる。');
+  $('#app').innerHTML = `<div class="panel"><h2>速回し</h2>
+   <div class="row"><label>1 通りあたりの局数 <input id="simG" value="1000" inputmode="numeric" style="width:90px"></label><label>種 <input id="simS" value="1" inputmode="numeric" style="width:90px"></label>
+   <button id="btnSim" class="primary pulse">回す</button><button id="btnSimBack">準備へ</button></div><div id="simOut" style="margin-top:10px"></div></div>`;
+  $('#btnSimBack').onclick = showSetup;
+  $('#btnSim').onclick = () => {
+    const games = Math.max(1, +$('#simG').value || 300), seed = (+$('#simS').value || 1) >>> 0;
+    $('#simOut').innerHTML = '回しています…';
+    setTimeout(() => {
+      const t0 = performance.now();
+      let html = '';
+      for (const N of [2, 3, 4]) {
+        const a = simulate(N, Object.keys(POL), games, seed + N * 1000003);
+        html += simTable(N, a);
+      }
+      $('#simOut').innerHTML = html + `<div class="muted">${((performance.now() - t0) / 1000).toFixed(1)} 秒</div>`;
+    }, 30);
+  };
+}
+function simTable(N, a) {
+  const R = REF[N];
+  let s = `<h3>${N} 人（${a.games} 局）</h3><div class="tblwrap"><table><tr><th>目的</th><th>勝率 このページ</th><th>勝率 試算</th><th>差</th><th>平均点 このページ</th><th>平均点 試算</th></tr>`;
+  let mx = -1, mn = 101;
+  for (const o of objsOf(N)) {
+    const w = 100 * a.wins[o] / a.obs[o], m = a.pts[o] / a.obs[o];
+    mx = Math.max(mx, w); mn = Math.min(mn, w);
+    s += `<tr><td>${o}</td><td>${w.toFixed(1)}%</td><td>${R.win[o].toFixed(1)}%</td><td>${(w - R.win[o]).toFixed(1)}</td><td>${m.toFixed(2)}</td><td>${R.mean[o].toFixed(2)}</td></tr>`;
+  }
+  s += `<tr><td>終わりの手番（平均）</td><td colspan="2">${(a.turns / a.games).toFixed(2)} ／ 試算 ${R.turns}</td><td colspan="3">下山 ${(100 * a.done / a.players).toFixed(1)}%（試算 ${R.done}%）・引き返し ${(100 * a.camp / a.players).toFixed(1)}%（試算 ${R.camp}%）・遭難 ${(100 * a.resc / a.players).toFixed(1)}%</td></tr>`;
+  return s + `<tr><td>勝率の幅</td><td colspan="5">${(mx - mn).toFixed(1)} ポイント</td></tr></table></div>`;
+}
+
+// ====== 絵（奥の山並み・空・天気）。外の素材は使わず、すべてここで描く。決まりには触れない ======
+let SIM_MODE = false;
+function sceneState() {
+  if (SIM_MODE) return { sky: 'day', wx: '', urgent: false, live: false };
+  if (!G) return { sky: 'morning', wx: '', urgent: false, live: false };
+  const t = G.t, S = G.S;
+  const sky = t >= S ? 'night' : (t >= S - 3 ? 'eve' : (t <= 3 ? 'morning' : 'day')); // 朝 7:00〜8:30／夕焼け 日没の 1 時間半前から／日没後
+  const wx = UI && UI.phase !== 'pick' && G.w ? G.w : '';
+  const urgent = !G.over && G.ps.some(p => p.state === 'act') && t >= S - 3 && t < S + RESCUE_T;
+  return { sky, wx, urgent, live: true };
+}
+function sceneInit() {
+  const rng = makeRng(20261113);
+  const ridge = (base, amp, step, ph) => {
+    const ys = [];
+    for (let x = 0; x <= 1600; x += step) ys.push([x, base - amp * (0.55 * Math.sin(x / 260 + ph) + 0.3 * Math.sin(x / 97 + ph * 2.1) + 0.15 * (rng() * 2 - 1))]);
+    return { d: 'M0 500 ' + ys.map(([x, y]) => 'L' + x + ' ' + y.toFixed(1)).join(' ') + ' L1600 500 Z',
+      at: x => { const k = Math.min(ys.length - 2, Math.floor(x / step)); const [x0, y0] = ys[k], [x1, y1] = ys[k + 1]; return y0 + (y1 - y0) * (x - x0) / (x1 - x0); } };
+  };
+  const cedar = (x, yb, h) => { const w = h * 0.42; return `M${(x - w / 2).toFixed(1)} ${yb.toFixed(1)} L${x.toFixed(1)} ${(yb - h).toFixed(1)} L${(x + w / 2).toFixed(1)} ${yb.toFixed(1)} Z`; };
+  const r1 = ridge(250, 70, 40, 0.7), r2 = ridge(330, 55, 32, 2.3), r3 = ridge(400, 30, 24, 4.1);
+  let t3 = '';
+  for (let x = 4; x < 1600; x += 7 + rng() * 9) if (rng() < 0.8) t3 += cedar(x, r3.at(x) + 3, 10 + rng() * 16);
+  $('#scene svg.ridges').innerHTML = `<path class="r1" d="${r1.d}"/><path class="r2" d="${r2.d}"/><path class="r3" d="${r3.d}"/><path class="tr" d="${t3}" opacity=".75"/>`;
+  let fg = 'M0 500 L0 472 ', tf = '';
+  for (let x = 0; x <= 1600; x += 40) fg += `L${x} ${(468 + 8 * Math.sin(x / 140)).toFixed(1)} `;
+  fg += 'L1600 500 Z';
+  for (let x = 6; x < 1600; x += 14 + rng() * 30) if (Math.sin(x / 210) > -0.35) tf += cedar(x, 470 + 8 * Math.sin(x / 140), 40 + rng() * 80);
+  $('#scene svg.trees').innerHTML = `<path class="tr" d="${fg}"/><path class="tr" d="${tf}"/>`;
+  let st = '';
+  for (let i = 0; i < 46; i++) st += `<circle cx="${(rng() * 100).toFixed(1)}%" cy="${(rng() * 100).toFixed(1)}%" r="${(0.6 + rng() * 0.9).toFixed(1)}"/>`;
+  const sv = $('#scene .stars'); sv.removeAttribute('viewBox'); sv.innerHTML = st;
+  wxResize();
+  addEventListener('resize', () => { wxResize(); sceneUpdate(); });
+  document.addEventListener('visibilitychange', () => sceneUpdate());
+  try { matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => { applyMotion(); sceneUpdate(); }); } catch (e) { }
+  sceneUpdate();
+}
+const WXC = { raf: 0, kind: '', drops: [], last: 0, d: 1, flashT: 0 };
+function wxResize() {
+  const c = $('#wxCanvas'); if (!c) return;
+  WXC.d = Math.min(1.5, devicePixelRatio || 1);
+  c.width = Math.round(innerWidth * WXC.d); c.height = Math.round(innerHeight * WXC.d);
+  WXC.kind = ''; // 次の sceneUpdate で粒を作り直す
+}
+function wxMake(kind) {
+  const W = innerWidth, H = innerHeight, out = [];
+  const n = kind === 'wind' ? Math.min(18, Math.round(W / 60)) : Math.min(kind === 'storm' ? 190 : 150, Math.round(W / (kind === 'storm' ? 5 : 6.5)));
+  for (let i = 0; i < n; i++) out.push(kind === 'wind'
+    ? { x: Math.random() * W, y: Math.random() * H, l: 50 + Math.random() * 110, v: 520 + Math.random() * 520 }
+    : { x: Math.random() * W, y: Math.random() * H, l: 10 + Math.random() * 14, v: 650 + Math.random() * 450 });
+  return out;
+}
+function wxDraw(dt) {
+  const c = $('#wxCanvas'), x = c.getContext('2d'), W = innerWidth, H = innerHeight;
+  x.setTransform(WXC.d, 0, 0, WXC.d, 0, 0); x.clearRect(0, 0, W, H);
+  if (!WXC.kind) return;
+  const wind = WXC.kind === 'wind';
+  x.strokeStyle = wind ? 'rgba(255,255,255,.38)' : 'rgba(225,234,246,.6)'; x.lineWidth = wind ? 1.4 : 1.1; x.lineCap = 'round';
+  x.beginPath();
+  for (const p of WXC.drops) {
+    if (wind) { p.x += p.v * dt; if (p.x - p.l > W) { p.x = -Math.random() * 80; p.y = Math.random() * H; } x.moveTo(p.x, p.y); x.lineTo(p.x - p.l, p.y + p.l * 0.04); }
+    else { p.y += p.v * dt; p.x -= p.v * dt * 0.22; if (p.y > H + 20) { p.y = -20; p.x = Math.random() * (W + 120); } if (p.x < -40) p.x += W + 80; x.moveTo(p.x, p.y); x.lineTo(p.x + p.l * 0.22, p.y - p.l); }
+  }
+  x.stroke();
+}
+function wxFrame(ts) {
+  const dt = WXC.last ? Math.min(0.05, (ts - WXC.last) / 1000) : 0; WXC.last = ts;
+  wxDraw(dt);
+  WXC.raf = requestAnimationFrame(wxFrame);
+}
+function wxStop() { if (WXC.raf) cancelAnimationFrame(WXC.raf); WXC.raf = 0; WXC.last = 0; }
+function sceneUpdate() {
+  const sc = $('#scene'); if (!sc) return;
+  const s = sceneState(), m = motionMode();
+  sc.dataset.sky = s.sky; sc.dataset.wx = s.wx;
+  const kind = s.wx === '雨' ? 'rain' : s.wx === '雷' ? 'storm' : s.wx === '強風' ? 'wind' : '';
+  if (kind !== WXC.kind) { WXC.kind = kind; WXC.drops = kind ? wxMake(kind) : []; }
+  const loop = kind && m === 'full' && !document.hidden;
+  if (loop && !WXC.raf) WXC.raf = requestAnimationFrame(wxFrame);
+  if (!loop) { wxStop(); wxDraw(0); } // 動きを減らす・なし: 雨粒は止まった絵で見せる
+  // 雷: ときどき光る（動きを減らす設定では光らせない）＋音が入なら遠雷
+  clearTimeout(WXC.flashT);
+  if (s.wx === '雷' && !document.hidden) {
+    const fire = () => {
+      if (sceneState().wx !== '雷' || document.hidden) return;
+      if (motionMode() === 'full') $('#scene .flash').animate([{ opacity: 0 }, { opacity: 0.45, offset: 0.15 }, { opacity: 0 }, { opacity: 0.25, offset: 0.55 }, { opacity: 0 }], { duration: 420 });
+      sndThunder(0.35);
+      WXC.flashT = setTimeout(fire, 7000 + Math.random() * 7000);
+    };
+    WXC.flashT = setTimeout(fire, 2500 + Math.random() * 3000);
+  }
+  soundUpdate(s);
+}
+
+// ====== 音（Web Audio でその場で作る。音声ファイルは使わない）。最初は消音、ボタンを押すまで鳴らさない ======
+const SOUND = (function () {
+  const s = { on: false, vol: 50 };
+  try { const v = JSON.parse(localStorage.getItem('tozan.sound') || 'null'); if (v && typeof v === 'object') { s.on = !!v.on; if (isFinite(v.vol)) s.vol = Math.max(0, Math.min(100, +v.vol)); } } catch (e) { }
+  return s;
+})();
+let AC = null, AU = null;
+function soundSave() { try { localStorage.setItem('tozan.sound', JSON.stringify({ on: SOUND.on, vol: SOUND.vol })); } catch (e) { } }
+function soundLabel() { const b = $('#btnSnd'); b.textContent = SOUND.on ? '音 入' : '音 切'; b.setAttribute('aria-pressed', SOUND.on ? 'true' : 'false'); }
+// 鳴らなかった原因（2026-11-13 調べ）: ①音が小さすぎた（音量 50 で出口の山が −40dB 程度・風はさらに −58dB で、
+// スマホのスピーカーではほぼ聞こえない。最初の鳥は 1〜2 秒後・旋律は 5〜8 秒後で、押した直後は何も鳴らない）
+// ②前に「入」にしていたときは pointerdown（指が触れた瞬間）で鳴らし始めていたが、iPhone の Safari は
+// 指を離したとき（click・touchend）でないと音を許さないので、音の箱が止まったまま戻らなかった
+// ③iPhone は消音スイッチ（マナーモード）が入っていると Web Audio が無音になる。
+// 直し: 音量を上げ、入れた瞬間に確かめの音を 1 回鳴らす。click・touchend・keydown のたびに止まっていれば鳴らし直す。
+// iPhone では navigator.audioSession を「再生」にし、無い古い端末では無音の <audio> を一緒に流して再生扱いにする。
+const SILENT_WAV = (function () { // 0.2 秒の無音（8kHz・8bit）をその場で作る。外の音声ファイルは使わない
+  const n = 1600, sr = 8000, u = new Uint8Array(44 + n), dv = new DataView(u.buffer);
+  const w = (o, s) => { for (let k = 0; k < s.length; k++) u[o + k] = s.charCodeAt(k); };
+  w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, sr, true); dv.setUint32(28, sr, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true); u.fill(128, 44);
+  let s = ''; for (let k = 0; k < u.length; k++) s += String.fromCharCode(u[k]);
+  return 'data:audio/wav;base64,' + btoa(s);
+})();
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let KEEP = null; // 無音の <audio>（iPhone の再生扱い用）
+function audioSessionPlayback() {
+  try { if (navigator.audioSession) { navigator.audioSession.type = 'playback'; return; } } catch (e) { }
+  if (!IS_IOS) return;
+  try {
+    if (!KEEP) { KEEP = document.createElement('audio'); KEEP.src = SILENT_WAV; KEEP.loop = true; KEEP.preload = 'auto'; KEEP.setAttribute('playsinline', ''); KEEP.setAttribute('x-webkit-airplay', 'deny'); }
+    const pr = KEEP.play(); if (pr && pr.catch) pr.catch(() => { });
+  } catch (e) { }
+}
+function soundInitUI() {
+  const b = $('#btnSnd'), r = $('#rVol');
+  r.value = String(SOUND.vol); soundLabel();
+  if (IS_IOS) $('#sndNote').classList.remove('hidden');
+  b.onclick = () => {
+    if (SOUND.on && !audioLive()) { audioStart(true); return; } // 「入」なのに鳴っていない（読み込み直後など）→ 押したら鳴らす
+    SOUND.on = !SOUND.on; soundSave(); soundLabel();
+    if (SOUND.on) audioStart(true); else audioStop();
+  };
+  r.oninput = () => { SOUND.vol = +r.value; soundSave(); audioVol(); };
+  r.onchange = () => { if (SOUND.on && audioLive()) sndChime(); }; // 音量を変えたら大きさの確かめ
+  // 「入」のときは、画面を押す（指を離す）たびに、止まっていれば鳴らし直す（iPhone は離した時でないと許されない）
+  const kick = () => { if (SOUND.on && !SIM_MODE && !document.hidden && (!AC || AC.state !== 'running')) audioStart(false); };
+  for (const ev of ['click', 'touchend', 'keydown']) addEventListener(ev, kick, true);
+  document.addEventListener('visibilitychange', () => {
+    if (!AC) return;
+    if (document.hidden) { AC.suspend(); if (KEEP) KEEP.pause(); }
+    else if (SOUND.on && !SIM_MODE) AC.resume();
+  });
+}
+function audioLive() { return !!(AC && AU && SOUND.on && !SIM_MODE && AC.state === 'running'); }
+function audioStart(chime) {
+  if (SIM_MODE) return;
+  // 2026-11-13 iPhone で鳴らなかった直し: 試験ページ（音の試験.html）で鳴った手順に合わせる。
+  // ①再生扱い（audioSession）を音の箱を作る「前」に決める ②押した手番の中で箱を作り resume ③確かめの音は state を待たずに直接スピーカーへ
+  audioSessionPlayback();
+  if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return; try { AC = new C(); } catch (e) { audioDiag('作れない ' + e.message); return; } try { audioBuild(); } catch (e) { audioDiag('組立て失敗 ' + e.message); } }
+  const go = () => {
+    audioDiag();
+    if (AC.state !== 'running' || !SOUND.on || !AU) return;
+    try { audioVol(); AU.cur = null; soundUpdate(sceneState()); if (!AU.timer) AU.timer = setInterval(audioTick, 400); } catch (e) { audioDiag('更新失敗 ' + e.message); }
+  };
+  try { const pr = AC.resume(); if (pr && pr.then) pr.then(go, e => audioDiag('resume 失敗 ' + (e && e.name))); } catch (e) { }
+  if (chime) sndChime();
+  go();
+  setTimeout(go, 600); // resume の知らせが来ない端末のために、少し後にもう一度
+}
+function audioDiag(msg) { // iPhone で鳴らないときの手がかりを、音のボタンの下に小さく出す
+  const el = document.getElementById('sndState'); if (!el) return;
+  el.textContent = '音の状態: ' + (AC ? AC.state : 'なし') + (navigator.audioSession ? '・' + navigator.audioSession.type : '') + (msg ? '・' + msg : '');
+}
+function audioStop() {
+  if (KEEP) KEEP.pause();
+  if (!AC || !AU) return;
+  AU.master.gain.setTargetAtTime(0, AC.currentTime, 0.08);
+  clearInterval(AU.timer); AU.timer = 0;
+  setTimeout(() => { if (AC && (!SOUND.on || SIM_MODE)) AC.suspend(); }, 450);
+}
+function audioVol() { if (AC && AU) AU.master.gain.setTargetAtTime(SOUND.on && !SIM_MODE ? Math.pow(SOUND.vol / 100, 1.5) * 1.1 : 0, AC.currentTime, 0.05); }
+function audioBuild() {
+  const A = AC, sr = A.sampleRate, len = sr * 2;
+  const white = A.createBuffer(1, len, sr), brown = A.createBuffer(1, len, sr);
+  const w = white.getChannelData(0), b = brown.getChannelData(0); let last = 0;
+  for (let i = 0; i < len; i++) { const r = Math.random() * 2 - 1; w[i] = r; last = (last + 0.02 * r) / 1.02; b[i] = last * 3.5; }
+  const master = A.createGain(); master.gain.value = 0;
+  const comp = A.createDynamicsCompressor(); master.connect(comp); comp.connect(A.destination);
+  const loop = buf => { const s = A.createBufferSource(); s.buffer = buf; s.loop = true; s.start(0, Math.random() * 1.5); return s; };
+  // 風: 茶色いノイズを帯域で絞り、ゆっくり揺らす
+  const wf = A.createBiquadFilter(); wf.type = 'bandpass'; wf.frequency.value = 420; wf.Q.value = 0.6;
+  const wAmp = A.createGain(); wAmp.gain.value = 0.7; const wg = A.createGain(); wg.gain.value = 0;
+  loop(brown).connect(wf); wf.connect(wAmp); wAmp.connect(wg); wg.connect(master);
+  const l1 = A.createOscillator(), l1g = A.createGain(); l1.frequency.value = 0.11; l1g.gain.value = 170; l1.connect(l1g); l1g.connect(wf.frequency); l1.start();
+  const l2 = A.createOscillator(), l2g = A.createGain(); l2.frequency.value = 0.07; l2g.gain.value = 0.3; l2.connect(l2g); l2g.connect(wAmp.gain); l2.start();
+  // 雨: 白いノイズの高いところ
+  const hp = A.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+  const lp = A.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 6500;
+  const rg = A.createGain(); rg.gain.value = 0;
+  loop(white).connect(hp); hp.connect(lp); lp.connect(rg); rg.connect(master);
+  const bird = A.createGain(); bird.gain.value = 2.2; bird.connect(master);
+  const fx = A.createGain(); fx.gain.value = 1.8; fx.connect(master);
+  const mus = A.createGain(); mus.gain.value = 3.2; mus.connect(master);
+  const dl = A.createDelay(1), fb = A.createGain(), wet = A.createGain(); dl.delayTime.value = 0.32; fb.gain.value = 0.28; wet.gain.value = 0.35;
+  mus.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(master);
+  AU = { master, wg, rg, bird, fx, mus, white, brown, timer: 0, nextBird: 0, nextMel: 0, cur: null };
+}
+const WIND_LV = { '': 0.2, '晴れ': 0.2, 'くもり': 0.26, 'ガス': 0.24, '雨': 0.32, '強風': 0.7, '雷': 0.45 };
+function soundUpdate(s) {
+  if (!SIM_MODE && AC && SOUND.on && AC.state === 'suspended' && !document.hidden) AC.resume();
+  if (SIM_MODE && AC && AC.state === 'running') { audioVol(); setTimeout(() => { if (AC && SIM_MODE) AC.suspend(); }, 300); }
+  if (!audioLive()) return;
+  audioVol();
+  const now = AC.currentTime, prev = AU.cur;
+  AU.wg.gain.setTargetAtTime((WIND_LV[s.wx] || 0.05) * (s.sky === 'night' ? 0.8 : 1), now, 0.8);
+  AU.rg.gain.setTargetAtTime(s.wx === '雨' ? 0.4 : s.wx === '雷' ? 0.5 : 0, now, 0.8);
+  const ms = performance.now();
+  if (!prev || prev.sky !== s.sky || prev.wx !== s.wx) AU.nextBird = ms + (prev ? 600 + Math.random() * 1500 : 700);
+  if (!prev) AU.nextMel = ms + 4000 + Math.random() * 3000;
+  else if (s.urgent && !prev.urgent) AU.nextMel = ms + 1500 + Math.random() * 1500; // 日没が近づいたら急かす旋律へ
+  AU.cur = s;
+}
+function birdGap(s) {
+  if (s.sky === 'night' || ['雨', '雷', '強風'].includes(s.wx)) return null;
+  const g = { morning: [1.8, 4.5], day: [4, 9], eve: [7, 14] }[s.sky];
+  const k = s.wx === 'ガス' ? 2 : s.wx === 'くもり' ? 1.3 : 1;
+  return (g[0] + Math.random() * (g[1] - g[0])) * k * 1000;
+}
+function audioTick() {
+  if (!audioLive() || !AU.cur) return;
+  const ms = performance.now(), s = AU.cur;
+  if (ms >= AU.nextBird) { const g = birdGap(s); if (g !== null) { sndBird(); AU.nextBird = ms + g; } else AU.nextBird = ms + 3000; }
+  if (ms >= AU.nextMel) { sndMelody(s.urgent); AU.nextMel = ms + (s.urgent ? 14000 + Math.random() * 8000 : 38000 + Math.random() * 26000); }
+}
+function env(g, st, peak, a, d) { g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(peak, st + a); g.gain.exponentialRampToValueAtTime(0.0001, st + d); }
+function sndBird() {
+  const A = AC, t0 = A.currentTime + 0.05;
+  const out = A.createStereoPanner ? A.createStereoPanner() : A.createGain();
+  if (out.pan) out.pan.value = Math.random() * 1.6 - 0.8;
+  out.connect(AU.bird);
+  const tone = (f0, f1, st, d, pk) => { const o = A.createOscillator(), g = A.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f0, st); o.frequency.exponentialRampToValueAtTime(f1, st + d); env(g, st, pk, 0.012, d); o.connect(g); g.connect(out); o.start(st); o.stop(st + d + 0.03); };
+  if (Math.random() < 0.6) { // さえずり（短い上下を数回）
+    const f = 2600 + Math.random() * 1800, n = 2 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < n; i++) { const st = t0 + i * (0.1 + Math.random() * 0.06), d = 0.05 + Math.random() * 0.06; tone(f * (1 + Math.random() * 0.1), f * (0.65 + Math.random() * 0.5), st, d, 0.11); }
+  } else { // 二声の呼び声
+    const f = 2200 + Math.random() * 900;
+    tone(f * 1.25, f * 1.2, t0, 0.18, 0.08); tone(f * 0.95, f * 0.9, t0 + 0.24, 0.22, 0.07);
+  }
+}
+function sndNote(f, st, dur, vol) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'triangle'; o.frequency.value = f; env(g, st, vol, 0.03, dur); o.connect(g); g.connect(AU.mus); o.start(st); o.stop(st + dur + 0.05); }
+function sndMelody(urgent) {
+  const t0 = AC.currentTime + 0.1;
+  if (urgent) { // 少し急かす: 短い音の刻み（ラ・ド・レの繰り返し）
+    const ph = [440, 523.25, 587.33, 523.25, 440, 392, 440, 523.25];
+    ph.forEach((f, i) => sndNote(f, t0 + i * 0.2, 0.22, 0.05));
+    sndNote(220, t0, 1.6, 0.03);
+  } else { // 静かな短い旋律（五音の上をゆっくり歩く）
+    const sc = [293.66, 329.63, 369.99, 440, 493.88, 587.33];
+    let k = 1 + Math.floor(Math.random() * 3), st = t0;
+    const n = 4 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) { const d = i === n - 1 ? 1.4 : 0.5 + Math.random() * 0.3; sndNote(sc[k], st, d + 0.3, 0.05); st += d; k = Math.max(0, Math.min(sc.length - 1, k + [-1, 1, 1, 2, -2][Math.floor(Math.random() * 5)])); }
+  }
+}
+function sndChime() { // 入れた直後の確かめの音（ソ→ド の 2 音）。全体の音量の箱を通さず直接スピーカーへ（立ち上がりを待たない）
+  if (!AC || SIM_MODE || !SOUND.on) return;
+  const t0 = AC.currentTime + 0.02, k = Math.max(0.15, Math.pow(SOUND.vol / 100, 1.5));
+  [[783.99, 0], [1046.5, 0.13]].forEach(([f, d]) => { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine'; o.frequency.value = f; env(g, t0 + d, 0.35 * k, 0.01, 0.45); o.connect(g); g.connect(AC.destination); o.start(t0 + d); o.stop(t0 + d + 0.5); });
+}
+function sndSteps(n, gapMs) {
+  if (!audioLive() || !n) return;
+  const t0 = AC.currentTime + 0.03, wet = AU.cur && (AU.cur.wx === '雨' || AU.cur.wx === '雷');
+  for (let k = 0; k < Math.min(n, 8); k++) {
+    const st = t0 + k * gapMs / 1000;
+    const s = AC.createBufferSource(); s.buffer = AU.white;
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = (wet ? 900 : 420) + Math.random() * 160;
+    const g = AC.createGain(); env(g, st, 0.4, 0.006, 0.09);
+    s.connect(f); f.connect(g); g.connect(AU.fx); s.start(st, Math.random() * 1.5); s.stop(st + 0.12);
+  }
+}
+function sndThunder(pk) {
+  if (!audioLive()) return;
+  const st = AC.currentTime + 0.4;
+  const s = AC.createBufferSource(); s.buffer = AU.brown;
+  const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 160;
+  const g = AC.createGain(); env(g, st, pk, 0.15, 2.6);
+  s.connect(f); f.connect(g); g.connect(AU.master); s.start(st, Math.random()); s.stop(st + 2.8);
+}
+
+// ---------- 枠
+function openRules() { $('#rules').classList.add('open'); }
+function closeRules() { $('#rules').classList.remove('open'); }
+$('#btnRules').onclick = openRules;
+$('#btnRulesClose').onclick = closeRules;
+$('#rules').onclick = e => { if (e.target.id === 'rules') closeRules(); };
+$('#btnRestart').onclick = () => { if (!G || confirm('この局をやめて準備に戻りますか？')) showSetup(); };
+$('#btnTheme').onclick = () => {
+  const r = document.documentElement; const cur = r.getAttribute('data-theme');
+  const dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.setAttribute('data-theme', dark ? 'light' : 'dark');
+};
+$('#btnTut').onclick = () => { if (G && !G.over && !G.tut && !confirm('この局をやめてゲームの説明を開きますか？')) return; showIntro(); };
+$('#sSpeed').onchange = e => { MOTION.speed = e.target.value; saveMotion(); applyMotion(); };
+$('#cReduce').onchange = e => { MOTION.reduce = e.target.checked; saveMotion(); applyMotion(); sceneUpdate(); };
+$('#sSpeed').addEventListener('change', () => sceneUpdate());
+applyMotion();
+sceneInit();
+soundInitUI();
+showFirst();
+</script>
+</body>
+</html>
