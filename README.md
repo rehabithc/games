@@ -9,7 +9,7 @@
 
 ## 著作権・利用条件
 
-© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東
+© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東香
 
 - 無料で遊べます。個人で印刷して遊ぶのも自由です。
 - 無断での再配布・販売・改変版の公開はご遠慮ください。
@@ -20,4 +20,4 @@
 ---
 
 Along The Trail is a semi-cooperative hiking board game (2–4 players) you can play in the browser.
-© 2026 株式会社リハビット. Made by Clinica Fermentica. Game design: 華佗東. Free to play. All rights reserved — please do not redistribute or sell.
+© 2026 株式会社リハビット. Made by Clinica Fermentica. Game design: 華佗東香. Free to play. All rights reserved — please do not redistribute or sell.
