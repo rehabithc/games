@@ -203,6 +203,7 @@ body.gd-fast [class*="gd-"],body.gd-fast [class*="gd-"]::before,body.gd-fast [cl
 .gd-acttx p{margin:0 0 6px}
 .gd-actmean{color:var(--ink)}
 .tabs{display:none}
+.roundres .ln.wit{border-left:4px solid var(--yellow);padding-left:6px}
 #mini{display:none;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
 #mini img{display:block;width:170px;max-width:46%;height:auto;border-radius:6px}
 body[data-scr="home"] #tab-play,body[data-scr="home"] #tab-guide{display:none}
@@ -349,8 +350,8 @@ function newGame(o){
 function lg(G,t,cls){if(G.logOn)G.log.push({r:G.round,t:t,cls:cls||''});}
 function effT(G,d){var D=G.ds[d];return Math.max(0,Math.min(D.pop,D.base+D.tmod));}
 function obsAll(G){return G.players.map(function(){return true;});}
-function obsSet(G){return G.opener==null?obsAll(G):G.players.map(function(P,i){return i===G.opener;});}
-function hidTxt(G){return '（引いたコマは開けた人だけが見た）';}
+function obsSet(G){return G.opener==null?obsAll(G):G.players.map(function(P,i){return i===G.opener||i===(G.opener+1)%G.nP;});}
+function hidTxt(G){return '（引いたコマは開けた人と立会人だけが見た）';}
 function humanIdx(G){for(var i=0;i<G.players.length;i++)if(G.players[i].human)return i;return -1;}
 function showTo(G,obs){var h=humanIdx(G);return h<0||obs[h];}
 function drawSample(G,d,k){
@@ -429,7 +430,7 @@ function resolveAll(G){
 }
 function resolveEnv(G,e,i,n){
  var mine=G.players[e.owner]&&G.players[e.owner].human;
- var obs=obsSet(G),sh=showTo(G,obs),pre='封筒 '+i+'/'+n+(mine?'（あなたの封筒）':'')+(G.opener!=null?'〔開封: '+G.players[G.opener].name+'〕':'')+': ',D=G.ds[e.d]||null,r,S=G.stats.act;
+ var obs=obsSet(G),sh=showTo(G,obs),pre='封筒 '+i+'/'+n+(mine?'（あなたの封筒）':'')+(G.opener!=null?'〔開封: '+G.players[G.opener].name+'〕'+(humanIdx(G)>=0&&humanIdx(G)!==G.opener&&humanIdx(G)===(G.opener+1)%G.nP?'〔立会人として見ました〕':''):'')+': ',D=G.ds[e.d]||null,r,S=G.stats.act;
  var hid=hidTxt(G);
  function drew(r){return '引く '+r.k+'（'+fmt(r.drawn)+' を見せた）';}
  if(e.type==='speech'){S.speech++;var k=kFace(G,e.d,e.cand,true);
@@ -560,7 +561,7 @@ function nextRound(){
 }
 function roundResult(){
  var rl=G.log.filter(function(l){return l.r===G.round&&l.cls!=='r';});
- var lines=rl.map(function(l){return '<div class="ln '+(l.cls||'')+(l.t.indexOf('（あなたの封筒）')>=0?' mine':'')+'">'+esc(l.t)+'</div>';}).join('');
+ var lines=rl.map(function(l){return '<div class="ln '+(l.cls||'')+(l.t.indexOf('（あなたの封筒）')>=0?' mine':'')+(l.t.indexOf('〔立会人として見ました〕')>=0?' wit':'')+'">'+esc(l.t)+'</div>';}).join('');
  var tail;
  tail='<div class="row" style="margin-top:10px"><button class="pri" id="next">'+(G.round<5?'ラウンド '+(G.round+1)+' へ':'開票へ')+'</button></div>';
  return '<h3>ラウンド '+G.round+' で起きたこと</h3><div class="card roundres">'+lines+tail+'</div>';
@@ -785,10 +786,10 @@ function parseDrawn(s){
  s.split('・').forEach(function(p){var m=p.match(/^([赤青黄緑白]) (\d+)/);if(m)a[C2I[m[1]]]+=+m[2];});return a;
 }
 function parseLine(t){
- var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|世論調査)「([^」]*)」→ (.*)$/);
+ var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?(?:〔立会人として見ました〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|世論調査)「([^」]*)」→ (.*)$/);
  if(!m)return null;
  var o={i:+m[1],n:+m[2],mine:!!m[3],opener:m[4]||null,kind:m[5],arg:m[6],rest:m[7]};
- o.byMe=o.opener==='あなた';
+ o.byMe=o.opener==='あなた';o.witness=t.indexOf('〔立会人として見ました〕')>=0;
  o.hidden=/だけが見た|誰も見ていない/.test(o.rest);
  var parts=o.arg.split('・');
  if(C2I[parts[0]]!=null&&C2I[parts[0]]<4){o.cand=C2I[parts[0]];o.dname=parts[1]||null;}else{o.cand=null;o.dname=parts[0];}
@@ -850,7 +851,7 @@ function miniHtml(o){
  });
  if(!list.length)h+='<span>（引けるコマがありません）</span>';
  var tag=o.hidden?'↩ '+(o.opener?esc(o.opener)+'が見て':'開けた人が見て')+'戻しました':o.kind==='世論調査'?'↩ 見せて戻す':(o.conv?'↩ 替えて戻す（'+CN[o.conv.from]+' −'+o.conv.n+'　'+CN[o.conv.to]+' +'+o.conv.n+'）':'↩ そのまま戻す');
- return h+'<span class="gd-ret">'+tag+'</span>'+(o.byMe&&!o.hidden?'<span class="gd-a2me">あなたが開けました。色はあなたにしか見えません</span>':'')+'</div>';
+ return h+'<span class="gd-ret">'+tag+'</span>'+(o.byMe&&!o.hidden?'<span class="gd-a2me">あなたが開けました。色は、あなたと左隣の立会人に見えます</span>':o.witness&&!o.hidden?'<span class="gd-a2me">立会人として見ました</span>':'')+'</div>';
 }
 function parsePoll(t){
  var m=t.match(/^公開世論調査（([^）]*)）: (.*)$/);if(!m)return null;
@@ -985,7 +986,7 @@ function svgEnv(){
  h+='<line class="ln" x1="170" y1="100" x2="170" y2="116" marker-end="url(#gd-ah2)"/>';
  h+='<rect class="bx" x="20" y="118" width="300" height="32" rx="6"/><text x="170" y="139" text-anchor="middle">受け取った人が開けて、袋から引いて替えます</text>';
  h+='<line class="ln" x1="170" y1="150" x2="170" y2="164"/><path class="ln" d="M56,164 H284"/>';
- var bx=[[4,'全員が知る',['読み上げる中身:','行動と候補と地区','と引いた個数']],[118,'開けた人が知る',['引いたコマの色','と替わった数','（袋の口を隠す）']],[232,'出した人が知る',['誰の封筒か','ほかの人は','推理します']]];
+ var bx=[[4,'全員が知る',['読み上げる中身:','行動と候補と地区','と引いた個数']],[118,'開けた人と立会人',['引いたコマの色','と替わった数','（袋の口を隠す）']],[232,'出した人が知る',['誰の封筒か','ほかの人は','推理します']]];
  bx.forEach(function(b){var cx=b[0]+52;h+='<line class="ln" x1="'+cx+'" y1="164" x2="'+cx+'" y2="174" marker-end="url(#gd-ah2)"/>';
    h+='<rect class="bx" x="'+b[0]+'" y="176" width="104" height="72" rx="6"/>';[b[1]].concat(b[2]).forEach(function(t,i){h+='<text x="'+cx+'" y="'+(194+i*15)+'" text-anchor="middle"'+(i?' class="m"':' class="b"')+'>'+t+'</text>';});});
  return h+'</svg>';
@@ -1001,7 +1002,7 @@ function svgBag(){
  h+='<line class="ln" x1="74" y1="62" x2="100" y2="62" marker-end="url(#gd-ah3)"/>';
  h+='<text x="138" y="40" text-anchor="middle" class="b">① 3 個引く</text>';
  [4,4,1].forEach(function(c,i){h+='<rect class="q'+c+'" x="'+(112+i*18)+'" y="52" width="14" height="14" rx="2"/>';});
- h+='<text x="138" y="84" text-anchor="middle" class="m">開けた人が見ます</text>';
+ h+='<text x="138" y="84" text-anchor="middle" class="m">開けた人と立会人</text>';
  h+='<line class="ln" x1="170" y1="62" x2="190" y2="62" marker-end="url(#gd-ah3)"/>';
  h+='<text x="228" y="40" text-anchor="middle" class="b">② 白を赤に替える</text>';
  [0,0,1].forEach(function(c,i){h+='<rect class="q'+c+'" x="'+(202+i*18)+'" y="52" width="14" height="14" rx="2"/>';});
@@ -1055,16 +1056,16 @@ function guideHtml(){
  '<div class="card"><p class="gd-lead">舞台は有権者およそ 5 万人の市です。あなたの打つ手は、どれも<b>封筒</b>に入れて投函箱へ届けます。封筒は混ぜてから配られるので、街で起きた動きが誰の差し金なのかは、開票の日まで分かりません。ほかの参謀の封筒の中身を読みながら、どの地区に手を打てば票が動くのかを見極めてください。</p>'+
  '<div class="gd-startrow"><button class="pri" id="gd-tut-start">チュートリアルを始める</button><span class="small">チュートリアル形式で、実際の盤面を使ってルールと操作を確認できます。毎回同じ局面から始まる 4 人戦です。</span></div></div>'+
  '<h3>1 局の流れ</h3><p>選挙戦は 5 ラウンド続きます。毎ラウンド、街にニュースが届き、参謀たちが封筒を出し、それを開けるたびに街の空気が少しずつ動いていきます。ラウンド 2 と 4 の終わりには世論調査の結果が公表され、5 ラウンドを終えると投票日を迎えます。</p><p>ラウンドごとに、参謀の一人が<b>選管</b>を持ち回りで務めます。選管は選挙管理委員会の役で、ニュースの札をめくり、封筒を混ぜて配り、開票やくじでは袋を扱います。卓を回すための役なので、ゲームの中の誰の味方でもありません。</p><div class="gd-fig">'+svgFlow()+'</div>'+
- '<h3>袋と票コマ（引いて、替えて、戻す）</h3><p>地区ごとに置かれた袋は、そこに暮らす人たちの心の中です。コマ 1 個は有権者 1000 人を表します。<b>白いコマ</b>はまだ誰に入れるか決めていない人たち、色のコマはその色の候補を支持している人たちです。演説やうわさが届くと、袋からコマを何個か引いて、心が動いた人のコマを替えてから袋に戻します。<b>封筒を開けた人だけが</b>、引いたコマの情報を見ることができます。</p><div class="gd-fig">'+svgBag()+'</div>'+
- '<h3>封筒の配り方</h3><p>参謀たちの封筒は投函箱で混ぜられ、誰の差し金か分からない動きとして街に放たれます。封筒を受け取った人が開けて中身を読み上げ、袋の中の人の心を動かします。</p><div class="gd-fig">'+svgEnv()+'</div>'+
- '<p class="small">選挙戦が始まった時点では、候補者カードに書かれた地盤から、どの地区にどの候補の支持者がいるかを全員が同じように知っています。そこから先、街の人の心がどう動いたかは、自分が開けた封筒で見たコマと、公開世論調査から推し量ることになります。</p>'+
+ '<h3>袋と票コマ（引いて、替えて、戻す）</h3><p>地区ごとに置かれた袋は、そこに暮らす人たちの心の中です。コマ 1 個は有権者 1000 人を表します。<b>白いコマ</b>はまだ誰に入れるか決めていない人たち、色のコマはその色の候補を支持している人たちです。演説やうわさが届くと、袋からコマを何個か引いて、心が動いた人のコマを替えてから袋に戻します。<b>封筒を開けた人と、その左隣の立会人だけが</b>、引いたコマの情報を見ることができます。</p><div class="gd-fig">'+svgBag()+'</div>'+
+ '<h3>封筒の配り方</h3><p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>立会人は、封筒を開けた人の左隣の参謀が務めます。</p><div class="gd-fig">'+svgEnv()+'</div>'+
+ '<p class="small">選挙戦が始まった時点では、候補者カードに書かれた地盤から、どの地区にどの候補の支持者がいるかを全員が同じように知っています。そこから先、街の人の心がどう動いたかは、自分が開けた封筒や立会人として見たコマと、公開世論調査から推し量ることになります。</p>'+
  '<h3>公開世論調査</h3><p>ラウンド 2 と 4 の終わりには、新聞社が世論調査の結果を出します。すべての地区で袋からコマを 2 個ずつ引いて全員に見せるので、このときは全員が同じ手がかりを手にします。</p><div class="gd-fig">'+svgPoll()+'</div>'+
  '<h3>行動</h3><p>参謀の手札は 12 枚あり、一度使ったカードは戻ってきません。毎ラウンド 2 枚ずつ封筒に入れていくと、選挙戦が終わるときに 2 枚が使われずに残ります。どの手をどのラウンドに使うかも、参謀の腕の見せどころです。</p><div class="gd-acts">'+at+'</div>'+
  '<h3>地区</h3><p>街は 5 つの地区に分かれていて、有権者の数も、投票に行く人の数も、話が届きやすい手段も地区ごとに違います。</p><div class="tw"><table><tr><th>地区</th><th class="n">有権者</th><th class="n">投票する人</th><th class="n">演説</th><th class="n">SNS</th><th class="n">新聞<br>テレビ</th></tr>'+dist+'</table></div><ul class="gd-ul">'+g0.ds.map(function(D){return '<li>'+esc(mmTalk(D))+'</li>';}).join('')+'</ul>'+
  '<ul class="gd-ul small"><li>「投票に行く人」は、投票日に実際に投票所へ足を運ぶ人の数です。開票では、この数のコマをその地区の袋から引きます。団地では、有権者 1 万人のうち 8 千人が投票に行きます。</li><li>演説、SNS、新聞テレビの列は、その手段で袋から引けるコマの数です。「投票する人」の列は、投票に行く人の数です。3 個なら、3 千人の心に触れることができます。うわさは手段を選ばず、どの地区でも 3 個引きます。</li><li>候補にはそれぞれ得意な手段があります。その手段で自分の候補を広めると、話がもう 1 千人に届き、コマを 1 個多く引きます。</li></ul>'+
  '<h3>開票と勝ち方</h3><div class="gd-fig">'+svgCount()+'</div>'+
  '<ul class="gd-ul"><li>投票日には、地区 1 から順に開票します。投票に行く人と同じ数のコマを袋から引いて、色ごとに数えます。白いコマは、棄権や白票として数えません。</li><li>期日前に投票を済ませた人の票も足します。全地区の合計がいちばん多い候補が新しい市長になり、その参謀の勝ちです。</li><li>票が並んだときは、くじで決めます。開票のやり直しはありません。開票とくじでは、選管が袋を扱います。3 人で遊ぶときは、候補も 3 人で争います。</li></ul>'+
- '<h3>しゃべってよいこと</h3><p>作戦を練っているあいだも、封筒を開けているあいだも、何を話してもかまいません。駆け引きの嘘も自由です。ただし、参謀カードと、自分が開けた封筒で見たコマは、ほかの人に見せないでください。何が出たかを口で伝えるのはかまいませんし、そこで嘘をつくのも作戦のうちです。</p>';
+ '<h3>しゃべってよいこと</h3><p>作戦を練っているあいだも、封筒を開けているあいだも、何を話してもかまいません。駆け引きの嘘も自由です。ただし、参謀カードと、自分が見たコマは、ほかの人に見せないでください。何が出たかを口で伝えるのはかまいませんし、そこで嘘をつくのも作戦のうちです。</p>';
 }
 var nav=$('.tabs'),secPlay=$('#tab-play');
 var btn=document.createElement('button');btn.id='tabbtn-guide';btn.dataset.tab='guide';btn.textContent='遊び方';
@@ -1113,10 +1114,10 @@ function pollEl(){return $$('#tab-play .roundres .ln').filter(function(el){retur
 function q(s){return function(){return $(s);};}
 var STEPS=[
  {id:'intro',title:'はじめに',next:true,sel:q('#tab-play .card'),text:function(){
-   return '<p>これは練習の 1 局です。あなたとコンピュータ 3 人が、それぞれ候補の参謀として 5 つの地区で選挙戦を戦います。毎回同じ局面から始まります。</p><p>参謀たちの封筒は<b>混ぜて配られ、受け取った人が開けます</b>。ラウンド 2 と 4 の終わりには、<b>公開世論調査</b>の結果が出ます。</p><p>光っている所を押すと進みます。説明の手順は「次へ」で進みます。「やめる」を押すと、いつでも普通の対戦に戻れます。</p>';}},
+   return '<p>これは練習の 1 局です。あなたとコンピュータ 3 人が、それぞれ候補の参謀として 5 つの地区で選挙戦を戦います。毎回同じ局面から始まります。</p><p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>ラウンド 2 と 4 の終わりには、<b>公開世論調査</b>の結果が出ます。</p><p>光っている所を押すと進みます。説明の手順は「次へ」で進みます。「やめる」を押すと、いつでも普通の対戦に戻れます。</p>';}},
  {id:'role',title:'あなたの立場',next:true,sel:q('#tab-play .card.me'),text:function(){
    var P=me();
-   return '<p>あなたは '+cname(P.cand)+' の候補を支える参謀です。誰の参謀なのかは、開票の日まで明かしません。</p><p>候補者カードの<b>地盤</b>を見れば、どの地区にどの候補の支持者がいるかは全員が同じように知っています。ここから先は、<b>自分が開けた封筒で見たコマ</b>と<b>公開世論調査</b>を手がかりに、街の人の心の動きを推し量ります。</p>';}},
+   return '<p>あなたは '+cname(P.cand)+' の候補を支える参謀です。誰の参謀なのかは、開票の日まで明かしません。</p><p>候補者カードの<b>地盤</b>を見れば、どの地区にどの候補の支持者がいるかは全員が同じように知っています。ここから先は、<b>自分が開けた封筒や立会人として見たコマ</b>と<b>公開世論調査</b>を手がかりに、街の人の心の動きを推し量ります。</p>';}},
  {id:'news',title:'ニュース',next:true,sel:function(){var c=$$('#tab-play .card');return c[1]||null;},text:newsText},
  {id:'board',title:'地区と候補の見方',next:true,sel:function(){var h=$$('#tab-play h3').filter(function(x){return x.textContent==='地区';})[0];return h?h.nextElementSibling:null;},text:function(){
    var g=G(),P=me(),bd0=g.baseD[P.cand],d0=bd0[0][0],D=g.ds[d0],t=MM.effT(g,d0),C=MM.CANDS[P.cand];
@@ -1133,8 +1134,8 @@ var STEPS=[
  {id:'open1',title:'開封の結果を読む',next:true,sel:q('#tab-play .roundres'),text:function(){
    var g=G(),all=roundLog(g.round).map(function(l){return parseLine(l.t);}).filter(Boolean),n=all.length;
    var my=all.filter(function(o){return o.mine;}),byMe=all.filter(function(o){return o.byMe;});
-   return '<p>封筒 <b>'+n+' 枚</b>を混ぜ、選管の左から 1 枚ずつ配りました。受け取った人は、行動と候補と地区、引いた人数を読み上げてから、<b>一人で</b>袋をのぞいてコマを替えました。</p>'+
-     '<p>あなたが開けた封筒は '+byMe.length+' 枚です。その行は、引いたコマの色が見えています。ほかの人には見えていません。</p>'+
+   return '<p>封筒 <b>'+n+' 枚</b>が、選管の左から 1 枚ずつ配られました。受け取った人が中身を読み上げ、左隣の立会人と一緒に結果を見ました。</p>'+
+     '<p>あなたが開けた封筒は '+byMe.length+' 枚です。その行と、あなたが立会人として見た行は、引いたコマの色が見えています。立会人として見た行には「立会人として見ました」と出ます。</p>'+
      '<p>あなたの封筒の行には、背景に色が付いています。</p><ul class="gd-ul">'+my.map(function(o){return '<li>'+esc(o.kind+'「'+o.arg+'」')+' → '+esc(changeText(o))+'</li>';}).join('')+'</ul>'+
      '<p>ほかの '+(n-my.length)+' 枚は、誰の差し金か分かりません。どの色の候補をどの地区で動かそうとしたのかを手がかりに、誰が誰の参謀なのかを推理してください。</p>';}},
  {id:'next1',title:'次のラウンドへ',sel:q('#next'),done:function(){var g=G();return g&&g.round>=2&&phase()==='plan';},text:function(){
