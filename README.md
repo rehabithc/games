@@ -24,3 +24,7 @@
 
 Along The Trail is a semi-cooperative hiking board game (2–4 players) you can play in the browser.
 © 2026 株式会社リハビット. Made by Clinica Fermentica. Game design: 華佗東香. Free to play. All rights reserved — please do not redistribute or sell.
+
+## 書体
+
+英字の見出しには Fermentica Serif を使っています。Libre Caslon Text（Copyright 2018-2020 The Libre Caslon Text Project Authors, https://github.com/thundernixon/Libre-Caslon）を株式会社リハビット（制作: Clinica Fermentica）が改変した書体で、SIL Open Font License, Version 1.1（https://openfontlicense.org）のもとで配布しています。著作権表示とライセンスは、ページに埋め込んだ書体ファイルの中にも入っています。
