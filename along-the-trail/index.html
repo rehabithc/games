@@ -102,6 +102,15 @@ th{background:var(--soft)}
 .modal .box{background:var(--panel);color:var(--ink);max-width:760px;margin:0 auto;border-radius:12px;padding:16px;border:1px solid var(--line)}
 .modal h3{margin:12px 0 4px;font-size:15px}
 .modal ul{margin:4px 0;padding-left:20px}
+/* 感想の案内（本番の 1 局が終わったとき・結果の上に重ねる。公開版で感想フォームがあるときだけ出る） */
+.fbpop{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.fbpop[hidden]{display:none}
+.fbpop .box{background:var(--panel);color:var(--ink);border:2px solid var(--accent);border-radius:14px;padding:14px 16px;width:min(420px,100%);box-shadow:0 8px 28px rgba(0,0,0,.35);margin-bottom:max(8px,env(safe-area-inset-bottom))}
+.fbpop h2{margin:0 0 6px;font-size:17px}
+.fbpop p{margin:0 0 10px}
+.fbpop .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.fbpop a.btn{display:inline-block;text-decoration:none;border-radius:8px;padding:7px 12px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);font-weight:700}
+@media (min-width:700px){.fbpop{align-items:center}}
 .win{font-weight:800;color:var(--accent)}
 .hidden{display:none!important}
 .pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
@@ -252,13 +261,19 @@ svg .tnm.above{font-size:8.5px}
 <footer id="pubFoot" class="muted" style="margin:28px 0 12px;padding-top:12px;border-top:1px solid var(--line);line-height:1.7">
   <p style="margin:0 0 6px">山・コース・距離・時間・難しさはゲームのために作り変えたものです。<b>実際の登山の参考にしないでください。</b>盤は作者が描いた概略図で、鉄道会社・自治体・施設とは関係ありません。</p>
   <p style="margin:0 0 6px">© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東香<br>無料で遊べます。個人で印刷して遊ぶのも自由です。無断での再配布・販売はご遠慮ください。</p>
-  <p style="margin:0 0 6px">通信はしません。動きと音の設定・説明を読んだか・練習の進み具合だけを、この端末のブラウザの中に保存します（外へは送りません）。</p>
+  <p style="margin:0 0 6px">通信はしません。動きと音の設定・説明を読んだか・練習の進み具合・感想の案内を出したかだけを、この端末のブラウザの中に保存します（外へは送りません）。</p>
   <p style="margin:0">v2.4・2026-11-13<span id="pubFb">　<a href="https://docs.google.com/forms/d/e/1FAIpQLSe8c2f0-At9IVFHokOFdS9Dsy-F3Cw9IqpYzpq04Ea0lH1emg/viewform" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
 </footer>
 </div>
 <div id="tutDim"></div>
 <div id="tutBub" class="tut-bub hidden" role="dialog" aria-live="polite"></div>
 <div id="dusk" aria-hidden="true"></div>
+<div id="fbPop" class="fbpop" role="dialog" aria-modal="true" aria-labelledby="fbT" hidden><div class="box">
+  <h2 id="fbT">おつかれさまでした</h2>
+  <p>遊んでみて、どうでしたか？ ひとことでも感想をもらえると、次の版づくりの参考になります（匿名）。</p>
+  <div class="row"><button id="fbClose">閉じる</button><a id="fbGo" class="btn" href="#" target="_blank" rel="noopener">感想を送る（匿名）</a></div>
+  <p class="muted" style="margin:8px 0 0;font-size:13px">閉じても、結果の下と画面のいちばん下からいつでも送れます。</p>
+</div></div>
 
 <div id="rules" class="modal"><div class="box">
   <div class="row"><b style="font-size:17px;margin-right:auto">ルールの早見（半協力 v2.4）</b><button id="btnRulesClose" class="primary">閉じる</button></div>
@@ -1446,6 +1461,7 @@ function endPanel() {
   s += `</table></div><div class="muted" style="margin-top:6px">遭難者 ${resc} 人。同点は体力の残りが多い人の勝ち。乱数の種 ${G.seed}（同じ種・同じ選び方で同じ局）。</div>`;
   if (G.lieLog.length) s += '<h2 style="margin-top:10px">コンピューターの嘘</h2>' + G.lieLog.map(x => '<div class="muted">' + esc(x) + '</div>').join('');
   if (!G.tut) s += `<div style="margin-top:10px"><button id="btnAgain" class="primary pulse">もう一度（同じ設定・新しい種）</button> <button id="btnBack">準備へ</button></div>`;
+  if (!G.tut && fbOn()) s += `<div class="muted" id="endFb" style="margin-top:8px">遊んでみてどうでしたか？ <a href="${FB_URL}" target="_blank" rel="noopener">感想を送る（匿名）</a></div>`;
   s += '</div>';
   return s;
 }
@@ -1538,7 +1554,7 @@ function bind() {
   on('#btnFast', async () => {
     const g0 = G;
     await doResolve();
-    if (motionMode() === 'off') { while (G === g0 && !G.over) { beginTurn(true); doResolve(true); } if (G === g0) render(); return; }
+    if (motionMode() === 'off') { while (G === g0 && !G.over) { beginTurn(true); doResolve(true); } if (G === g0) { render(); if (G.over) fbAfterEnd(G); } return; }
     while (G === g0 && !G.over && UI.phase === 'react') await doResolve(); // 1 手番ずつ、動きが終わってから次へ
   });
   on('#btnAgain', () => {
@@ -1576,9 +1592,49 @@ async function doResolve(silent) {
   resolve(G, ho);
   UI.colors = [];
   if (!silent && motionMode() !== 'off') setBusy(true);
-  if (G.over) { addLog(G, '全員が下山・引き返し・遭難のどれかになったので終了', 'h'); UI.phase = 'end'; if (!silent) { render(); await playAnim(sn); } return; }
+  if (G.over) { addLog(G, '全員が下山・引き返し・遭難のどれかになったので終了', 'h'); UI.phase = 'end'; if (!silent) { const g = G; render(); await playAnim(sn); fbAfterEnd(g); } return; }
   if (!silent) { beginTurn(); await playAnim(sn); }
 }
+
+// ====== 感想の案内（本番の 1 局が終わったとき、結果の上に 1 回重ねる）======
+// 送り先は公開用の道具（公開準備/作る_公開用.py）が差し込む。https で始まらないとき（この正本・--no-form）は何も出さない。
+// 決まり: 送った（感想のリンクを押した）人＝以後出さない／閉じた人＝そのあと本番を 3 局終えるまで出さない・出すのは合計 2 回まで。
+// 練習と試験用の速回しでは出さず、数えもしない。端末に保存できないときは、その画面を開いている間に 1 回だけ。
+const FB_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe8c2f0-At9IVFHokOFdS9Dsy-F3Cw9IqpYzpq04Ea0lH1emg/viewform';
+const FB_KEY = 'tozan.fb', FB_MAX = 2, FB_GAP = 3;
+let FB_MEM = null; // 端末に保存できないときの置き場（開いている間だけ）
+function fbOn() { return /^https:\/\//.test(FB_URL); }
+function fbState() {
+  if (FB_MEM) return FB_MEM;
+  try { const v = JSON.parse(localStorage.getItem(FB_KEY) || 'null'); return v && typeof v === 'object' ? v : {}; }
+  catch (e) { FB_MEM = { mem: true }; return FB_MEM; }
+}
+function fbPut(o) {
+  if (!FB_MEM) { try { localStorage.setItem(FB_KEY, JSON.stringify(o)); return; } catch (e) { } }
+  o.mem = true; FB_MEM = o;
+}
+function fbSent() { const s = fbState(); s.sent = true; fbPut(s); fbClose(); }
+function fbAfterEnd(g) {
+  if (!fbOn() || !g || g.tut || SIM_MODE || g.fbDone) return;
+  g.fbDone = true; // 1 局につき 1 回だけ数える
+  const s = fbState();
+  if (s.sent || (s.shown || 0) >= (s.mem ? 1 : FB_MAX)) return;
+  if ((s.wait || 0) > 0) { s.wait--; fbPut(s); return; }
+  setTimeout(() => { // 結果が見えてから重ねる。その間に次の局へ進んだら出さない（数えもしない）
+    if (G !== g || !UI || UI.phase !== 'end') return;
+    const t = fbState(); if (t.sent) return;
+    t.shown = (t.shown || 0) + 1; t.wait = FB_GAP; fbPut(t);
+    fbOpen();
+  }, 600);
+}
+function fbOpen() {
+  const p = $('#fbPop'); if (!p) return;
+  $('#fbGo').href = FB_URL;
+  const ep = $('#endPanel'); if (ep) ep.scrollIntoView({ block: 'start', behavior: motionMode() === 'full' ? 'smooth' : 'auto' }); // 案内の後ろに結果の表が見えるように
+  p.hidden = false;
+  $('#fbGo').focus();
+}
+function fbClose() { const p = $('#fbPop'); if (p) p.hidden = true; }
 
 // ====== 動き（アニメーション）。決まりには触れず、解決の前後の差を見せるだけ ======
 const MOTION = (function () { const m = { speed: 'normal', reduce: null }; try { const v = JSON.parse(localStorage.getItem('tozan.motion') || 'null'); if (v) Object.assign(m, v); } catch (e) { } return m; })();
@@ -2244,6 +2300,11 @@ function closeRules() { $('#rules').classList.remove('open'); }
 $('#btnRules').onclick = openRules;
 $('#btnRulesClose').onclick = closeRules;
 $('#rules').onclick = e => { if (e.target.id === 'rules') closeRules(); };
+$('#fbClose').onclick = fbClose;
+$('#fbPop').onclick = e => { if (e.target.id === 'fbPop') fbClose(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#fbPop').hidden) fbClose(); });
+// 感想のリンク（案内・結果の下・画面のいちばん下）を押したら「送った」として以後は案内を出さない
+document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a'); if (a && fbOn() && a.href === FB_URL) fbSent(); });
 $('#btnRestart').onclick = () => { if (!G || confirm('この局をやめて準備に戻りますか？')) showSetup(); };
 $('#btnTheme').onclick = () => {
   const r = document.documentElement; const cur = r.getAttribute('data-theme');
