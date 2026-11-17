@@ -5,7 +5,7 @@
 | ゲーム | 遊ぶ |
 |---|---|
 | 山越え谷越え／Along The Trail（半協力の登山ボードゲーム・2〜4 人） | https://rehabithc.github.io/games/along-the-trail/ |
-| メイヤーメイカー／The Mayor Maker（市長選のゲーム・3〜4 人） | 制作中 |
+| メイヤーメイカー／The Mayor Maker（市長選のゲーム・3〜4 人） | https://rehabithc.github.io/games/mayor-maker/ |
 
 - 初めての人は、準備画面の「はじめての人へ」（練習）から。ルールは画面の「ルールの早見」にあります。
 - どのゲームも通信はしません。フォルダ 1 つにファイル 1 つで動き、スマホでも遊べます。
