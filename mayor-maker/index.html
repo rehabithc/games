@@ -8,18 +8,18 @@
 <style>
 :root{
   --bg:#f7f5ef; --paper:#fffdf8; --fg:#23211c; --mute:#6b665a; --line:#d9d3c4;
-  --ink:#1f3a5f; --red:#c23b3b; --blue:#2d5ea8; --yellow:#c99a1a; --green:#3b8a4e; --white-coma:#f2efe6;
+  --ink:#1f3a5f; --red:#9c3b34; --blue:#2c5596; --yellow:#d9a92a; --green:#3b7d47; --white-coma:#f2efe6;
   --hl:#f3e2a8; --bar2:#c99a1a; --ok:#3b8a4e; --ng:#c23b3b;
   --body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   --disp:"Hiragino Mincho ProN","Yu Mincho",serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#1a1916; --paper:#22211d; --fg:#ece7da; --mute:#a39c8c; --line:#3d3a32; --ink:#9db9dc;
-  --red:#e06a6a; --blue:#6f9be0; --yellow:#e0b64a; --green:#6fb983; --white-coma:#4a473f;
+  --red:#d07068; --blue:#7099d8; --yellow:#e6bd52; --green:#72b07e; --white-coma:#4a473f;
   --hl:#5e5122; --bar2:#e0b64a; --ok:#6fb983; --ng:#e06a6a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1a1916; --paper:#22211d; --fg:#ece7da; --mute:#a39c8c; --line:#3d3a32; --ink:#9db9dc;
-  --red:#e06a6a; --blue:#6f9be0; --yellow:#e0b64a; --green:#6fb983; --white-coma:#4a473f;
+  --red:#d07068; --blue:#7099d8; --yellow:#e6bd52; --green:#72b07e; --white-coma:#4a473f;
   --hl:#5e5122; --bar2:#e0b64a; --ok:#6fb983; --ng:#e06a6a; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -47,6 +47,8 @@ input[type=number]{width:7.5em}
 .dname{font-weight:700}
 .chip{display:inline-block;width:12px;height:12px;border:1px solid var(--line);border-radius:2px;vertical-align:-1px;margin-right:3px}
 .c0{background:var(--red)}.c1{background:var(--blue)}.c2{background:var(--yellow)}.c3{background:var(--green)}.c4{background:var(--white-coma)}
+.chip.emb{width:18px;height:18px;border:none;border-radius:4px;vertical-align:-4px;padding:2px}.chip.emb svg{display:block;width:100%;height:100%}
+.kname{font-family:var(--disp);font-weight:800;font-size:18px;margin-top:2px}.kcatch{font-size:13px;margin:2px 0 4px}
 .t0{color:var(--red)}.t1{color:var(--blue)}.t2{color:var(--yellow)}.t3{color:var(--green)}
 .cands{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .clines{margin-top:4px;font-size:13.5px;line-height:1.5}.clines .cl{padding:3px 0;border-top:1px dashed var(--line)}.clines .cl:first-child{border-top:none}.clines .cn{display:block;font-size:12px;color:var(--mute)}
@@ -75,6 +77,7 @@ ol.rules li,ul.rules li{margin:6px 0}
 .roundres .ln{padding:5px 0;border-bottom:1px solid var(--line);font-size:14px}
 .roundres .ln.ev{color:var(--ink)}
 .roundres .ln.mine{background:var(--hl);padding-left:6px}
+.roundres .ln.wit{border-left:4px solid var(--yellow);padding-left:6px}
 .roundres .ln:last-of-type{border-bottom:none}
 .chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0}.chk input{margin-top:5px;flex:none}
 @media (max-width:520px){ .grid{grid-template-columns:1fr 1fr} .cands{grid-template-columns:1fr} th,td{padding:5px 6px;font-size:12.5px} }
@@ -125,7 +128,7 @@ ol.rules li,ul.rules li{margin:6px 0}
 .gd-ct{font-weight:700}
 .gd-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0}
 .gd-col{text-align:center;min-width:0}
-.gd-ch{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd-ch{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.02em}.gd-ch .chip.emb{width:15px;height:15px;margin-right:1px}
 .gd-stack{display:flex;flex-wrap:wrap-reverse;justify-content:center;align-content:flex-start;gap:3px;min-height:34px;padding:4px 2px;border-bottom:2px solid var(--line)}
 .gd-n{font-weight:700;font-variant-numeric:tabular-nums}
 .gd-sum{font-size:13px}
@@ -174,6 +177,13 @@ body.gd-tut .wrap{padding-bottom:52vh}
   [class*="gd-"],[class*="gd-"]::before,[class*="gd-"]::after,.gd-focus{animation:none!important;transition:none!important}
 }
 body.gd-fast [class*="gd-"],body.gd-fast [class*="gd-"]::before,body.gd-fast [class*="gd-"]::after{animation:none!important;transition:none!important}
+.gd-act{display:flex;gap:12px;align-items:flex-start;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.gd-actcard{flex:none;width:76px;height:106px;border:2px solid var(--ink);border-radius:8px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 4px;text-align:center;box-shadow:2px 3px 0 var(--line)}
+.gd-actcard b{font-family:var(--disp);font-size:15px;line-height:1.2;color:var(--ink)}
+.gd-actk,.gd-actn{font-size:10.5px;color:var(--mute)}
+.gd-acttx{min-width:0}
+.gd-acttx p{margin:0 0 6px}
+.gd-actmean{color:var(--ink)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #hero{text-align:center;padding:4px 0 6px}
 #hero .title-logo{max-width:560px}
@@ -249,7 +259,7 @@ footer#pubFoot a{color:var(--ink)}
   <p>市や地区、候補者、出来事は、ゲームのための作り話です。実在の自治体や選挙、人物、団体とは関係ありません。</p>
   <p>© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東香<br>無料で遊べます。無断で再配布したり販売したりするのはご遠慮ください。</p>
   <p>通信はしません。この端末のブラウザには、開いていた画面を保存します。外へは送りません。</p>
-  <p><b>α版</b>　ルールを調整している途中の版です。遊びながら変わることがあります。<br>v0.3、2026-11-18<span id="pubFb">　<a href="{感想フォームURL}" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
+  <p><b>α版</b>　ルールを調整している途中の版です。遊びながら変わることがあります。<br>v0.4、2026-11-18<span id="pubFb">　<a href="{感想フォームURL}" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
 </footer>
 </div>
 <div id="fbPop" class="fbpop" role="dialog" aria-modal="true" aria-labelledby="fbT" hidden><div class="box">
@@ -261,7 +271,7 @@ footer#pubFoot a{color:var(--ink)}
 <script id="engine">
 (function(root){
 'use strict';
-var CN=['赤','青','黄','緑','白'], W=4;
+var CN=['時計塔','橋','桜','広場','白'], W=4;
 var TILES=[
  {id:1,name:'駅前・商業地区',s:'駅前',pop:10,age:[5,4,1]},
  {id:2,name:'新興住宅地',s:'新興住宅',pop:12,age:[4,6,2]},
@@ -274,8 +284,10 @@ var LV={
  paper:function(a){return a[2]>=4?3:a[2]>=2?2:1;}};
 var CHN={face:'対面',net:'ネット',paper:'紙電波'};
 var MARK={0:'なし',1:'×',2:'○',3:'◎'};
-function turnoutBase(a){return Math.round(a[0]*0.4+a[1]*0.7+a[2]*0.9+1e-9);}
-var PLEDGE={old:{t:'高齢 4 以上',f:function(a){return a[2]>=4;}},young:{t:'若年 4 以上',f:function(a){return a[0]>=4;}},mid:{t:'中年 5 以上',f:function(a){return a[1]>=5;}}};
+function turnoutBase(a,k){if(!k)return Math.round(a[0]*0.4+a[1]*0.7+a[2]*0.9+1e-9);return Math.round(a[0]*k[0]+a[1]*k[1]+a[2]*k[2]+1e-9);}
+var PLEDGE={old:{t:'高齢 4 以上',f:function(a){return a[2]>=4;}},mid4:{t:'中年 4 以上',f:function(a){return a[1]>=4;}},young:{t:'若年 4 以上',f:function(a){return a[0]>=4;}},mid:{t:'中年 5 以上',f:function(a){return a[1]>=5;}}};
+var ISS_ID={kosodate:[1,2,6,7],fukushi:[3,4,5,8],machi:[2,4,6,7],keizai:[1,3,5,8]},ISS_T={kosodate:'子育て・教育',fukushi:'福祉・医療',machi:'まちづくり',keizai:'地域経済'};
+Object.keys(ISS_ID).forEach(function(k){PLEDGE[k]={t:ISS_T[k],f:function(a,D){return !!D&&ISS_ID[k].indexOf(D.t.id)>=0;}};});
 var KEY={old:function(D){return -D.age[2];},young:function(D){return -D.age[0];},mid:function(D){return -D.age[1];},small:function(D){return D.pop;}};
 var CANDS=[
  {fav:'face',debate:2,pledge:'old',base:[['old',0,2],['old',1,1]],baseText:'高齢が最も多い地区に 2・2 番目に 1',weak:null},
@@ -283,23 +295,26 @@ var CANDS=[
  {fav:'paper',debate:1,pledge:'mid',base:[['mid',0,2],['small',0,1]],baseText:'中年が最も多い地区に 2・人口が最も少ない地区に 1',weak:null},
  {fav:'face',debate:2,pledge:'old',base:[['old',1,2],['old',2,1]],baseText:'高齢が 2 番目に多い地区に 2・3 番目に 1',weak:'young'}];
 var EVENTS={
- debate:{name:'公開討論会',text:'討論の値がいちばん高い候補が、全地区で 1 個ずつ引きます。白が出たら、その候補の色に替えます。'},
- rain:{name:'大雨',text:'このラウンドは、対面で引く数が 1 減ります。団地と農村では、開票まで投票に行く人が 1 千人減ります。'},
- scoop:{name:'週刊誌のスクープ',text:'くじで 1 色を選び、その候補へのうわさを全地区で 1 個ずつ引いて解決します。火消しトークンがあると止められます。'},
- early:{name:'期日前投票所が増える',text:'このラウンドは、動員 1 枚で期日前のコマを 2 個置けます。2 千票になります。'},
- celeb:{name:'有名人の応援',text:'このラウンドは、ネットで引く数が 1 増えます。'},
- bus:{name:'投票バス',text:'商店街、団地と農村で、開票まで投票に行く人が 1 千人増えます。'},
- sunny:{name:'投票日は晴れ',text:'5 ラウンド目に出たときは、どの地区でも、投票に行く人が 1 千人増えます。ほかのラウンドでは何も起きません。'},
- kaibun:{name:'怪文書が出回る',text:'このラウンドのうわさは、4 個引きます。'},
- koho:{name:'選挙公報が届く',text:'各候補の公約に合う地区で、1 個ずつ引きます。白が出たら、その候補の色に替えます。'}};
+ debate:{name:'公開討論会',text:'討論の値がいちばん高い候補が、全地区で 1 個ずつ引きます。白が出たら、その候補の色に替えます。同点なら何も起きません。'},
+ rain:{name:'大雨',text:'このラウンドは、演説で引く数が 1 減ります。5 ラウンド目に出たときは、ネットが × の地区で、投票に行く人も 1 千人減ります。'},
+ scoop:{name:'週刊誌のスクープ',text:'くじで候補を 1 人選び、その候補を狙ったうわさを、全地区で 1 個ずつ引いて解決します。火消しトークンがあると止められます。'},
+ early:{name:'期日前投票所が増える',text:'このラウンドの動員は、袋から引いて箱に入れる手順を 2 回行います。'},
+ celeb:{name:'選挙系の配信が流行る',text:'このラウンドは、SNS で引く数が、どの地区でも 1 個増えます。良い話も悪い話も同じです。'},
+ bus:{name:'投票バス',text:'紙電波が ◎ の地区で、開票まで投票に行く人が 1 千人増えます。'},
+ sunny:{name:'投票日は晴れ',text:'5 ラウンド目に出たときは、全地区で投票に行く人が 1 千人増えます。ほかのラウンドでは何も起きません。'},
+ kaibun:{name:'疑心暗鬼が広がる',text:'このラウンドのうわさは、白に替える数の上限がなくなります。'},
+ koho:{name:'選挙公報が届く',text:'各候補の公約の課題が付いた地区で、1 個ずつ引きます。白が出たら、その候補の色に替えます。'}};
 var EVIDS=Object.keys(EVENTS);
-var ACT={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',fire:'火消し'};
-var HAND0={speech:3,rumor:3,sns:2,tv:1,mob:2,fire:1};
+var ACT={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',fire:'火消し',poll:'世論調査',call:'投票の呼びかけ',chill:'白けさせる',firm:'支持者を固める',firmB:'支持者を連れて行く'};
+ACT.gamble='大勝負';var HAND0={speech:3,rumor:3,sns:2,tv:1,mob:2,fire:1,poll:1};
+var SPC={};
+var SPIDS=Object.keys(SPC).filter(function(k){return k!=='sp_rebut';});
+Object.keys(SPC).forEach(function(k){ACT[k]=SPC[k].name;});
 var STRATS={
- balance:{name:'バランス',m:{speech:1,rumor:1,mob:1,tv:1,fire:1}},
- survey:{name:'バランス',m:{speech:1,rumor:1,mob:1,tv:1,fire:1}},
- rumor:{name:'うわさ重視',m:{speech:1,rumor:2.5,mob:1,tv:1,fire:1}},
- mobilize:{name:'動員重視',m:{speech:1,rumor:1,mob:2.2,tv:1,fire:1}}};
+ balance:{name:'バランス',m:{speech:1,rumor:1,mob:1,info:1,tv:1,fire:1}},
+ rumor:{name:'うわさ重視',m:{speech:1,rumor:2.5,mob:1,info:1,tv:1,fire:1}},
+ speechy:{name:'演説を多く使う',m:{speech:1,rumor:1,mob:1,info:1,tv:1,fire:1,sp:2}},
+ wide:{name:'全体技を多く使う',m:{speech:1,rumor:1,mob:1,info:1,tv:1,fire:1,gl:2}}};
 function rng32(seed){var a=(seed>>>0)||1;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
 function shuffle(arr,r){for(var i=arr.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
 function sum(a){var s=0;for(var i=0;i<a.length;i++)s+=a[i];return s;}
@@ -309,49 +324,135 @@ function newGame(o){
  var seed=(o.seed==null)?Math.floor(Math.random()*1e9):o.seed;
  var r=rng32(seed);
  var nP=o.nP||4;
- var tiles=TILES.slice(0,5);
- var G={seed:seed,rng:r,nP:nP,home:'off',logOn:!!o.log,log:[],round:0,pub:0,
-   ds:tiles.map(function(t){return {t:t,name:t.s,pop:t.pop,age:t.age,base:turnoutBase(t.age),
+ var tiles=o.map==='random'?shuffle(TILES.slice(),r).slice(0,5):TILES.slice(0,5);
+ var G={seed:seed,rng:r,nP:nP,map:o.map||'fixed',vis:o.vis||'all',sv:o.sv||'std',pp:o.pp||'std',home:o.home||'on',hidOpt:!!o.hid,repl:o.repl||'drop',logOn:!!o.log,log:[],round:0,pub:0,
+   ds:tiles.map(function(t){return {t:t,name:t.s,pop:t.pop,age:t.age,base:turnoutBase(t.age,o.turnK),
      lv:{face:LV.face(t.age),net:LV.net(t.age),paper:LV.paper(t.age)},bag:[0,0,0,0,t.pop],tray:[0,0,0,0],tmod:0};}),
-   supply:[15,15,15,15],fire:[false,false,false,false],kmod:{face:0,net:0},rumorK:3,mobN:1,
+   supply:o.pieces?[o.pieces,o.pieces,o.pieces,o.pieces]:[15,15,15,15],pieces:o.pieces||15,fire:[false,false,false,false],kmod:{face:0,net:0},rumorK:3,mobN:1,
    box:[],stats:{act:{speech:0,rumor:0,snsG:0,snsB:0,tv:0,mob:0,fire:0,poll:0,survey:0},nullified:0,missed:0,supplyCap:0,oneEnv:0,env:0,events:[]}};
- G.C=CANDS;
- G.baseD=[];
+ G.C=o.cands||CANDS;G.sns=o.sns||'std';G.pubConv=!!o.pubConv;
+ G.mobDraw=o.mobDraw||2;G.mobAll=!!o.mobAll;G.mobRefill=!!o.mobRefill;G.mobWhite=!!o.mobWhite;
+ G.mg={n:0,own:0,opp:0,moved:0};
+ G.rmPlus=o.rumorPlus||0;G.rmCapW=o.rumorCapW||0;G.rmLift=!!o.rumorLift;G.rmHeatCap=(o.rumorHeatCap===undefined)?null:o.rumorHeatCap;G.rmWhere=o.rumorWhere||null;G.rmCapK=o.rumorCapK||0;G.kbAbs=!!o.kbAbs;G.opCap=0;G.rmOwn=!!o.rumorOwn;G.rmOwnMin=o.rumorOwnMin||1;G.rmOwnHide=!!o.rumorOwnHide;G.rmHeat=!!o.rumorHeat;G.statDraw=!!o.statDraw;G.rmLog=[];
+ G.mob=o.mob||'std';G.mobHide=o.mobHide||'open';G.mobBlend=!!o.mobBlend;G.readStat={n:0,pTrue:0,hit:0,chance:0};
+ G.mobKeepT=!!o.mobKeepT;G.tCap1=o.tCap==='pop1';G.scoopUsed=!!o.scoopUsed;G.callN=o.callN||1;G.callOnce=!!o.callOnce;G.env2=!!o.env2;G.callMark=[false,false,false,false,false];G.callLog=[];
+ G.hand0=o.hand?Object.assign({},HAND0,o.hand):HAND0;G.spRep=o.spRep||null;G.spFlat=o.spFlat||0;G.spHeat=!!o.spHeat;G.busCond=o.busCond||'old';
+ G.spHist={};G.heat={};G.traceOn=!!o.trace;G.trace=[];G.firm=G.ds.map(function(){return [];});
+ G.evCeleb=o.evCeleb||'all';G.evKaibun=o.evKaibun||'all';G.evRain=o.evRain||'all';G.celebC=-1;G.kaibunC=-1;G.kaibunNF=false;
+ G.gx=o.gx||{};G.gxHeatN=o.gxHeatN||1;G.gxBackLv=o.gxBackLv||'x';G.gheat=[0,0,0,0];G.gxStat={back:0,backConv:0,heatHit:0};
+ G.cnt=o.cnt||'draw';G.wd=o.wd||'none';G.wq=o.wq||1;G.wpoll=null;G.sp=o.sp||'none';G.spK=o.spK||{};G.spSet=o.spSet||SPIDS;G.spPref=o.spPref||null;
+ G.baseD=[];G.baseTray=[0,0,0,0];
  for(var c=0;c<4;c++){
    var used=[];var bd=[];
    G.C[c].base.forEach(function(b){
      var d;
-     var list=rankD(G.ds,b[0]);var k=b[1];
-     while(used.indexOf(list[k])>=0)k++;d=list[k];
+     if(b[0]==='at')d=b[1];else{var list=rankD(G.ds,b[0]);var k=b[1];
+       while(used.indexOf(list[k])>=0)k++;d=list[k];}
      used.push(d);
+     if(b[3]==='tray'){G.ds[d].tray[c]+=b[2];G.supply[c]-=b[2];G.baseTray[c]+=b[2];return;}
      bd.push([d,b[2]]);
      G.ds[d].bag[W]-=b[2];G.ds[d].bag[c]+=b[2];G.supply[c]-=b[2];
    });
    G.baseD.push(bd);
  }
- G.weakD=G.C.map(function(C){return C.weak?rankD(G.ds,C.weak)[0]:null;});
+ G.weakD=G.C.map(function(C){if(C.weakIss){var L=[];for(var j=0;j<5;j++)if(ISS_ID[C.weakIss].indexOf(G.ds[j].t.id)>=0)L.push(j);return L;}return C.weak?rankD(G.ds,C.weak)[0]:null;});
+ G.sv2=G.sv==='two'||G.sv==='twobf';G.backfire=G.sv==='bf'||G.sv==='twobf'||G.sv==='cardbf';G.svCard=G.sv==='card'||G.sv==='cardbf';
+ G.noSv=G.pp!=='std';
+ G.learn=G.sv!=='std'||G.noSv||G.hidOpt||['none','senkan2','even','hidbase','drift','pass','pass2'].indexOf(G.vis)>=0;
+ G.hid=null;
+ if(G.vis==='hidbase'||G.hidOpt){
+   var pool=[0,0,1,1,2,2,3,3,W,W];shuffle(pool,r);G.hid=[];
+   for(var hd=0;hd<5;hd++){var hx=[0,0,0,0,0];for(var hj=0;hj<2;hj++){var hc=pool[hd*2+hj];hx[hc]++;}
+     G.ds[hd].bag[W]-=2;for(var hc2=0;hc2<5;hc2++)G.ds[hd].bag[hc2]+=hx[hc2];for(var hc3=0;hc3<4;hc3++)G.supply[hc3]-=hx[hc3];G.hid.push(hx);}
+ }
  var staff=shuffle([0,1,2,3],r), home=shuffle([0,1,2,3,4],r);
  var strats=o.strats||['balance','balance','balance','balance'];
  G.players=[];
  for(var p=0;p<nP;p++){
    G.players.push({name:o.names?o.names[p]:('席'+(p+1)),human:o.humanSeat===p,strat:strats[p]||'balance',cand:staff[p],home:home[p],
-     hand:JSON.parse(JSON.stringify(HAND0)),belief:G.ds.map(function(D){return D.bag.slice();}),u:G.ds.map(function(){return 0;}),
+     hand:JSON.parse(JSON.stringify(G.hand0)),belief:G.ds.map(function(D){return D.bag.slice();}),u:G.ds.map(function(){return 0;}),
      seen:G.ds.map(function(){return null;}),envCount:0});
+   var PL=G.players[p],SD=STRATS[PL.strat]||{};PL.blind=SD.blind||0;PL.nohome=!!SD.nohome;
+   if(G.noSv){PL.hand.poll=0;if(G.repl==='speech')PL.hand.speech++;}
+ }
+ if(G.sp!=='none'){
+   var spd=shuffle(G.spSet.slice(),r);
+   if(G.sp==='deck'){var dk=[];for(var q0=0;q0<4;q0++)['speech','speech','speech','rumor','rumor','rumor','sns','sns','tv','mob','mob','fire'].forEach(function(t){dk.push(t);});
+     G.spSet.forEach(function(s){dk.push(s);});shuffle(dk,r);
+     G.players.forEach(function(P,i){P.hand={speech:0,rumor:0,sns:0,tv:0,mob:0,fire:0,poll:0};P.sp=[];dk.slice(i*12,i*12+12).forEach(function(t){P.hand[t]=(P.hand[t]||0)+1;if(SPC[t])P.sp.push(t);});});}
+   else G.players.forEach(function(P,i){var n0=G.sp==='deal1'?1:2,got=spd.slice(i*n0,i*n0+n0);
+     if(G.sp==='pick'){var pf=G.spPref;got=got.slice().sort(function(a,b){return pf?pf.indexOf(a)-pf.indexOf(b):0;}).slice(0,1);}
+     P.sp=got;got.forEach(function(s){var rp=SPC[s].rep;if(P.hand[rp]>0)P.hand[rp]--;P.hand[s]=(P.hand[s]||0)+1;});});
  }
  G.indep=nP<4?staff[3]:-1;
- G.out=G.indep;
- if(G.out>=0){G.baseD[G.out].forEach(function(x){G.ds[x[0]].bag[G.out]-=x[1];G.ds[x[0]].bag[W]+=x[1];G.supply[G.out]+=x[1];});
+ G.p3=o.p3||'std';G.out=-1;
+ if(G.p3==='three'&&G.indep>=0){G.out=G.indep;G.baseD[G.out].forEach(function(x){G.ds[x[0]].bag[G.out]-=x[1];G.ds[x[0]].bag[W]+=x[1];G.supply[G.out]+=x[1];});
+   if(G.baseTray[G.out]){G.ds.forEach(function(D){G.supply[G.out]+=D.tray[G.out];D.tray[G.out]=0;});G.baseTray[G.out]=0;}
+   if(G.hid)G.hid.forEach(function(hx,d){var n=hx[G.out];G.ds[d].bag[G.out]-=n;G.ds[d].bag[W]+=n;G.supply[G.out]+=n;hx[G.out]=0;hx[W]+=n;});
    G.players.forEach(function(P){P.belief=G.ds.map(function(D){return D.bag.slice();});});}
+ if(G.hid){G.players.forEach(function(P){for(var d=0;d<5;d++){var b=P.belief[d];
+   for(var c=0;c<5;c++)b[c]-=G.hid[d][c];for(var c2=0;c2<4;c2++)b[c2===G.out?W:c2]+=0.4;b[W]+=0.4;P.u[d]=1.6;}});}
+ G.players.forEach(function(P){if(G.home==='off'||P.nohome||P.blind)return;
+   P.seen[P.home]={r:0,c:G.ds[P.home].bag.slice()};if(G.hid){P.belief[P.home]=G.ds[P.home].bag.slice();P.u[P.home]=0;}});
+ G.wdTie=o.wdTie||'none';G.wdAllWhite=o.wdAllWhite||'none';G.wstat={tie:0,tieW:0,all:0,allW:0,allGo:0,allTie:0};
+ G.base0=G.ds.map(function(D,d){var v=[0,0,0,0];for(var c=0;c<4;c++)v[c]=D.bag[c]-(G.hid?G.hid[d][c]:0)+D.tray[c];return v;});
+ if(o.deal&&o.deal.mode&&o.deal.mode!=='same')dealHands(G,o.deal);
+ G.gb=o.gb||null;G.gbLog=[];if(G.gb)G.players.forEach(function(P,i){P.hand.gamble=1;P.gbPol=(o.gbPols&&o.gbPols[i])||o.gbPol||'never';});
  G.senkan=Math.floor(r()*nP);G.senkan0=G.senkan;
- G.events=shuffle(EVIDS.slice(),r).slice(0,5);
- lg(G,'準備: '+G.ds.map(function(D){return D.name+'（有権者 '+(D.pop>=10?Math.floor(D.pop/10)+' 万'+(D.pop%10?' '+D.pop%10+' 千':''):D.pop+' 千')+'人）';}).join('・')+'。地盤を置いた（色コマ 12 個、白が 12 個減った）。','');
+ var deck=(G.pp==='A1'||G.pp==='A2'||G.pp==='A2b')?EVIDS.filter(function(e){return e!=='paperpoll';}):EVIDS.slice();
+ G.events=shuffle(deck,r).slice(0,5);
+ lg(G,'準備: '+G.ds.map(function(D){return D.name+'（人口 '+D.pop+'）';}).join('・')+'。地盤を置いた（色コマ '+G.baseD.reduce(function(a,b){return a+b.reduce(function(x,y){return x+y[1];},0);},0)+' 個。その分だけ白が減った）。','');
  return G;
 }
+var T6=['speech','rumor','sns','tv','mob','fire'],T6B=T6;
+var ADV={sns:{sns:1,speech:-1},local:{speech:1,tv:-1},ura:{rumor:1,sns:-1},org:{mob:1,rumor:-1}};
+var ADV2={sns:{sns:2,speech:-2},local:{speech:2,tv:-1,sns:-1},ura:{rumor:2,sns:-1,mob:-1},org:{mob:2,rumor:-2}};
+function sumO(h){var s=0;for(var k in h)s+=h[k];return s;}
+function dealHands(G,o){var T6=G.hand0.call>0?T6B.concat(['call']):T6B;var r=G.rng,B={};T6.forEach(function(t){B[t]=G.hand0[t]||0;});var per0=sumO(B);
+ function setH(P,h){var nh={poll:P.hand.poll||0};T6.forEach(function(t){nh[t]=h[t]||0;});P.hand=nh;P.deal.h0=JSON.parse(JSON.stringify(nh));}
+ function pool(com){var L=[];for(var i=0;i<G.nP;i++)T6.forEach(function(t){for(var k=0;k<B[t]-(com[t]||0);k++)L.push(t);});return shuffle(L,r);}
+ G.players.forEach(function(P){P.deal={mode:o.mode,known:[]};});
+ if(o.mode==='rand'||o.mode==='mix'){var com=o.mode==='mix'?o.common:{},L=pool(com),per=per0-sumO(com);
+   G.players.forEach(function(P,i){var h=Object.assign({},com);L.slice(i*per,i*per+per).forEach(function(t){h[t]=(h[t]||0)+1;});setH(P,h);});}
+ else if(o.mode==='adv'){var tb=o.tbl||(o.strong?ADV2:ADV),ks=shuffle(Object.keys(tb),r);
+   G.players.forEach(function(P,i){var h=Object.assign({},B),a=tb[ks[i]];for(var t in a)h[t]+=a[t];P.adv=ks[i];setH(P,h);});}
+ else if(o.mode==='draft'){var com2=o.common,L2=pool(com2),hs=G.players.map(function(){return Object.assign({},com2);}),V=G.players.map(function(P,i){return draftBase(G,i);});
+   for(var lap=0;lap<o.laps;lap++){var packs=G.players.map(function(){return L2.splice(0,4);}),pass=[];
+     G.players.forEach(function(P,i){var pk=packs[i];for(var j=0;j<2;j++){var bi=0,bv=-1e9;
+         pk.forEach(function(t,ix){var v=V[i][t]*Math.pow(o.dec||0.75,hs[i][t]||0)*(1+0.1*(r()-0.5));if(v>bv){bv=v;bi=ix;}});
+         hs[i][pk[bi]]=(hs[i][pk[bi]]||0)+1;pk.splice(bi,1);}pass[i]=pk;});
+     G.players.forEach(function(P,i){var to=(i+1)%G.nP;pass[i].forEach(function(t){hs[to][t]=(hs[to][t]||0)+1;});P.deal.known.push({to:to,cards:pass[i].slice()});});}
+   G.players.forEach(function(P,i){setH(P,hs[i]);});}
+}
+function draftBase(G,i){var P=G.players[i],m=STRATS[P.strat].m,own=P.cand,b=P.belief;
+ var ev=expVotes(G,b,null),top=-1,tv=-1;for(var c=0;c<4;c++)if(c!==own&&ev[c]>tv){tv=ev[c];top=c;}
+ var wt=[0,0,0,0,0];for(var c1=0;c1<4;c1++)wt[c1]=c1===own?1:(c1===top?-1:-0.35);
+ function ov(d,k,from,to){var bb=b[d],n=sum(bb);if(n<=0||k<=0)return 0;var e=Math.min(k,n)*bb[from]/n;if(to!==W)e=Math.min(e,G.supply[to]);return (G.cnt==='draw'?e*effT(G,d)/n:e)*(wt[to]-wt[from]);}
+ var sp=0,tvv=0,sn=0,ru=0,thr=0;
+ for(var d=0;d<5;d++){sp=Math.max(sp,ov(d,kSp(G,d,own),W,own));tvv+=ov(d,kTv(G,d,own),W,own);
+   sn=snsAllOn(G)?sn+ov(d,kNetW(G,d,own,true),W,own):Math.max(sn,ov(d,kNet(G,d,own,true),W,own));
+   for(var y=0;y<4;y++){if(y===own||y===G.out)continue;ru=Math.max(ru,ov(d,kRumorE(G,d,y),y,W)*rmCapF(G,b,d,kRumorE(G,d,y),y));}
+   var n3=sum(b[d])||1;thr=Math.max(thr,G.cnt==='draw'?3*b[d][own]/n3*effT(G,d)/n3:3*b[d][own]/n3);}
+ return {speech:m.speech*(m.sp||1)*sp,tv:m.tv*(m.gl||1)*tvv,sns:m.speech*(m.gl||1)*sn,rumor:m.rumor*ru,mob:m.mob*Math.min(G.mobN,G.supply[own]),fire:m.fire*0.35*thr*(G.nP-1)};}
 function lg(G,t,cls){if(G.logOn)G.log.push({r:G.round,t:t,cls:cls||''});}
-function effT(G,d){var D=G.ds[d];return Math.max(0,Math.min(D.pop,D.base+D.tmod));}
+function effT(G,d){var D=G.ds[d];return Math.max(0,Math.min(D.pop-(G.tCap1?1:0),D.base+D.tmod-(D.early||0)+(D.keep||0)));}
 function obsAll(G){return G.players.map(function(){return true;});}
-function obsSet(G){return G.opener==null?obsAll(G):G.players.map(function(P,i){return i===G.opener||i===(G.opener+1)%G.nP;});}
-function hidTxt(G){return '（引いたコマは開けた人と立会人だけが見た）';}
+var SV={};
+var DISC=['poll','fire','tv','sns','rumor','speech','mob'];
+var VIS={};
+var PP={};
+var HOME={};
+var HID={};
+var P3={};
+function obsSet(G){var v=G.vis;
+ if(v==='all'||v==='hidbase'||v==='drift')return obsAll(G);
+ if(v==='none')return G.players.map(function(){return false;});
+ if(v==='pass')return G.opener==null?obsAll(G):G.players.map(function(P,i){return i===G.opener;});
+ if(v==='pass2')return G.opener==null?obsAll(G):G.players.map(function(P,i){return i===G.opener||i===(G.opener+1)%G.nP;});
+ if(v==='senkan2')return G.players.map(function(P,i){return i===G.senkan||i===(G.senkan+1)%G.nP;});
+ if(v==='even'&&G.round>G.nP*Math.floor(5/G.nP))return obsAll(G);
+ return G.players.map(function(P,i){return i===G.senkan;});}
+function hidTxt(G){return G.vis==='none'?'（引いたコマは誰も見ていない）':G.vis==='pass'?'（引いたコマは開けた人だけが見た）':G.vis==='pass2'?'（引いたコマは開けた人と立会人だけが見た）':G.vis==='senkan2'?'（引いたコマは選管 2 人だけが見た）':'（引いたコマは選管だけが見た）';}
 function humanIdx(G){for(var i=0;i<G.players.length;i++)if(G.players[i].human)return i;return -1;}
 function showTo(G,obs){var h=humanIdx(G);return h<0||obs[h];}
 function drawSample(G,d,k){
@@ -360,25 +461,54 @@ function drawSample(G,d,k){
  return out;
 }
 function op(G,d,k,from,to,obs){
- var D=G.ds[d],n=sum(D.bag);k=Math.max(0,Math.min(k,n));
- var drawn=drawSample(G,d,k),conv=drawn[from];
+ var D=G.ds[d],n=sum(D.bag);k=Math.max(0,Math.min(k,n));if(G.statDraw)G.stats.drawn=(G.stats.drawn||0)+k;
+ var drawn=drawSample(G,d,k),conv=drawn[from];if(G.opCap&&conv>G.opCap){G.opCut=conv-G.opCap;G.stats.capCut=(G.stats.capCut||0)+conv-G.opCap;conv=G.opCap;}
  if(to!==W&&conv>G.supply[to]){conv=G.supply[to];G.stats.supplyCap++;}
  if(to!==W)G.supply[to]-=conv;
  if(from!==W)G.supply[from]+=conv;
  D.bag[from]-=conv;D.bag[to]+=conv;
- G.players.forEach(function(P,i){var b=P.belief[d];
-   if(obs[i]){b[from]-=conv;b[to]+=conv;if(b[from]<0){b[to]+=b[from];b[from]=0;}}
+ G.players.forEach(function(P,i){var b=P.belief[d];if(P.blind===1)return;
+   if((obs[i]||G.pubConv)&&!P.blind){b[from]-=conv;b[to]+=conv;if(b[from]<0){b[to]+=b[from];b[from]=0;}}
    else{var bs=sum(b)||1,e=k*b[from]/bs;b[from]-=e;b[to]+=e;P.u[d]+=e;}});
- if(k>0){var after=drawn.slice();after[from]-=conv;after[to]+=conv;blend(G,d,after,obs);}
+ if(G.learn&&k>0){var after=drawn.slice();after[from]-=conv;after[to]+=conv;blend(G,d,after,obs);}
  return {k:k,drawn:drawn,conv:conv};
 }
 function chg(G,d,from,to,n){return G.ds[d].name+'の袋: '+CN[from]+' −'+n+'・'+CN[to]+' +'+n;}
 function kFace(G,d,c,pos){var k=Math.max(0,G.ds[d].lv.face+G.kmod.face);if(pos&&k>0&&G.C[c].fav==='face')k++;return k;}
-function kNet(G,d,c,pos){var k=Math.max(0,G.ds[d].lv.net+G.kmod.net);if(pos&&k>0&&G.C[c].fav==='net')k++;return k;}
-function kTv(G,d,c){var k=G.ds[d].lv.paper>=2?1:0;if(k>0&&G.C[c].fav==='paper')k++;return k;}
-function kRumor(G,d,c){return G.rumorK+(G.weakD[c]===d?1:0);}
+function kNet(G,d,c,pos){var k=Math.max(0,G.ds[d].lv.net+G.kmod.net+(pos&&G.celebC===c?1:0));if(pos&&k>0&&G.C[c].fav==='net')k++;return k;}
+function kTv(G,d,c){var k=G.ds[d].lv.paper>=2?1:0,fv=G.C[c].fav;if(k>0&&fv==='paper')k++;
+ else if(k>0&&fv==='paperS'&&G.ds[d].lv.paper>=3)k++;
+ else if(k>0&&fv==='paper1'&&bestTvD(G,1).indexOf(d)>=0)k++;
+ else if(k>0&&fv==='paper2'&&bestTvD(G,2).indexOf(d)>=0)k++;
+ if(k>0&&G.C[c].tvPlus)k+=G.C[c].tvPlus;if(G.gx&&G.gx.tv==='weak')k=Math.max(0,k-1);return k;}
+function bestTvD(G,n){var L=[];for(var d=0;d<5;d++)if(G.ds[d].lv.paper>=2)L.push(d);
+ L.sort(function(x,y){return (effT(G,y)/G.ds[y].pop-effT(G,x)/G.ds[x].pop)||(x-y);});return L.slice(0,n);}
+function kNetW(G,d,c,pos){var b=Math.max(0,G.ds[d].lv.net+G.kmod.net+(pos&&G.celebC===c?1:0)),k=G.sns==='wide'?Math.max(0,b-1):(b>=2?1:0);if(pos&&k>0&&G.C[c].fav==='net')k++;
+ if(pos&&G.gx&&G.gx.sns==='weak')k=Math.max(0,k-1);return k;}
+function rmBase(G,d){var pl=(G.rmPlus||0)*((G.rmWhere==='face3'&&G.ds[d].lv.face<3)?0:1);return G.kbAbs?Math.max(G.rumorK,3+pl):G.rumorK+pl;}
+function kRumorE(G,d,c){var k=kRumor(G,d,c);return G.rmCapK?Math.min(G.rmCapK,k):k;}
+function rmCapF(G,b,d,k,y){var cw=capOf(G,d,y);if(!cw)return 1;var bb=b[d],n=sum(bb);if(n<=0||k<=0)return 1;var q=Math.max(0,Math.min(1,bb[y]/n)),kk=Math.min(k,n),ex=kk*q;if(ex<=0)return 1;var em=0;for(var x=0;x<=kk;x++){var p=1;for(var j=0;j<x;j++)p*=(kk-j)/(j+1);p*=Math.pow(q,x)*Math.pow(1-q,kk-x);em+=Math.min(x,cw)*p;}return em/ex;}
+function wkHas(G,c,d){var w=G.weakD[c];return Array.isArray(w)?w.indexOf(d)>=0:w===d;}
+function rmAmp(G,d,c){return (G.rumorK>3?1:0)+(G.kaibunC===c?1:0)+(wkHas(G,c,d)?1:0)+(G.spHeat&&G.heat[c+'_'+d]?1:0)+(G.gheat[c]>=G.round&&G.gheat[c]>0?1:0);}
+function rmAmpNH(G,d,c){return (G.rumorK>3?1:0)+(G.kaibunC===c?1:0)+(wkHas(G,c,d)?1:0)+(G.spHeat&&G.heat[c+'_'+d]?1:0);}
+function capOf(G,d,c){if(!G.rmCapW)return 0;if(!G.rmLift)return G.rmCapW;
+ if(G.rmHeatCap===null)return rmAmp(G,d,c)>0?0:G.rmCapW;
+ if(rmAmpNH(G,d,c)>0)return 0;var ht=G.gheat[c]>=G.round&&G.gheat[c]>0;
+ return (ht&&typeof G.rmHeatCap==='number')?G.rmHeatCap:G.rmCapW;}
+function kRumor(G,d,c){if(G.rmLift)return 3+(G.rmPlus||0);return rmBase(G,d)+(G.kaibunC===c?1:0)+(wkHas(G,c,d)?1:0)+(G.spHeat&&G.heat[c+'_'+d]?1:0)+(G.gheat[c]>=G.round&&G.gheat[c]>0?G.gxHeatN:0);}
+function kSp(G,d,c){var k=kFace(G,d,c,true);if(G.spFlat)k=Math.max(0,k-G.spFlat);if(G.spRep&&G.spHist[c+'_'+d])k=Math.max(0,k-1);return k;}
+var BUS={old:function(G,D){return D.age[2]>=4;},paper:function(G,D){return D.lv.paper>=3;},
+ care:function(G,D){return [3,4,5,8].indexOf(D.t.id)>=0;},care1:function(G,D){return [4,5].indexOf(D.t.id)>=0;}};
+function pickW(G,b,n,wt){var v=0;for(var c=0;c<4;c++)v+=b[c]/n*wt[c];return v;}
+function isGlobal(G,e){return e.type==='tv'||(e.type==='sns'&&e.good!==false&&snsAllOn(G));}
+function gxOf(G,e){return e.type==='tv'?(G.gx.tv||'none'):(e.type==='sns'&&e.good!==false&&snsAllOn(G))?(G.gx.sns||'none'):'none';}
+function backD(G,e){var th=G.gxBackLv==='xo'?3:2,L=[];for(var d=0;d<5;d++){if(e.type==='tv'?G.ds[d].lv.paper<th:Math.max(0,G.ds[d].lv.net+G.kmod.net)<th)L.push(d);}return L;}
+function gxAfter(G,e,obs){var f=gxOf(G,e),back=0;
+ if(f==='back'){backD(G,e).forEach(function(d){G.gxStat.back++;var r=op(G,d,1,e.cand,W,obs);back+=r.conv;});G.gxStat.backConv+=back;}
+ else if(f==='heat'){G.gheat[e.cand]=G.round+1;}
+ return back;}
 function startRound(G){
- G.round++;G.kmod={face:0,net:0};G.rumorK=3;G.mobN=1;G.box=[];
+ G.round++;G.kmod={face:0,net:0};G.celebC=-1;G.kaibunC=-1;G.kaibunNF=false;G.rumorK=3;G.mobN=1;G.box=[];if(G.spRep==='round')G.spHist={};
  G.players.forEach(function(P){P.envCount=0;});
  var ev=G.events[G.round-1];G.stats.events.push(ev);
  lg(G,'ラウンド '+G.round+'（選管: '+G.players[G.senkan].name+'）','r');
@@ -390,83 +520,255 @@ function startRound(G){
      lg(G,'→ 討論 '+mx+' の'+CN[who[0]]+'が勝った。'+(sh?'全地区で計 '+tot+' 個の白が'+CN[who[0]]+'に替わった（白 −'+tot+'・'+CN[who[0]]+' +'+tot+'）':hidTxt(G)),'ev');}
    else lg(G,'→ 同点のため効果なし','ev');
  }else if(ev==='rain'){
-   G.kmod.face=-1;var aff=[];G.ds.forEach(function(D){if(D.lv.net===1){D.tmod--;aff.push(D.name);}});
-   lg(G,'→ 対面で引く数 −1。投票に行く人 −1 千人: '+(aff.length?aff.join('・'):'該当なし'),'ev');
+   G.kmod.face=-1;var aff=[];if(G.evRain!=='r5'||G.round===5)G.ds.forEach(function(D){if(D.lv.net===1){D.tmod--;aff.push(D.name);}});
+   lg(G,'→ 演説で引く数 −1。'+(aff.length?'投票に行く人 −1 千人: '+aff.join('・'):'投票に行く人は変わらない'),'ev');
  }else if(ev==='scoop'){
-   var c2=Math.floor(G.rng()*4);
-   if(G.fire[c2]){G.fire[c2]=false;G.stats.nullified++;lg(G,'→ くじで'+CN[c2]+'。火消しトークンで無効（トークン −1）','ev');}
-   else{var t2=0;for(var d2=0;d2<5;d2++)t2+=op(G,d2,kRumor(G,d2,c2)-G.rumorK+1,c2,W,obs).conv;
+   var c2=G.scoopUsed?(function(){var a=[0,1,2,3].filter(function(x){return x!==G.out;});return a[Math.floor(G.rng()*a.length)];})():Math.floor(G.rng()*4);
+   if(G.fire[c2]){G.fire[c2]=(+G.fire[c2]-1)||false;G.stats.nullified++;lg(G,'→ くじで'+CN[c2]+'。火消しトークンで無効（トークン −1）','ev');}
+   else{var t2=0;for(var d2=0;d2<5;d2++){t2+=op(G,d2,kRumor(G,d2,c2)-rmBase(G,d2)+1,c2,W,obs).conv;if(G.spHeat)delete G.heat[c2+'_'+d2];}
      lg(G,'→ くじで'+CN[c2]+'。'+(sh?'全地区で'+CN[c2]+'が計 '+t2+' 個 白に戻った（'+CN[c2]+' −'+t2+'・白 +'+t2+'）':hidTxt(G)),'ev');}
  }else if(ev==='early'){G.mobN=2;}
- else if(ev==='celeb'){G.kmod.net=1;}
- else if(ev==='bus'){var a2=[];G.ds.forEach(function(D){if(D.age[2]>=4){D.tmod++;a2.push(D.name);}});lg(G,'→ 投票に行く人 +1 千人: '+(a2.length?a2.join('・'):'該当なし'),'ev');}
+ else if(ev==='paperpoll'){G.pub++;
+   var all=obsAll(G),txt=[];for(var d3=0;d3<5;d3++){var s=drawSample(G,d3,2);blend(G,d3,s,all);txt.push(G.ds[d3].name+' '+fmt(s));}
+   lg(G,'→ 見えたコマ: '+txt.join('／'),'ev');
+ }else if(ev==='celeb'){if(G.evCeleb==='one'){G.celebC=(function(){var a=[0,1,2,3].filter(function(x){return x!==G.out;});return a[Math.floor(G.rng()*a.length)];})();lg(G,'→ くじで'+CN[G.celebC]+'。'+CN[G.celebC]+'の SNS（良）だけ、ネットの効き +1','ev');}else G.kmod.net=1;}
+ else if(ev==='bus'){var a2=[];G.ds.forEach(function(D){if(BUS[G.busCond](G,D)){D.tmod++;a2.push(D.name);}});lg(G,'→ 投票に行く人 +1 千人: '+(a2.length?a2.join('・'):'該当なし'),'ev');}
  else if(ev==='sunny'){if(G.round===5){G.ds.forEach(function(D){D.tmod++;});lg(G,'→ 全地区で投票に行く人 +1 千人','ev');}else lg(G,'→ 5 ラウンド目ではないので効果なし（予報が外れた）','ev');}
- else if(ev==='kaibun'){G.rumorK=4;}
- else if(ev==='koho'){var parts=[];for(var c3=0;c3<4;c3++){if(c3===G.out)continue;var t3=0;for(var d4=0;d4<5;d4++)if(PLEDGE[G.C[c3].pledge].f(G.ds[d4].age))t3+=op(G,d4,1,W,c3,obs).conv;parts.push(CN[c3]+' +'+t3);}
+ else if(ev==='kaibun'){if(G.evKaibun==='one'){G.kaibunC=(function(){var a=[0,1,2,3].filter(function(x){return x!==G.out;});return a[Math.floor(G.rng()*a.length)];})();lg(G,'→ くじで'+CN[G.kaibunC]+'。'+CN[G.kaibunC]+'をねらううわさは 4 個引く','ev');}
+   else if(G.evKaibun==='nofire'){G.kaibunNF=true;lg(G,'→ このラウンドのうわさは火消しで止められない','ev');}else G.rumorK=4;}
+ else if(ev==='koho'){var parts=[];for(var c3=0;c3<4;c3++){if(c3===G.out)continue;var t3=0;for(var d4=0;d4<5;d4++)if(PLEDGE[G.C[c3].pledge].f(G.ds[d4].age,G.ds[d4])){G.kohoN=G.kohoN||[0,0,0,0];var kq=op(G,d4,1,W,c3,obs).conv;G.kohoN[c3]+=kq;t3+=kq;}else if(false)t3+=op(G,d4,1,W,c3,obs).conv;parts.push(CN[c3]+' +'+t3);}
    lg(G,'→ '+(sh?'白が替わった数: '+parts.join('・'):hidTxt(G)),'ev');}
  return ev;
 }
-function blend(G,d,s,obs){var n=sum(G.ds[d].bag);G.players.forEach(function(P,i){if(!obs[i]||P.u[d]<0.01)return;var b=P.belief[d],k=sum(s)||1;for(var c=0;c<5;c++)b[c]=b[c]*0.75+s[c]*n/k*0.25;P.u[d]*=0.75;});}
+function blend(G,d,s,obs){var n=sum(G.ds[d].bag);G.players.forEach(function(P,i){if(!obs[i]||P.blind||P.u[d]<0.01)return;var b=P.belief[d],k=sum(s)||1;for(var c=0;c<5;c++)b[c]=b[c]*0.75+s[c]*n/k*0.25;P.u[d]*=0.75;});}
 function validPlan(G,p,plan){
- var P=G.players[p];if(!plan||!plan.envs||plan.envs.length<1||plan.envs.length>2)return '封筒は 1 枚か 2 枚にしてください';
+ var P=G.players[p];if(!plan||!plan.envs||plan.envs.length<1||plan.envs.length>2)return '封筒は 1 枚か 2 枚';
+ if(G.env2&&plan.envs.length+(plan.envs.some(function(e){return gxOf(G,e)==='cost';})?1:0)!==2)return '封筒は毎ラウンド 2 枚です';
  var need={};plan.envs.forEach(function(e){need[e.type]=(need[e.type]||0)+1;});
- for(var t in need)if((P.hand[t]||0)<need[t])return ACT[t]+'のカードが足りません';
- for(var i=0;i<plan.envs.length;i++){var e=plan.envs[i];if(!(e.type in ACT))return '行動を選び直してください';
-   if(!(e.cand>=0&&e.cand<4))return '候補を選び直してください';
-   if(G.out>=0&&e.cand===G.out)return CN[e.cand]+'は 3 人戦では使わない色です';
-   if(['speech','rumor','sns','mob'].indexOf(e.type)>=0&&!(e.d>=0&&e.d<5))return '地区を選び直してください';}
+ for(var t in need)if((P.hand[t]||0)<need[t])return ACT[t]+'のカードが足りない';
+ for(var i=0;i<plan.envs.length;i++){var e=plan.envs[i];if(!(e.type in ACT))return '行動が不正';
+   if(e.type!=='poll'&&!(e.cand>=0&&e.cand<4))return '候補が不正';
+   if(e.type!=='poll'&&G.out>=0&&e.cand===G.out)return CN[e.cand]+'は使わない色（3 人戦は候補 3 人）';
+   if((['speech','rumor','sns','mob','poll'].indexOf(e.type)>=0||(SPC[e.type]&&SPC[e.type].need))&&!(e.d>=0&&e.d<5))return '地区が不正';
+   if(e.type==='gamble'&&(!G.gb||e.cand!==P.cand))return '大勝負は自分の候補にだけ';
+   if((e.type==='sp_poach')&&!(e.tgt>=0&&e.tgt<4&&e.tgt!==e.cand&&e.tgt!==G.out))return '狙う候補が不正';}
+ if(plan.envs.length===2&&plan.envs.some(function(e){return gxOf(G,e)==='cost';}))return '全体技は封筒 2 枚分（そのラウンドはほかの封筒を出せない）';
  return null;
 }
 function submitPlans(G,plans){
  for(var p=0;p<G.nP;p++){var err=validPlan(G,p,plans[p]);if(err)throw new Error(G.players[p].name+': '+err);}
- for(var q=0;q<G.nP;q++){var P=G.players[q];P.envCount=plans[q].envs.length;G.stats.env+=P.envCount;if(P.envCount===1)G.stats.oneEnv++;
-   plans[q].envs.forEach(function(e){P.hand[e.type]--;G.box.push({type:e.type,cand:e.cand,d:e.d,good:e.good!==false,owner:q});});}
+ for(var q=0;q<G.nP;q++){var P=G.players[q];P.envCount=plans[q].envs.length+(plans[q].envs.some(function(e){return gxOf(G,e)==='cost';})?1:0);G.stats.env+=P.envCount;if(P.envCount===1)G.stats.oneEnv++;
+   plans[q].envs.forEach(function(e){P.hand[e.type]--;G.box.push({type:e.type,cand:e.cand,d:e.d,tgt:e.tgt,good:e.good!==false,owner:q});if(SPC[e.type])G.stats.spUsed=(G.stats.spUsed||0)+1;});}
+ var nw=G.indep>=0?(G.p3==='wind'?1:G.p3==='wind2'?2:0):0;
+ for(var w=0;w<nw;w++){G.box.push({type:'speech',cand:Math.floor(G.rng()*4),d:Math.floor(G.rng()*5),good:true,owner:-1,auto:true});G.stats.auto=(G.stats.auto||0)+1;}
  lg(G,'作戦: 封筒は '+G.box.length+' 枚','');
 }
 function resolveAll(G){
  shuffle(G.box,G.rng);var n=G.box.length;
- for(var i=0;i<n;i++){G.opener=(G.senkan+1+i)%G.nP;G.curE=G.box[i];resolveEnv(G,G.box[i],i+1,n);}
+ for(var i=0;i<n;i++){if(G.vis==='pass'||G.vis==='pass2')G.opener=(G.senkan+1+i)%G.nP;G.curE=G.box[i];if(G.sns==='lot'&&G.box[i].type==='sns')G.box[i].d=Math.floor(G.rng()*5);resolveEnv(G,G.box[i],i+1,n);}
  G.opener=null;G.curE=null;G.box=[];
 }
 function resolveEnv(G,e,i,n){
+ if(!G.traceOn)return resolveEnv0(G,e,i,n);
+ G.rmConv=null;G.rmK=null;G.rmHit=null;G.rmAmp=null;G.rmCut=null;G.rmCapNow=null;var b0=expVotes(G),f0=G.fire.slice(),t0=0,bk0=G.gxStat.backConv;G.ds.forEach(function(D,d){t0+=effT(G,d);});resolveEnv0(G,e,i,n);var b1=expVotes(G),t1=0;G.ds.forEach(function(D,d){t1+=effT(G,d);});
+ G.trace.push({type:e.type,good:e.good,cand:e.cand,d:e.d,owner:e.owner,round:G.round,op:G.opener,rconv:G.rmConv,rk:G.rmK,rhit:G.rmHit,ramp:G.rmAmp,rcut:G.rmCut,rcap:G.rmCapNow,dv:b1.map(function(x,c){return x-b0[c];}),dt:t1-t0,back:G.gxStat.backConv-bk0,
+   heat:(e.type==='rumor')&&G.gheat[e.cand]>=G.round&&G.gheat[e.cand]>0,nulled:(e.type==='rumor'||(e.type==='sns'&&!e.good))&&!!f0[e.cand]&&!G.fire[e.cand]});
+}
+function resolveEnv0(G,e,i,n){
  var mine=G.players[e.owner]&&G.players[e.owner].human;
  var obs=obsSet(G),sh=showTo(G,obs),pre='封筒 '+i+'/'+n+(mine?'（あなたの封筒）':'')+(G.opener!=null?'〔開封: '+G.players[G.opener].name+'〕'+(humanIdx(G)>=0&&humanIdx(G)!==G.opener&&humanIdx(G)===(G.opener+1)%G.nP?'〔立会人として見ました〕':''):'')+': ',D=G.ds[e.d]||null,r,S=G.stats.act;
  var hid=hidTxt(G);
  function drew(r){return '引く '+r.k+'（'+fmt(r.drawn)+' を見せた）';}
- if(e.type==='speech'){S.speech++;var k=kFace(G,e.d,e.cand,true);
+ if(e.type==='speech'){S.speech++;var k=kSp(G,e.d,e.cand);G.spHist[e.cand+'_'+e.d]=(G.spHist[e.cand+'_'+e.d]||0)+1;if(G.spHeat)G.heat[e.cand+'_'+e.d]=1;
    r=op(G,e.d,k,W,e.cand,obs);if(r.conv===0)G.stats.missed++;
    lg(G,pre+'演説「'+CN[e.cand]+'・'+D.name+'」→ '+(sh?drew(r)+'。'+(r.conv?chg(G,e.d,W,e.cand,r.conv):'白が出ず変化なし'):'引く '+r.k+hid));}
  else if(e.type==='rumor'||(e.type==='sns'&&!e.good)){
    var isR=e.type==='rumor';if(isR)S.rumor++;else S.snsB++;
    var nm=isR?'うわさ':'SNS（悪）';
-   if(G.fire[e.cand]){G.fire[e.cand]=false;G.stats.nullified++;lg(G,pre+nm+'「'+CN[e.cand]+'・'+D.name+'」→ '+CN[e.cand]+'の火消しトークンで無効（トークン −1、袋は変わらない）');return;}
-   var k2=isR?kRumor(G,e.d,e.cand):kNet(G,e.d,e.cand,false);
-   r=op(G,e.d,k2,e.cand,W,obs);if(r.conv===0)G.stats.missed++;
-   lg(G,pre+nm+'「'+CN[e.cand]+'・'+D.name+'」→ '+(sh?drew(r)+'。'+(r.conv?chg(G,e.d,e.cand,W,r.conv):CN[e.cand]+'が出ず空振り'):'引く '+r.k+hid));}
+   if(G.fire[e.cand]&&isR&&G.kaibunNF)G.stats.kbPass=(G.stats.kbPass||0)+1;
+   if(G.fire[e.cand]&&!(isR&&G.kaibunNF)){G.fire[e.cand]=(+G.fire[e.cand]-1)||false;G.stats.nullified++;lg(G,pre+nm+'「'+CN[e.cand]+(isR||!snsAllOn(G)?'・'+D.name:'')+'」→ '+CN[e.cand]+'の火消しトークンで無効（トークン −1、袋は変わらない）');return;}
+   G.rmAmp=isR?rmAmp(G,e.d,e.cand):null;var k2=isR?kRumorE(G,e.d,e.cand):kNet(G,e.d,e.cand,false);if(isR&&G.spHeat)delete G.heat[e.cand+'_'+e.d];if(isR&&G.gheat[e.cand]>=G.round&&G.gheat[e.cand]>0)G.gxStat.heatHit++;
+   G.opCut=0;G.opCap=isR?capOf(G,e.d,e.cand):0;G.rmCapNow=G.opCap;r=(!isR&&snsAllOn(G))?snsAll(G,e,e.cand,W,false,obs):op(G,e.d,k2,e.cand,W,obs);G.opCap=0;if(isR){G.rmCut=G.opCut;G.rmK=r.k;G.rmConv=r.conv;G.rmHit=r.drawn?r.drawn[e.cand]:0;}if(r.conv===0)G.stats.missed++;
+   if(isR&&(G.rmOwn||G.rmHeat))rumorAfter(G,e,r,obs);
+   var bf=(isR&&G.backfire&&r.conv===0)?backfire(G,e.d,e.cand,r,obs):0;
+   if(!isR&&snsAllOn(G)){lg(G,pre+nm+'「'+CN[e.cand]+'」→ 全地区で引く 計 '+r.k+'。'+(sh?(r.conv?CN[e.cand]+' '+r.conv+' 個が白に戻った（'+CN[e.cand]+' −'+r.conv+'・白 +'+r.conv+'）':CN[e.cand]+'が出ず空振り'):hid));return;}
+   lg(G,pre+nm+'「'+CN[e.cand]+'・'+D.name+'」→ '+(sh?drew(r)+'。'+(r.conv?chg(G,e.d,e.cand,W,r.conv):CN[e.cand]+'が出ず空振り'+(bf?'。逆効果で白 1 個が'+CN[e.cand]+'に（'+chg(G,e.d,W,e.cand,1)+'）':'')):'引く '+r.k+hid));}
  else if(e.type==='sns'){S.snsG++;var k3=kNet(G,e.d,e.cand,true);
-   r=op(G,e.d,k3,W,e.cand,obs);if(r.conv===0)G.stats.missed++;
-   lg(G,pre+'SNS（良）「'+CN[e.cand]+'・'+D.name+'」→ '+(sh?drew(r)+'。'+(r.conv?chg(G,e.d,W,e.cand,r.conv):'白が出ず変化なし'):'引く '+r.k+hid));}
+   r=snsAllOn(G)?snsAll(G,e,W,e.cand,true,obs):op(G,e.d,k3,W,e.cand,obs);if(r.conv===0)G.stats.missed++;var gb=gxAfter(G,e,obs);
+   lg(G,snsAllOn(G)?pre+'SNS（良）「'+CN[e.cand]+'」→ 全地区で引く 計 '+r.k+'。'+(sh?(r.conv?'白 '+r.conv+' 個が'+CN[e.cand]+'に替わった（白 −'+r.conv+'・'+CN[e.cand]+' +'+r.conv+'）':'白が出ず変化なし'):hid):pre+'SNS（良）「'+CN[e.cand]+'・'+D.name+'」→ '+(sh?drew(r)+'。'+(r.conv?chg(G,e.d,W,e.cand,r.conv):'白が出ず変化なし'):'引く '+r.k+hid));}
  else if(e.type==='tv'){S.tv++;var tot=0,ks=0;for(var d=0;d<5;d++){var kk=kTv(G,d,e.cand);if(kk>0){ks+=kk;tot+=op(G,d,kk,W,e.cand,obs).conv;}}
+   var gb2=gxAfter(G,e,obs);
    lg(G,pre+'新聞テレビ「'+CN[e.cand]+'」→ 全地区で引く 計 '+ks+'。'+(sh?'白 '+tot+' 個が'+CN[e.cand]+'に替わった（白 −'+tot+'・'+CN[e.cand]+' +'+tot+'）':hid));}
+ else if(e.type==='mob'&&(G.mob!=='std'||G.mobHide!=='open')){S.mob++;var got=mobilize(G,e.d,e.cand,G.mobN,obs);var mineM=sh||!!(G.players[e.owner]&&G.players[e.owner].human);lg(G,pre+'動員「'+(mineM?CN[e.cand]+'・':'')+D.name+'」→ '+(got?got+' 人が期日前に投票した':'誰も応じなかった')+(mineM&&got?'（期日前の箱に'+CN[e.cand]+' +'+got+'）':''));}
  else if(e.type==='mob'){S.mob++;var m=Math.min(G.mobN,G.supply[e.cand]);if(m<G.mobN)G.stats.supplyCap++;G.supply[e.cand]-=m;D.tray[e.cand]+=m;
    lg(G,pre+'動員「'+CN[e.cand]+'・'+D.name+'」→ '+D.name+'の期日前トレイに'+CN[e.cand]+' +'+m+'（確定票、袋は変わらない）');}
  else if(e.type==='fire'){S.fire++;if(G.fire[e.cand]){lg(G,pre+'火消し「'+CN[e.cand]+'」→ すでにトークンがあるので空振り');}
    else{G.fire[e.cand]=true;lg(G,pre+'火消し「'+CN[e.cand]+'」→ '+CN[e.cand]+'の席に火消しトークン +1');}}
+ else if(e.type==='call'&&G.callOnce&&G.callMark[e.d]){G.stats.act.callVoid=(G.stats.act.callVoid||0)+1;G.callLog.push({r:G.round,d:e.d,ow:e.owner,v:true,own:0,opp:0});
+   lg(G,pre+ACT[e.type]+'「'+D.name+'」→ '+D.name+'にはもう呼びかけの印があるので、効かない');}
+ else if(e.type==='call'||e.type==='chill'){var up=e.type==='call';var cw=G.players[e.owner]?G.players[e.owner].cand:-1,x0=expDW(G,e.d);
+   D.tmod+=up?G.callN:-1;if(up&&G.callOnce)G.callMark[e.d]=true;G.stats.act[e.type]=(G.stats.act[e.type]||0)+1;
+   if(up&&cw>=0){var x1=expDW(G,e.d),oo=0,on=0;for(var cq=0;cq<4;cq++){if(cq===cw||cq===G.out)continue;oo+=x1[cq]-x0[cq];on++;}G.callLog.push({r:G.round,d:e.d,ow:e.owner,v:false,own:x1[cw]-x0[cw],opp:on?oo/on:0});}
+   lg(G,pre+ACT[e.type]+'「'+D.name+'」→ '+D.name+'で投票に行く人 '+(up?'+'+G.callN:'−1')+' 千人（開票で引く数 '+(up?'+'+G.callN:'−1')+'）');}
+ else if(e.type==='firm'||e.type==='firmB'){G.firm[e.d].push({c:e.cand,t:e.type});G.stats.act[e.type]=(G.stats.act[e.type]||0)+1;
+   lg(G,pre+ACT[e.type]+'「'+CN[e.cand]+'・'+D.name+'」→ '+D.name+'に'+CN[e.cand]+'の印（開票で使う）');}
+ else if(e.type==='gamble'){resolveGamble(G,e,obs,pre);}
+ else if(SPC[e.type]){resolveSp(G,e,pre,obs,sh,hid);}
+ else if(e.type==='poll'){S.poll++;var s=drawSample(G,e.d,3);blend(G,e.d,s,obsAll(G));
+   lg(G,pre+'世論調査「'+D.name+'」→ 引く 3（'+fmt(s)+' を全員に見せた）。袋は変わらない');}
 }
-function surveyOrder(G){return [];}
+function rumorAfter(G,e,r,obs){var D=G.ds[e.d],oc=G.players[e.owner]?G.players[e.owner].cand:-1,own=0;
+ if(G.rmOwn&&r.conv>=G.rmOwnMin&&oc>=0&&oc!==e.cand&&G.supply[oc]>0){D.bag[W]--;D.bag[oc]++;G.supply[oc]--;own=1;
+   var act=[0,1,2,3].filter(function(x){return x!==G.out&&x!==e.cand;});
+   G.players.forEach(function(P,i){var b=P.belief[e.d];if(P.blind===1)return;
+     if(((obs[i]&&!G.rmOwnHide)||i===e.owner)&&!P.blind){b[W]=Math.max(0,b[W]-1);b[oc]+=1;return;}
+     var xs=act.filter(function(x){return x!==P.cand;});if(!xs.length)return;var q=Math.min(1,b[W]);b[W]-=q;xs.forEach(function(x){b[x]+=q/xs.length;});});}
+ if(G.rmHeat)G.gheat[e.cand]=G.round+1;
+ G.rmLog.push({r:G.round,op:G.opener,ow:e.owner,own:own});}
+function snsAllOn(G){return G.sns==='wide'||G.sns==='tvlike';}
+function snsAll(G,e,from,to,pos,obs){var ks=0,tot=0;for(var d=0;d<5;d++){var kk=kNetW(G,d,e.cand,pos);if(kk>0){ks+=kk;tot+=op(G,d,kk,from,to,obs).conv;}}return {k:ks,conv:tot,drawn:[0,0,0,0,0]};}
+function expDW(G,d){var v=expD(G,d),D=G.ds[d],n=sum(D.bag)||1,w=effT(G,d)*D.bag[W]/n,mx=-1,who=[];
+ for(var c=0;c<4;c++){if(c===G.out)continue;if(v[c]>mx+1e-9){mx=v[c];who=[c];}else if(Math.abs(v[c]-mx)<1e-9)who.push(c);}
+ if(G.wd==='local'&&who.length){if(who.length===1)v[who[0]]+=w;else if(G.wdTie==='splitV'||G.wdTie==='split')who.forEach(function(c){v[c]+=w/who.length;});}return v;}
+function expD(G,d){var D=G.ds[d],n=sum(D.bag)||1,t=effT(G,d),v=[0,0,0,0];for(var c=0;c<4;c++)v[c]=t*D.bag[c]/n+D.tray[c];return v;}
+function mobilize(G,d,c,times,obs){var D=G.ds[d],got=0;D.early=D.early||0;
+ G.players.forEach(function(P){if(!P.tb)P.tb=G.ds.map(function(X){return X.tray.slice();});});
+ if(G.mob==='pull'){var e0=expD(G,d);for(var ip=0;ip<times;ip++)got+=mobPull(G,d,c,obs);var e1=expD(G,d),oc=0,on=0;
+   for(var cx=0;cx<4;cx++){if(cx===c||cx===G.out)continue;oc+=e1[cx]-e0[cx];on++;}
+   G.mg.n++;G.mg.own+=e1[c]-e0[c];G.mg.opp+=on?oc/on:0;G.mg.moved+=got;return got;}
+ for(var i=0;i<times;i++){var from=-1,b0=sum(D.bag),dr=null;
+   if(G.mob==='std'){if(G.supply[c]>0){G.supply[c]--;D.tray[c]++;got++;from=-2;}}
+   else{var k=G.mob==='conv1'?1:2,dr=drawSample(G,d,k);
+     if(dr[c]>0)from=c;else if(G.mob!=='lock2'&&dr[W]>0&&G.supply[c]>0)from=W;
+     if(from>=0){D.bag[from]--;if(from===W)G.supply[c]--;D.tray[c]++;D.early++;got++;}}
+   if(G.mobBlend&&dr)blend(G,d,dr,obs);
+   if(G.mobHide==='count'||G.mobHide==='hide'){mobSeen(G,d,c,from,obs);continue;}
+   G.players.forEach(function(P,pi){var b=P.belief[d],n=sum(b)||1,see=obs[pi]||G.mobHide==='open';
+     if(see){if(from>=0){b[from]=Math.max(0,b[from]-1);}if(from!==-1)P.tb[d][c]++;return;}
+     var ps=G.mob==='std'?1:Math.min(1,(G.mob==='lock2'?0:b[W]/n)+b[c]/n)*(k===2?1.4:1);ps=Math.min(1,ps);
+     if(G.mob!=='std'){var sc=Math.max(0,(n-ps)/n);for(var cc=0;cc<5;cc++)b[cc]*=sc;}
+     if(G.mobHide==='box'){var act=[0,1,2,3].filter(function(x){return x!==G.out;});act.forEach(function(x){P.tb[d][x]+=ps/act.length;});}
+     else P.tb[d][c]+=ps;});
+ }
+ return got;}
+function hits(G,b,x){var n=sum(b);if(n<=0||b[x]<=0)return 0;var k=Math.min(G.mobDraw,n);
+ if(G.mobAll)return Math.min(b[x],k*b[x]/n);var q=1;for(var i=0;i<k;i++)q*=Math.max(0,(n-i-b[x])/(n-i));return 1-q;}
+function pM(G,b,x,m){var n=sum(b),k=Math.min(G.mobDraw,n),bx=b[x];if(n<=0)return m===0?1:0;
+ function C(a,r){if(r<0||r>a)return 0;var v=1;for(var i=0;i<r;i++)v=v*(a-i)/(i+1);return v;}
+ var bxi=Math.round(bx),ni=Math.round(n),pk=function(j){return C(bxi,j)*C(ni-bxi,k-j)/C(ni,k);};
+ if(G.mobAll)return pk(m);if(m===0)return pk(0);var s=0;for(var j=1;j<=k;j++)s+=pk(j);return m===1?s:0;}
+function mobPull(G,d,c,obs){var D=G.ds[d],dr=drawSample(G,d,G.mobDraw),m=G.mobAll?dr[c]:(dr[c]>0?1:0),wh=0;
+ for(var i=0;i<m;i++){D.bag[c]--;D.tray[c]++;D.early++;if(G.mobKeepT)D.keep=(D.keep||0)+1;if(G.mobRefill){D.bag[W]++;D.refill=(D.refill||0)+1;}}
+ if(G.mobWhite&&m===0&&dr[W]>0&&G.supply[c]>0){D.bag[W]--;G.supply[c]--;D.tray[c]++;D.early++;wh=1;m=1;}
+ if(G.mobBlend)blend(G,d,dr,obs);
+ var ow=G.curE?G.curE.owner:-1,act=[0,1,2,3].filter(function(x){return x!==G.out;}),open=G.mobHide==='open';
+ G.players.forEach(function(P,pi){var b=P.belief[d];if(P.blind===1)return;
+   function mv(bb,x,q,dd){bb[x]=Math.max(0,bb[x]-q);if(G.mobRefill)bb[W]+=q;P.tb[dd][x]+=q;}
+   if(open||(obs[pi]&&!P.blind)||(pi===ow&&G.mobHide==='count')){if(wh){b[W]=Math.max(0,b[W]-1);P.tb[d][c]++;}else if(m)mv(b,c,m,d);return;}
+   if(pi===ow){mv(b,c,hits(G,b,c),d);return;}
+   var xs=act.filter(function(x){return x!==P.cand;});
+   if(G.mobHide==='count'){if(!m)return;var w=xs.map(function(x){return pM(G,b,x,m);}),s=w.reduce(function(a,y){return a+y;},0);if(s<=0){w=xs.map(function(){return 1;});s=xs.length;}
+     var best=-1,bv=-1;xs.forEach(function(x,i){var p=w[i]/s;mv(b,x,p*m,d);if(p>bv){bv=p;best=x;}if(x===c)G.readStat.pTrue+=p;});
+     G.readStat.n++;if(best===c)G.readStat.hit++;G.readStat.chance+=1/xs.length;return;}
+   for(var dd=0;dd<5;dd++){var bd=P.belief[dd];xs.forEach(function(x){mv(bd,x,hits(G,bd,x)/5/xs.length,dd);});}
+ });
+ return m;}
+function pS(b,x){var n=sum(b);if(n<=0||b[x]<=0)return 0;var q=(n-b[x])/n;if(n>1)q*=(n-1-b[x])/(n-1);return 1-Math.max(0,q);}
+function mobSeen(G,d,c,from,obs){var ok=from>=0,ow=G.curE?G.curE.owner:-1,act=[0,1,2,3].filter(function(x){return x!==G.out;});
+ G.players.forEach(function(P,pi){var b=P.belief[d];if(P.blind===1)return;
+   if((obs[pi]&&!P.blind)||(pi===ow&&G.mobHide==='count')){if(ok){b[c]=Math.max(0,b[c]-1);P.tb[d][c]++;}return;}
+   if(pi===ow){var ps=pS(b,c);b[c]=Math.max(0,b[c]-ps);P.tb[d][c]+=ps;return;}
+   var xs=act.filter(function(x){return x!==P.cand;});
+   if(G.mobHide==='count'){if(!ok)return;
+     var w=xs.map(function(x){return pS(b,x);}),s=w.reduce(function(a,y){return a+y;},0);if(s<=0){w=xs.map(function(){return 1;});s=xs.length;}
+     var best=-1,bv=-1;xs.forEach(function(x,i){var p=w[i]/s;b[x]=Math.max(0,b[x]-p);P.tb[d][x]+=p;if(p>bv){bv=p;best=x;}
+       if(x===c){G.readStat.pTrue+=p;}});
+     G.readStat.n++;if(best===c)G.readStat.hit++;G.readStat.chance+=1/xs.length;return;}
+   for(var dd=0;dd<5;dd++){var bd=P.belief[dd];xs.forEach(function(x){var p=pS(bd,x)/5/xs.length;bd[x]=Math.max(0,bd[x]-p);P.tb[dd][x]+=p;});}
+ });}
+function resolveSp(G,e,pre,obs,sh,hid){
+ var K=G.spK,t=e.type,c=e.cand,D=G.ds[e.d]||null,tot=0,ks=0,nm=SPC[t].name;
+ function blk(y){if(G.fire[y]){G.fire[y]=(+G.fire[y]-1)||false;G.stats.nullified++;lg(G,pre+nm+'「'+CN[y]+'」→ 火消しトークンで無効');return true;}return false;}
+ if(t==='sp_blaze'&&K.blazeAll){if(blk(c))return;for(var db=0;db<5;db++){var rb=op(G,db,K.blazeAll+(G.rumorK-3)+(wkHas(G,c,db)?1:0),c,W,obs);tot+=rb.conv;ks+=rb.k;}}
+ else if(t==='sp_blaze'){if(blk(c))return;var r=op(G,e.d,(K.blaze||5)+(G.rumorK-3)+(wkHas(G,c,e.d)?1:0),c,W,obs);tot=r.conv;ks=r.k;}
+ else if(t==='sp_oratory'){var k=kFace(G,e.d,c,true);k=k>0?k+(K.oratory||2):0;var r2=op(G,e.d,k,W,c,obs);tot=r2.conv;ks=r2.k;}
+ else if(t==='sp_viral'){for(var d=0;d<5;d++){var b=Math.max(0,G.ds[d].lv.net+G.kmod.net),kk=b>=3?(K.viral3||2):b===2?(K.viral2||1):0;if(kk>0&&G.C[c].fav==='net')kk++;if(kk>0){ks+=kk;tot+=op(G,d,kk,W,c,obs).conv;}}}
+ else if(t==='sp_machine'&&(G.mob!=='std'||G.mobHide!=='open')){tot=mobilize(G,e.d,c,(K.machine||3)+(G.mobN-1),obs);}
+ else if(t==='sp_machine'){var m=Math.min((K.machine||3)+(G.mobN-1),G.supply[c]);G.supply[c]-=m;D.tray[c]+=m;tot=m;}
+ else if(t==='sp_front'){for(var d2=0;d2<5;d2++){var p=G.ds[d2].lv.paper,k2=p>=3?(K.front3||2):p===2?(K.front2||1):0;if(k2>0&&G.C[c].fav==='paper')k2++;if(k2>0){ks+=k2;tot+=op(G,d2,k2,W,c,obs).conv;}}}
+ else if(t==='sp_rebut'){if(!G.fire[c])G.fire[c]=true;var rr=op(G,e.d,K.rebut||1,W,c,obs);tot=rr.conv;ks=rr.k;}
+ else if(t==='sp_wall'){G.fire[c]=Math.max(+G.fire[c]||0,K.wall||2);}
+ else if(t==='sp_canvass'){[e.d,(e.d+1)%5].forEach(function(dd){var r3=op(G,dd,kFace(G,dd,c,true),W,c,obs);tot+=r3.conv;ks+=r3.k;});}
+ else if(t==='sp_poach'){if(blk(e.tgt))return;var r4=op(G,e.d,K.poach||3,e.tgt,c,obs);tot=r4.conv;ks=r4.k;}
+ G.stats.spConv=(G.stats.spConv||0)+tot;
+ lg(G,pre+nm+'「'+CN[c]+(D?'・'+D.name:'')+'」→ '+(sh?'替わった数 '+tot:'引く '+ks+hid));
+}
+function backfire(G,d,c,r,obs){
+ if(r.drawn[W]<=0||G.supply[c]<=0)return 0;
+ var D=G.ds[d];D.bag[W]--;D.bag[c]++;G.supply[c]--;G.stats.backfire=(G.stats.backfire||0)+1;
+ G.players.forEach(function(P,i){var b=P.belief[d];if(P.blind===1)return;
+   if(obs[i]&&!P.blind){b[W]-=1;b[c]+=1;if(b[W]<0){b[c]+=b[W];b[W]=0;}}
+   else{var n=sum(b)||1,e=pBack(b,n,r.k,c);e=Math.min(e,b[W]);b[W]-=e;b[c]+=e;P.u[d]+=e;}});
+ return 1;
+}
+function pBack(b,n,k,c){var p0=Math.pow(Math.max(0,1-b[c]/n),k),pw=1-Math.pow(Math.max(0,1-b[W]/n),k);return p0*pw;}
+function handN(P){var t=0;for(var k in P.hand)t+=P.hand[k];return t;}
+function canCard(G,P){return handN(P)-1>=5-G.round;}
+function surveyOrder(G){var o=[];if(G.noSv)return o;for(var i=1;i<=G.nP;i++){var p=(G.senkan+i)%G.nP,P=G.players[p];if(G.svCard?canCard(G,P):P.envCount===1)o.push(p);}return o;}
 function surveyPhase(G){pubPoll(G);}
 function pubPoll(G){
- if(G.round!==2&&G.round!==4)return;
- var k=2,all=obsAll(G),txt=[];G.pub++;
- for(var d=0;d<5;d++){var s=drawSample(G,d,k);blend(G,d,s,all);txt.push(G.ds[d].name+' '+fmt(s));}
- lg(G,'公開世論調査（ラウンド '+G.round+' の終わり・全地区から '+k+' 個ずつ引いて全員に見せ、戻した）: '+txt.join('／'),'ev');
+ var ds=[];if(G.pp==='A2'&&(G.round===2||G.round===4))ds=[0,1,2,3,4];
+ else if(G.pp==='A2b'&&G.round<=4)ds=[G.round-1];
+ if(!ds.length)return;
+ var k=G.pp==='A2'?2:4,all=obsAll(G),txt=[];G.pub++;
+ var wp=[0,0,0,0];ds.forEach(function(d){var s=drawSample(G,d,k);blend(G,d,s,all);txt.push(G.ds[d].name+' '+fmt(s));for(var c=0;c<4;c++)wp[c]+=s[c];});
+ G.wpoll=wp;G.wpollSum=(G.wpollSum||[0,0,0,0]).map(function(v,c){return v+wp[c];});
+ lg(G,'公開世論調査（ラウンド '+G.round+' の終わり・'+(ds.length>1?'全地区から '+k+' 個ずつ':G.ds[ds[0]].name+'から '+k+' 個')+'引いて全員に見せ、戻した）: '+txt.join('／'),'ev');
 }
 function endRound(G){G.senkan=(G.senkan+1)%G.nP;}
-function expVotes(G,bel){var v=[0,0,0,0];for(var d=0;d<5;d++){var b=bel?bel[d]:G.ds[d].bag,n=sum(b)||1,t=effT(G,d);for(var c=0;c<4;c++)v[c]+=t*b[c]/n+G.ds[d].tray[c];}return v;}
+function vpc(G,d,n){return G.cnt==='draw'?effT(G,d)/n:1;}
+function expVotes(G,bel,tb){var v=[0,0,0,0];for(var d=0;d<5;d++){var b=bel?bel[d]:G.ds[d].bag,n=sum(b)||1,t=effT(G,d);for(var c=0;c<4;c++)v[c]+=(G.cnt==='draw'?t*b[c]/n:b[c])+(tb?tb[d][c]:G.ds[d].tray[c]);}return v;}
+function lead(v,out){var mx=0,who=[];for(var c=0;c<4;c++){if(c===out)continue;if(v[c]>mx){mx=v[c];who=[c];}else if(v[c]===mx&&mx>0)who.push(c);}return who.length===1?who[0]:-1;}
+function topSet(v,out){var mx=0,who=[];for(var c=0;c<4;c++){if(c===out)continue;if(v[c]>mx){mx=v[c];who=[c];}else if(v[c]===mx&&mx>0)who.push(c);}return who;}
+function whiteTo(G,w,votes,d){var add=[0,0,0,0],n=Math.floor(w/G.wq);if(n<=0)return add;
+ if(G.wd==='local'){var who=topSet(votes,G.out),S=G.wstat;
+   if(who.length===1)add[who[0]]+=n;
+   else if(who.length>1){if(S){S.tie++;S.tieW+=n;}
+     if(G.wdTie==='lot')add[who[Math.floor(G.rng()*who.length)]]+=n;
+     else if(G.wdTie==='splitV'){var qv=Math.floor(n/who.length);who.forEach(function(c){add[c]+=qv;});if(S){S.void=(S.void||0)+(n-qv*who.length);}}
+      else if(G.wdTie==='split'){var q=Math.floor(n/who.length),rm=n-q*who.length;who.forEach(function(c){add[c]+=q;});
+       var pool=who.slice();for(var i=0;i<rm;i++){var k=Math.floor(G.rng()*pool.length);add[pool[k]]++;pool.splice(k,1);}}}
+   else{if(S){S.all++;S.allW+=n;}
+     var src=G.wdAllWhite==='base'?(G.base0?G.base0[d]:null):G.wdAllWhite==='tray'?G.ds[d].tray:null;
+     if(src){var w2=topSet(src,G.out);if(w2.length===1){add[w2[0]]+=n;if(S)S.allGo++;}else if(S)S.allTie++;}}
+   return add;}
+ else if(G.wd==='prop'){var s=0;for(var c=0;c<4;c++)s+=votes[c];if(s>0)for(var i=0;i<n;i++){var x=G.rng()*s;for(var c2=0;c2<4;c2++){if(x<votes[c2]){add[c2]++;break;}x-=votes[c2];}}}
+ return add;}
+function firmDraw(G,d,t){var D=G.ds[d],tmp=D.bag.slice(),left=sum(tmp),out=[0,0,0,0,0];
+ function one(){if(left<=0)return -1;var x=Math.floor(G.rng()*left);for(var c=0;c<5;c++){if(x<tmp[c]){tmp[c]--;left--;return c;}x-=tmp[c];}return -1;}
+ var first=t>0?one():-1;if(first>=0)out[first]++;var extra=0;
+ G.firm[d].forEach(function(f){if(f.t==='firm'){var ok=first===f.c;if(ok)extra++;G.firmRes.push({c:f.c,t:f.t,ok:ok});}});
+ for(var i=1;i<t+extra;i++){var c=one();if(c>=0)out[c]++;}
+ G.firm[d].forEach(function(f){if(f.t!=='firmB')return;var c=one();var ok=c===f.c;if(ok)out[c]++;else if(c>=0){tmp[c]++;left++;}G.firmRes.push({c:f.c,t:f.t,ok:ok});});
+ return out;}
+function drawCount(G,d,t){return G.firm[d].length?firmDraw(G,d,t):drawSample(G,d,t);}
 function count(G){
- var tot=[0,0,0,0],per=[];
- for(var d=0;d<5;d++){var t=effT(G,d),dr=drawSample(G,d,t);var D=G.ds[d];
+ var tot=[0,0,0,0],per=[];G.firmRes=[];
+ if(G.cnt==='draw'&&G.wd==='none'){
+ for(var d=0;d<5;d++){var t=effT(G,d),dr=drawCount(G,d,t);var D=G.ds[d];if(G.firm[d].length)t=sum(dr);
    for(var c=0;c<4;c++)tot[c]+=dr[c]+D.tray[c];per.push({d:d,t:t,drawn:dr,tray:D.tray.slice(),run:tot.slice()});}
+ }else{
+  var wAll=0;G.wvote=0;G.wvoters=0;
+  for(var d5=0;d5<5;d5++){var t5=effT(G,d5),D5=G.ds[d5],v5=[0,0,0,0],w5=0,dr5=null;
+    if(G.cnt==='draw'){dr5=drawCount(G,d5,t5);if(G.firm[d5].length)t5=sum(dr5);for(var c5=0;c5<4;c5++)v5[c5]=dr5[c5];w5=dr5[W];}
+    else if(G.cnt==='drawW'){dr5=drawSample(G,d5,t5);for(var c6=0;c6<4;c6++)v5[c6]=D5.bag[c6];w5=dr5[W];}
+    else{for(var c7=0;c7<4;c7++)v5[c7]=D5.bag[c7];var col=v5[0]+v5[1]+v5[2]+v5[3];w5=G.cnt==='fill'?Math.min(D5.bag[W],Math.max(0,t5-col)):0;}
+    for(var c8=0;c8<4;c8++)v5[c8]+=D5.tray[c8];
+    G.wvoters+=w5;
+    if(G.wd==='poll'||G.wd==='poll24')wAll+=w5;else{var ad=whiteTo(G,w5,v5,d5);for(var c9=0;c9<4;c9++){v5[c9]+=ad[c9];G.wvote+=ad[c9];}}
+    for(var ca=0;ca<4;ca++)tot[ca]+=v5[ca];per.push({d:d5,t:t5,drawn:dr5,tray:D5.tray.slice(),white:w5,run:tot.slice()});}
+  if((G.wd==='poll'||G.wd==='poll24')){var pv=G.wd==='poll'?G.wpoll:G.wpollSum;var pl=pv?lead(pv,G.out):-1;G.pollLead=pl;var nw=Math.floor(wAll/G.wq);if(pl>=0){tot[pl]+=nw;G.wvote+=nw;}}
+ }
  var mx=Math.max.apply(null,tot),tied=[];for(var c2=0;c2<4;c2++)if(tot[c2]===mx)tied.push(c2);
  var win=tied.length>1?tied[Math.floor(G.rng()*tied.length)]:tied[0];
  var srt=tot.slice().sort(function(a,b){return b-a;});
@@ -475,158 +777,268 @@ function count(G){
 }
 function aiPlan(G,p){
  var P=G.players[p],m=STRATS[P.strat].m,own=P.cand,b=P.belief,r=G.rng;
- var ev=expVotes(G,b),top=-1,tv=-1;for(var c=0;c<4;c++)if(c!==own&&ev[c]>tv){tv=ev[c];top=c;}
+ var ev=expVotes(G,b,P.tb&&G.mobHide!=='open'?P.tb:null),top=-1,tv=-1;for(var c=0;c<4;c++)if(c!==own&&ev[c]>tv){tv=ev[c];top=c;}
  var wt=[0,0,0,0,0];for(var c1=0;c1<4;c1++)wt[c1]=c1===own?1:(c1===top?-1:-0.35);
- function ov(d,k,from,to){var bb=b[d],n=sum(bb);if(n<=0||k<=0)return 0;var e=Math.min(k,n)*bb[from]/n;if(to!==W)e=Math.min(e,G.supply[to]);return e*effT(G,d)/n*(wt[to]-wt[from]);}
+ function ov(d,k,from,to){var bb=b[d],n=sum(bb);if(n<=0||k<=0)return 0;var e=Math.min(k,n)*bb[from]/n;if(to!==W)e=Math.min(e,G.supply[to]);return (G.cnt==='draw'?e*effT(G,d)/n:e)*(wt[to]-wt[from]);}
+ function bfv(d,k,y){var bb=b[d],n=sum(bb);if(n<=0||G.supply[y]<=0)return 0;return pBack(bb,n,k,y)*effT(G,d)/n*(wt[y]-wt[W]);}
  function nz(v){return v*(1+0.3*(r()-0.5));}
  var L=[];
  for(var d=0;d<5;d++){
-   L.push({type:'speech',cand:own,d:d,v:nz(m.speech*ov(d,kFace(G,d,own,true),W,own))});
-   L.push({type:'sns',cand:own,d:d,good:true,v:nz(m.speech*ov(d,kNet(G,d,own,true),W,own))});
+   L.push({type:'speech',cand:own,d:d,v:nz(m.speech*(m.sp||1)*ov(d,kSp(G,d,own),W,own))});
+   if(P.hand.call>0||P.hand.chill>0||P.hand.firm>0||P.hand.firmB>0){var bb4=b[d],n4=sum(bb4)||1,pw=pickW(G,bb4,n4,wt),tu=m.turn||1;
+     if(P.hand.call>0&&!(G.callOnce&&G.callMark[d]))L.push({type:'call',cand:own,d:d,v:nz(tu*pw*G.callN)});
+     if(P.hand.chill>0)L.push({type:'chill',cand:own,d:d,v:nz(tu*(-pw))});
+     if(P.hand.firm>0)L.push({type:'firm',cand:own,d:d,v:nz(tu*bb4[own]/n4*pw)});
+     if(P.hand.firmB>0)L.push({type:'firmB',cand:own,d:d,v:nz(tu*bb4[own]/n4)});}
+   if(G.sns==='std')L.push({type:'sns',cand:own,d:d,good:true,v:nz(m.speech*ov(d,kNet(G,d,own,true),W,own))});
    for(var y=0;y<4;y++){if(y===own||y===G.out)continue;
-     var fz=G.fire[y]?0.15:null;
-     L.push({type:'rumor',cand:y,d:d,v:nz(m.rumor*(fz!=null?fz:ov(d,kRumor(G,d,y),y,W)))});
-     L.push({type:'sns',cand:y,d:d,good:false,v:nz(m.rumor*(fz!=null?fz:ov(d,kNet(G,d,y,false),y,W)))});}
-   nz(0);
+     var fz=G.fire[y]?0.15:null,fzR=G.kaibunNF?null:fz;
+     L.push({type:'rumor',cand:y,d:d,v:nz(m.rumor*(fzR!=null?fzR:ov(d,kRumorE(G,d,y),y,W)*rmCapF(G,b,d,kRumorE(G,d,y),y)+(G.backfire?bfv(d,kRumor(G,d,y),y):0)+(G.rmOwn?rmOwnV(G,b,d,kRumor(G,d,y),y,own,wt):0)))});
+     if(G.sns==='std')L.push({type:'sns',cand:y,d:d,good:false,v:nz(m.rumor*(fz!=null?fz:ov(d,kNet(G,d,y,false),y,W)))});}
+   L.push({type:'poll',cand:own,d:d,v:P.blind?-1+0*nz(0):nz(m.info*0.25*P.u[d]+0.02)});
  }
- var tvv=0;for(var d2=0;d2<5;d2++)tvv+=ov(d2,kTv(G,d2,own),W,own);L.push({type:'tv',cand:own,d:0,v:nz(m.tv*tvv)});
- L.push({type:'mob',cand:own,d:Math.floor(r()*5),v:nz(m.mob*Math.min(G.mobN,G.supply[own]))});
- var thr=0;for(var d3=0;d3<5;d3++){var n3=sum(b[d3])||1;thr=Math.max(thr,3*b[d3][own]/n3*effT(G,d3)/n3);}
+ if(G.sns!=='std'){
+   var sv5=function(c,pos,from,to){var t=0;for(var dd=0;dd<5;dd++)t+=snsAllOn(G)?ov(dd,kNetW(G,dd,c,pos),from,to):ov(dd,kNet(G,dd,c,pos),from,to)/5;return t;};
+   L.push({type:'sns',cand:own,d:0,good:true,v:nz(m.speech*(snsAllOn(G)?(m.gl||1):1)*sv5(own,true,W,own))-(snsAllOn(G)?gxPen(G,P,'sns',own,b,ov):0)});
+   for(var y2=0;y2<4;y2++){if(y2===own||y2===G.out)continue;L.push({type:'sns',cand:y2,d:0,good:false,v:nz(m.rumor*(G.fire[y2]?0.15:sv5(y2,false,y2,W)))});}
+ }
+ var tvv=0;for(var d2=0;d2<5;d2++)tvv+=ov(d2,kTv(G,d2,own),W,own);L.push({type:'tv',cand:own,d:0,v:nz(m.tv*(m.gl||1)*tvv)-gxPen(G,P,'tv',own,b,ov)});
+ if(G.mob==='std')L.push({type:'mob',cand:own,d:Math.floor(r()*5),v:nz(m.mob*Math.min(G.mobN,G.supply[own]))});
+ else if(G.mob==='pull')for(var dq=0;dq<5;dq++){var bq=b[dq],nq=sum(bq)||1,tq=effT(G,dq),eh=hits(G,bq,own),
+     nr=G.mobRefill?nq:Math.max(1,nq-1),tk=tq-(G.mobKeepT?0:1),go=tk*Math.max(0,bq[own]-1)/nr+1-tq*bq[own]/nq,
+     gop=0;for(var cq=0;cq<4;cq++){if(cq===own||cq===G.out)continue;var dlt=(tk/nr-tq/nq)*bq[cq];gop+=dlt*wt[cq];}
+   var ew=0;if(G.mobWhite){var pw2=1;for(var iw=0;iw<Math.min(G.mobDraw,nq);iw++)pw2*=Math.max(0,(nq-iw-bq[W])/(nq-iw));ew=(1-eh)*(1-pw2)*(1-tq*bq[W]/nq/nq)*(G.supply[own]>0?1:0);}
+   L.push({type:'mob',cand:own,d:dq,v:nz(m.mob*G.mobN*(eh*(go+gop)+ew))});}
+ else for(var dm=0;dm<5;dm++){var bm=b[dm],nm=sum(bm)||1,tm=effT(G,dm),vx=G.cnt==='draw'?1-tm/nm:0,px=bm[own]/nm,pw=G.mob==='lock2'?0:bm[W]/nm;
+   if(G.mob!=='conv1'){px=1-Math.pow(1-px,2);pw=(1-px)*(1-Math.pow(1-pw,2));}else pw=pw;
+   L.push({type:'mob',cand:own,d:dm,v:nz(m.mob*G.mobN*(px*vx+pw*1)*(G.supply[own]>0?1:0))});}
+ if(G.sp!=='none')aiSp(G,P,m,own,b,ov,nz,L);
+ var thr=0;for(var d3=0;d3<5;d3++){var n3=sum(b[d3])||1;thr=Math.max(thr,G.cnt==='draw'?3*b[d3][own]/n3*effT(G,d3)/n3:3*b[d3][own]/n3);}
  L.push({type:'fire',cand:own,d:0,v:G.fire[own]?0:nz(m.fire*0.35*thr*(G.nP-1))});
+ if(P.hand.sp_rebut>0)for(var dr2=0;dr2<5;dr2++)L.push({type:'sp_rebut',cand:own,d:dr2,v:nz((G.fire[own]?0:m.fire*0.35*thr*(G.nP-1))+m.speech*ov(dr2,G.spK.rebut||1,W,own))});
+ if(P.hand.sp_wall>0)L.push({type:'sp_wall',cand:own,d:0,v:(+G.fire[own]>=2)?0:nz(m.fire*0.35*thr*(G.nP-1)*(G.fire[own]?0.8:1.6))});
+ if(G.gb&&P.hand.gamble>0&&gbWant(G,P,ev))L.push({type:'gamble',cand:own,d:0,v:1e9});
  L.sort(function(a,c){return c.v-a.v;});
+ if(G.gx.tv==='cost'||G.gx.sns==='cost')return aiCost(G,P,m,L);
  var hand=JSON.parse(JSON.stringify(P.hand)),envs=[];
  for(var i=0;i<L.length&&envs.length<1;i++)if(hand[L[i].type]>0){envs.push(L[i]);hand[L[i].type]--;}
- var second=null;
+ var mu=0;for(var d4=0;d4<5;d4++)mu=Math.max(mu,P.u[d4]);
+ if(G.sv2){var us=P.u.slice().sort(function(a,c){return c-a;});mu=us[0]+us[1];}
+ var sv=m.info*(0.5*mu)+0.03,second=null;
  for(var j=0;j<L.length;j++)if(hand[L[j].type]>0&&L[j]!==envs[0]){second=L[j];break;}
- if(second)envs.push(second);
- return {envs:envs.map(function(e){return {type:e.type,cand:e.cand,d:e.d,good:e.good!==false};})};
+ if(second&&(G.svCard||G.noSv||second.v>=sv))envs.push(second);
+ if(G.env2&&envs.length===1){for(var j2=0;j2<L.length;j2++)if(hand[L[j2].type]>0){envs.push(L[j2]);break;}}
+ return {envs:envs.map(function(e){return {type:e.type,cand:e.cand,d:e.d,tgt:e.tgt,good:e.good!==false};})};
 }
-var API={CN:CN,W:W,TILES:TILES,CANDS:CANDS,EVENTS:EVENTS,ACT:ACT,STRATS:STRATS,CHN:CHN,MARK:MARK,PLEDGE:PLEDGE,
- newGame:newGame,startRound:startRound,submitPlans:submitPlans,validPlan:validPlan,resolveAll:resolveAll,surveyOrder:surveyOrder,
+function rmOwnV(G,b,d,k,y,own,wt){var bb=b[d],n=sum(bb);if(n<=0||G.supply[own]<=0)return 0;var q=Math.max(0,Math.min(1,bb[y]/n)),kk=Math.min(k,n),p=1-Math.pow(1-q,kk);if(G.rmOwnMin>=2)p-=kk*q*Math.pow(1-q,kk-1);p=Math.max(0,p);return p*effT(G,d)/n*(wt[own]-wt[W]);}
+function gxPen(G,P,kind,own,b,ov){var f=G.gx[kind]||'none',v=0;
+ if(f==='back'){backD(G,{type:kind}).forEach(function(d){v+=-ov(d,1,own,W);});}
+ else if(f==='heat'){var t=0;for(var d=0;d<5;d++)t+=-ov(d,G.gxHeatN,own,W);v=t/5*0.4*(G.nP-1)*Math.min(2,6-G.round);}
+ return Math.max(0,v);}
+function aiCost(G,P,m,L){var hand=JSON.parse(JSON.stringify(P.hand)),A=[],gl=null;
+ for(var i=0;i<L.length;i++){var e=L[i];if(hand[e.type]<=0)continue;if(gxOf(G,e)==='cost'){if(!gl)gl=e;continue;}
+   if(A.length<2){if(A.length===1&&A[0].type===e.type&&hand[e.type]<2)continue;A.push(e);}}
+ var mu=0;for(var d4=0;d4<5;d4++)mu=Math.max(mu,P.u[d4]);if(G.sv2){var us=P.u.slice().sort(function(a,c){return c-a;});mu=us[0]+us[1];}
+ var sv=m.info*(0.5*mu)+0.03,B=A.slice(0,1);if(A[1]&&(G.svCard||G.noSv||A[1].v>=sv))B.push(A[1]);
+ var vB=B.reduce(function(x,e){return x+e.v;},0),vG=gl?gl.v:-1e9;
+ var envs=(gl&&(!B.length||vG>=vB))?[gl]:B;
+ return {envs:envs.map(function(e){return {type:e.type,cand:e.cand,d:e.d,tgt:e.tgt,good:e.good!==false};})};}
+function aiSp(G,P,m,own,b,ov,nz,L){var H=P.hand,K=G.spK;
+ for(var d=0;d<5;d++){
+   if(H.sp_oratory>0){var k=kFace(G,d,own,true);L.push({type:'sp_oratory',cand:own,d:d,v:nz(m.speech*ov(d,k>0?k+(K.oratory||2):0,W,own))});}
+   if(H.sp_canvass>0){var d1=(d+1)%5;L.push({type:'sp_canvass',cand:own,d:d,v:nz(m.speech*(ov(d,kFace(G,d,own,true),W,own)+ov(d1,kFace(G,d1,own,true),W,own)))});}
+   for(var y=0;y<4;y++){if(y===own||y===G.out)continue;
+     if(H.sp_blaze>0&&K.blazeAll&&d===0){var tb2=0;for(var db2=0;db2<5;db2++)tb2+=ov(db2,K.blazeAll+(G.rumorK-3)+(wkHas(G,y,db2)?1:0),y,W);L.push({type:'sp_blaze',cand:y,d:0,v:nz(m.rumor*(G.fire[y]?0.15:tb2))});}
+     if(H.sp_blaze>0&&!K.blazeAll)L.push({type:'sp_blaze',cand:y,d:d,v:nz(m.rumor*(G.fire[y]?0.15:ov(d,(K.blaze||5)+(G.rumorK-3)+(wkHas(G,y,d)?1:0),y,W)))});
+     if(H.sp_poach>0)L.push({type:'sp_poach',cand:own,tgt:y,d:d,v:nz(m.rumor*(G.fire[y]?0.15:ov(d,K.poach||3,y,own)))});}
+ }
+ if(H.sp_viral>0){var t=0;for(var d2=0;d2<5;d2++){var bb=Math.max(0,G.ds[d2].lv.net+G.kmod.net),kk=bb>=3?(K.viral3||2):bb===2?(K.viral2||1):0;if(kk>0&&G.C[own].fav==='net')kk++;t+=ov(d2,kk,W,own);}L.push({type:'sp_viral',cand:own,d:0,v:nz(m.speech*t)});}
+ if(H.sp_front>0){var t2=0;for(var d3=0;d3<5;d3++){var p=G.ds[d3].lv.paper,k2=p>=3?(K.front3||2):p===2?(K.front2||1):0;if(k2>0&&G.C[own].fav==='paper')k2++;t2+=ov(d3,k2,W,own);}L.push({type:'sp_front',cand:own,d:0,v:nz(m.tv*t2)});}
+ if(H.sp_machine>0)L.push({type:'sp_machine',cand:own,d:Math.floor(G.rng()*5),v:nz(m.mob*Math.min((K.machine||3)+(G.mobN-1),G.supply[own]))});
+}
+function tallyW(G){var v=[0,0,0,0];for(var d=0;d<5;d++){var x=expDW(G,d);for(var c=0;c<4;c++)v[c]+=x[c];}return v;}
+function gbWant(G,P,ev){var pol=P.gbPol||'never';if(pol==='never'||G.round<4)return false;if(pol==='always4')return true;
+ var rk=1;for(var c=0;c<4;c++)if(c!==P.cand&&c!==G.out&&ev[c]>ev[P.cand])rk++;if(pol==='comeback4')return rk>=3;if(pol==='behind4')return rk>=2;return false;}
+function resolveGamble(G,e,obs,pre){var GB=G.gb,c=e.cand,A0=tallyW(G),L=(G.nP===3&&GB.L3!=null)?GB.L3:GB.L,lost=0,seen=0,short=0,gained=0,stole=0;G.stats.act.gamble=(G.stats.act.gamble||0)+1;
+ for(var d=0;d<5;d++){if(L<=0)break;var r=op(G,d,L,c,W,obs);lost+=r.conv;seen+=r.k;}
+ var A1=tallyW(G),hd=[];for(var d2=0;d2<5;d2++)if(G.rng()<GB.p)hd.push(d2);var hit=hd.length>=GB.need;
+ if(hit)hd.forEach(function(d){var D=G.ds[d],n=sum(D.bag),k=Math.min(GB.H,n);if(G.statDraw)G.stats.drawn=(G.stats.drawn||0)+k;var dr=drawSample(G,d,k),mv=[0,0,0,0,0];seen+=k;
+   [W,0,1,2,3].forEach(function(x){if(x===c||dr[x]<=0)return;var q=Math.min(dr[x],G.supply[c]);if(q<dr[x])short+=dr[x]-q;if(q<=0)return;D.bag[x]-=q;D.bag[c]+=q;G.supply[c]-=q;if(x!==W){G.supply[x]+=q;stole+=q;}mv[x]=q;gained+=q;});
+   G.players.forEach(function(P,i){var b=P.belief[d];if(P.blind===1)return;
+     if(obs[i]&&!P.blind){for(var x=0;x<5;x++){if(x===c||!mv[x])continue;b[x]-=mv[x];b[c]+=mv[x];if(b[x]<0){b[c]+=b[x];b[x]=0;}}return;}
+     var bs=sum(b)||1,cap=G.supply[c]+gained;for(var x2=0;x2<5;x2++){if(x2===c)continue;var ex=Math.min(k*b[x2]/bs,b[x2]);b[x2]-=ex;b[c]+=ex;P.u[d]+=ex;}});
+   if(G.learn&&k>0){var after=dr.slice();for(var x3=0;x3<5;x3++){if(x3===c)continue;after[x3]-=mv[x3];after[c]+=mv[x3];}blend(G,d,after,obs);}});
+ var A2=tallyW(G);G.gbLog.push({owner:e.owner,opener:G.opener,round:G.round,c:c,hit:hit?1:0,hk:hd.length,lost:lost,gained:gained,stole:stole,short:short,seen:seen,loss:A1[c]-A0[c],net:A2[c]-A0[c]});
+ var shG=showTo(G,obs);lg(G,pre+'大勝負「'+CN[c]+'」→ 1 の目 '+hd.length+' 地区で'+(hit?'当たり':'外れ')+(shG?'（先に失った '+lost+' 個'+(hit?'・替わった '+gained+' 個':'')+'）':hidTxt(G)));}
+function check(G){
+ for(var d=0;d<5;d++){var D=G.ds[d];for(var c=0;c<5;c++)if(D.bag[c]<0||!Number.isInteger(D.bag[c]))throw new Error('袋の数が不正 '+D.name+' '+CN[c]+'='+D.bag[c]);
+   if(sum(D.bag)+(D.early||0)-(D.refill||0)!==D.pop)throw new Error('袋の合計が人口と合わない '+D.name);for(var c2=0;c2<4;c2++)if(D.tray[c2]<0)throw new Error('トレイが負');}
+ for(var c3=0;c3<4;c3++){var t=G.supply[c3];G.ds.forEach(function(D){t+=D.bag[c3]+D.tray[c3];});if(G.supply[c3]<0||t!==G.pieces)throw new Error(CN[c3]+'のコマの総数が '+G.pieces+' にならない: '+t);}
+ G.players.forEach(function(P){for(var k in P.hand)if(P.hand[k]<0)throw new Error('手札が負');});
+}
+var API={T6:T6,ADV:ADV,ADV2:ADV2,draftBase:draftBase,SPC:SPC,SPIDS:SPIDS,CN:CN,W:W,VIS:VIS,SV:SV,PP:PP,HOME:HOME,HID:HID,P3:P3,TILES:TILES,CANDS:CANDS,EVENTS:EVENTS,ACT:ACT,STRATS:STRATS,CHN:CHN,MARK:MARK,PLEDGE:PLEDGE,
+ kSp:kSp,BUS:BUS,isGlobal:isGlobal,gxOf:gxOf,newGame:newGame,startRound:startRound,submitPlans:submitPlans,validPlan:validPlan,resolveAll:resolveAll,surveyOrder:surveyOrder,
  surveyPhase:surveyPhase,endRound:endRound,count:count,aiPlan:aiPlan,effT:effT,kFace:kFace,kNet:kNet,kTv:kTv,kRumor:kRumor,
- expVotes:expVotes,fmt:fmt,sum:sum};
+ expVotes:expVotes,tallyW:tallyW,capOf:capOf,kNetW:kNetW,wkHas:wkHas,ISS_ID:ISS_ID,ISS_T:ISS_T,expD:expD,expDW:expDW,check:check,fmt:fmt,sum:sum};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;else root.MM=API;
 })(this);
-</script>
-<script>
-window.MMV=(function(){var K=true;
-function n(x){x=Math.round(x);if(!K)return String(x);if(x===0)return '0';var m=Math.floor(x/10),s=x%10;return (m?m+' 万':'')+(m&&s?' ':'')+(s?s+' 千':'');}
-return {kilo:K,n:n,v:function(x){return n(x)+(K&&x!==0?'票':' 票');},p:function(x){return n(x)+(K?'人':' 人');}};})();
+(function(MM){
+'use strict';
+MM.V04={map:'fixed',vis:'pass2',sv:'std',pp:'A2',hid:false,home:'off',p3:'three',wd:'local',wdTie:'splitV',wdAllWhite:'none',sns:'wide',gx:{tv:'heat',sns:'none'},evRain:'r5',
+ hand:{speech:5,rumor:2,call:1},mob:'pull',mobDraw:3,mobAll:true,mobKeepT:true,mobHide:'count',mobBlend:true,callN:2,callOnce:true,turnK:[0.3,0.6,0.8],trace:true,statDraw:true,
+ pieces:20,tCap:'pop1',scoopUsed:true,busCond:'paper',gb:{L:3,L3:2,p:1/6,need:2,H:5},
+ rumorPlus:1,rumorCapW:2,rumorLift:true,env2:true};
+MM.AI_STRATS=['speechy','wide','rumor','balance'];
+MM.ISSN={kid:'子育て・教育',care:'福祉・医療',town:'まちづくり',econ:'地域経済'};
+MM.ISSK={kid:'kosodate',care:'fukushi',town:'machi',econ:'keizai'};
+MM.KOHO=[{"id":1,"name":"継田 恒彦","yomi":"つぎた つねひこ","gender":"男","age":64,"title":"副市長（現市長の右腕・後継を自任）","catch":"やりかけの仕事を、やり切ります。","fav":"face","debate":2,"pledge":"town","weak":{"issue":"town","story":"駅前の再開発の説明会が荒れたまま"},"base4":[["town",2],["town",1]],"base3":[["town",2],["town",1]],"reason":"副市長として 8 年、市長の代理で町内会や式典を回ってきたので対面。担当した団地の建て替えの地区に 2、区画整理を手伝った新興住宅地に 1。再開発の担当として説明会に立ったので、まちづくりの地区で反発（弱み）。答弁は手堅いが無難で討論 2。"},{"id":2,"name":"語部 ひなこ","yomi":"かたりべ ひなこ","gender":"女","age":44,"title":"元地元局アナウンサー（夕方のニュースを 12 年）","catch":"市政も、わかりやすくお伝えします。","fav":"paper","debate":2,"pledge":"kid","weak":null,"base4":[["kid",3]],"base3":[["kid",3]],"reason":"顔と声を誰もが知っているので紙電波。原稿を読む声は誰よりも通りますが、台本のない言い合いは局でもしてこなかったので討論 2。政党の組織はないが、夕方のニュースで子育ての特集を続けたので、取材した新興住宅地の親たちに支持が厚い（4 人のとき 3・3 人のとき 3）。公約は子育て・教育。"},{"id":3,"name":"暖簾 源一","yomi":"のれん げんいち","gender":"男","age":71,"title":"旧市街商店会 会長（和菓子屋 三代目）","catch":"シャッターより、のれんを。","fav":"face","debate":1,"pledge":"econ","weak":null,"base4":[["econ",1],["econ",1]],"base3":[["econ",1],["econ",2]],"reason":"店先と祭りの寄り合いで顔が広いので対面。地元の商店街と、小豆の仕入れ先の縁で農村に地盤（4 人のとき各 1、3 人のとき商店街 2・農村 1）。演説は苦手で討論 1。公約は地域経済。"},{"id":4,"name":"乗合 蒼太","yomi":"のりあい そうた","gender":"男","age":29,"title":"起業家（乗り合いバスのアプリ会社 社長）","catch":"バス停まで、歩かせません。","fav":"net","debate":2,"pledge":"town","weak":{"issue":"kid","story":"学生のころのとがった投稿が掘り返される"},"base4":[["kid",1]],"base3":[["kid",1]],"reason":"会社の発信で若い層に知られているのでネット。地盤はアプリの利用者が多い新興住宅地に 1 だけ（発信が強いぶん組織は薄い）。交通の話なので公約はまちづくり。昔の投稿が若い親の多い地区（子育て・教育の地区）で掘り返される（弱み）。"},{"id":5,"name":"往田 千景","yomi":"ゆきた ちかげ","gender":"女","age":52,"title":"診療所の院長（往診の車は 3 台目）","catch":"町ごと、かかりつけに。","fav":"face","debate":2,"pledge":"care","weak":null,"base4":[["care",1],["care",1]],"base3":[["care",1],["care",2]],"reason":"往診で一軒ずつ顔を合わせているので対面。患者の多い団地と、農村の出張診療に地盤（4 人のとき各 1、3 人のとき団地 2・農村 1）。公約は福祉・医療。"},{"id":6,"name":"筆塚 文雄","yomi":"ふでづか ふみお","gender":"男","age":67,"title":"元中学校長（地元紙でコラム連載中）","catch":"宿題は、市役所が持ち帰ります。","fav":"paper","debate":3,"pledge":"kid","weak":null,"base4":[["kid",3]],"base3":[["kid",3]],"reason":"地元紙の連載で名前が知られているので紙電波。朝礼と保護者会で鍛えた話しぶりで討論 3。教え子の親が多い新興住宅地に 3。公約は子育て・教育。"},{"id":7,"name":"苗代 さつき","yomi":"なわしろ さつき","gender":"女","age":38,"title":"農業法人の代表（直売所の手書きポップが評判）","catch":"とれたてを、市政にも。","fav":"net","debate":1,"pledge":"econ","weak":null,"base4":[["econ",1]],"base3":[["econ",1]],"reason":"畑の写真の発信が人気なのでネット。発信が強いぶん地盤は薄く、地元の農村に 1（4 人のとき・3 人のときとも）。人前で話すのは苦手で討論 1。公約は地域経済。"},{"id":8,"name":"迎田 航平","yomi":"むかえだ こうへい","gender":"男","age":35,"title":"会社員（育休明け・PTA 書記）","catch":"お迎えに間に合う市役所へ。","fav":"net","debate":2,"pledge":"kid","weak":null,"base4":[["kid",1]],"base3":[["kid",1]],"reason":"保護者のグループで話が回るのでネット。地盤は住んでいる新興住宅地に 1 だけ。公約は子育て・教育。"},{"id":9,"name":"帳尻 久美子","yomi":"ちょうじり くみこ","gender":"女","age":58,"title":"元市役所 財政課長（電卓は 2 台持ち）","catch":"予算書、全部読みました。","fav":"paper","debate":1,"pledge":"town","weak":{"issue":"econ","story":"在職中に商店街の補助金を削った"},"base4":[["town",4],["town",1]],"base3":[["town",4],["town",1]],"reason":"市報の「お金の話」の欄を長く書いていたので紙電波。建て替えの資金を工面した団地に厚い地盤（4 人のとき 4・3 人のとき 4）と、新興住宅地に 1。数字に強いが話が硬く討論 1。在職中に補助金を削った商店街・農村で反発（弱み）。"},{"id":10,"name":"問谷 和枝","yomi":"といや かずえ","gender":"女","age":63,"title":"元市議会議員（3 期・一般質問の回数は議会一）","catch":"議場から、路地裏まで。","fav":"face","debate":3,"pledge":"care","weak":{"issue":"care","story":"前の選挙で掲げた福祉の約束が、まだ途中"},"base4":[["care",1],["care",1]],"base3":[["care",2],["care",1]],"reason":"3 期の地元回りで対面、議会での質問で討論 3。顔は広いが後援会は小さく、地盤は福祉・医療の地区に薄く（4 人のとき農村 1・団地 1、3 人のとき農村 2・団地 1）。前の選挙の福祉の公約が途中なので、同じ福祉・医療の地区で突かれる（弱み）。"}];
+MM.ICON=[['kid','econ'],['kid','town'],['econ','care'],['care','town'],['care','econ']];
+MM.place=function(lines){var used=[],out=[];
+ lines.forEach(function(L){var iss=L[0],n=L[1],ds=[4,3,2,1,0].filter(function(d){return MM.ICON[d].indexOf(iss)>=0&&used.indexOf(d)<0;});
+  if(!ds.length){out[out.length-1][1]+=n;return;}used.push(ds[0]);out.push([ds[0],n]);});return out;};
+MM.toEngine=function(k,nP){var L=nP===4?k.base4:k.base3;
+ return {fav:k.fav,debate:k.debate,pledge:MM.ISSK[k.pledge],weak:null,weakIss:k.weak?MM.ISSK[k.weak.issue]:null,base:MM.place(L).map(function(x){return ['at',x[0],x[1]];}),
+  name:k.name,koho:k};};
+MM.rng32=function(seed){var a=(seed>>>0)||1;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};};
+MM.dealCands=function(seed,nP){var r=MM.rng32(seed),idx=MM.KOHO.map(function(_,i){return i;});
+ for(var i=idx.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=idx[i];idx[i]=idx[j];idx[j]=t;}
+ return idx.slice(0,4).map(function(i){return MM.toEngine(MM.KOHO[i],nP);});};
+MM.v04Game=function(o){var seed=(o.seed==null)?Math.floor(Math.random()*1e9):(o.seed>>>0),nP=o.nP||4;
+ var cs=o.cands||MM.dealCands((seed*31+7)>>>0,nP);
+ return MM.newGame(Object.assign({},MM.V04,o,{seed:seed,nP:nP,cands:cs}));};
+})(typeof module!=='undefined'&&module.exports?module.exports:this.MM);
 </script>
 <script id="ui">
 (function(){
 'use strict';
-var MM=window.MM,CN=MM.CN;
+var MM=window.MM,CN=MM.CN,W=4;
 function $(s){return document.querySelector(s);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function chip(c){return '<span class="chip c'+c+'"></span>';}
+var EMB=[
+ '<path d="M8.5 22V9.5L12 2l3.5 7.5V22z" fill="#fff"/><circle cx="12" cy="12" r="2.7" fill="currentColor"/><path d="M12 10.3V12l1.3.9" stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round"/><rect x="10.8" y="17" width="2.4" height="5" fill="currentColor"/>',
+ '<rect x="1" y="9.5" width="22" height="2.6" fill="#fff"/><path d="M2 21c0-6.5 4.5-9.5 10-9.5s10 3 10 9.5h-3.2c0-4.4-3-6.6-6.8-6.6s-6.8 2.2-6.8 6.6z" fill="#fff"/><path d="M4 9.5V6.5M20 9.5V6.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>',
+ [0,72,144,216,288].map(function(a){return '<ellipse cx="12" cy="6.3" rx="3.4" ry="4.8" fill="#fff" transform="rotate('+a+' 12 12)"/>';}).join('')+'<circle cx="12" cy="12" r="2.1" fill="currentColor"/>',
+ '<rect x="1" y="20" width="22" height="2.4" rx="1" fill="#fff"/><path d="M3 15h18l-1.6 5H4.6z" fill="#fff"/><rect x="10.6" y="10.5" width="2.8" height="4.8" fill="#fff"/><path d="M8 10.5h8l-1.2 1.6H9.2z" fill="#fff"/><path d="M12 8.5C10 5.5 6 6.5 4.6 13.4M12 8.5c2-3 6-2 7.4 4.9" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="12" cy="6.2" r="1.5" fill="#fff"/>'];
+function chip(c){if(c>=4)return '<span class="chip c4"></span>';return '<span class="chip emb c'+c+' t'+c+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+EMB[c]+'</svg></span>';}
 function cname(c){return chip(c)+'<span class="t'+c+'">'+CN[c]+'</span>';}
+function kname(c){return G&&G.C[c]&&G.C[c].name?G.C[c].name:'';}
+function cfull(c){return cname(c)+(kname(c)?' <b>'+esc(kname(c))+'</b>':'');}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+function man(x){x=Math.round(x);if(x===0)return '0';var m=Math.floor(x/10),s=x%10;return (m?m+' 万':'')+(m&&s?' ':'')+(s?s+' 千':'');}
+function hito(x){return man(x)+'人';}
+function hyo(x){return man(x)+(x?'票':' 票');}
+window.MMV={kilo:true,n:man,v:hyo,p:hito};
+window.MMUI={chip:chip,cname:cname};
 document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){
  document.querySelectorAll('.tabs button').forEach(function(x){x.classList.toggle('on',x===b);});
  ['play'].forEach(function(t){$('#tab-'+t).classList.toggle('hidden',t!==b.dataset.tab);});
  store('mm-tab',b.dataset.tab);
 });});
-var G=null,phase='setup',sel=null,two=true,res=null,surveyDone=true,cidx=0,human=0,cfg={nP:4};
+var G=null,phase='setup',sel=null,res=null,cidx=0,human=0,cfg={nP:4};
 var NAMES=['あなた','コンピュータA','コンピュータB','コンピュータC'];
-var ORDER=['speech','sns','mob','rumor','tv','fire','poll'];
+var ORDER=['speech','rumor','sns','tv','mob','call','fire','gamble'];
+var ANAME={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',call:'投票の呼びかけ',fire:'火消し',gamble:'大勝負'};
+function cols(){return [0,1,2,3].filter(function(c){return c!==G.out;});}
+function others(c){return cols().filter(function(x){return x!==c;});}
+function bestD(c){var b=-1,bi=0;G.ds.forEach(function(D,j){var v=D.bag[W]*MM.kFace(G,j,c,true);if(v>b){b=v;bi=j;}});return bi;}
 function defaultSel(){
- var P=G.players[human],h=JSON.parse(JSON.stringify(P.hand)),out=[];
- for(var i=0;i<2;i++){var t=null;for(var j=0;j<ORDER.length;j++)if(h[ORDER[j]]>0){t=ORDER[j];break;}
-   if(!t)break;h[t]--;var rc=(P.cand+1)%4;if(rc===G.out)rc=(rc+1)%4;out.push({type:t,cand:t==='rumor'?rc:P.cand,d:i,good:true});}
+ var P=G.players[human],h=JSON.parse(JSON.stringify(P.hand)),out=[],own=P.cand;
+ var pref=['speech','sns','rumor','mob','tv','call','fire'];
+ for(var i=0;i<2;i++){var t=null;for(var j=0;j<pref.length;j++)if(h[pref[j]]>0&&!(i===1&&out[0]&&out[0].type===pref[j]&&pref[j]!=='speech')){t=pref[j];break;}
+   if(!t&&i===1)for(var j2=0;j2<ORDER.length;j2++)if(h[ORDER[j2]]>0){t=ORDER[j2];break;}
+   if(!t)break;h[t]--;var tc=t==='rumor'?others(own)[0]:own;
+   out.push({type:t,cand:tc,d:t==='speech'?(i===0?bestD(own):(bestD(own)+1)%5):(i%5),good:t!=='rumor'});}
  return out;
 }
 function startGame(){
- var strats=['balance','survey','rumor','mobilize'];
- var r=Math.random;var st=strats.slice().sort(function(){return r()-0.5;});
- G=MM.newGame({nP:cfg.nP,log:true,humanSeat:0,names:NAMES,strats:['balance'].concat(st.slice(0,3))});
+ var st=MM.AI_STRATS.slice(),r=Math.random;st.sort(function(){return r()-0.5;});
+ G=MM.v04Game({nP:cfg.nP,log:true,humanSeat:0,names:NAMES,strats:['balance'].concat(st.slice(0,3)),gbPols:['never','comeback4','comeback4','comeback4']});
  human=0;res=null;cidx=0;
- MM.startRound(G);sel=defaultSel();two=sel.length>1;phase='plan';render();
+ MM.startRound(G);sel=defaultSel();phase='plan';render();
 }
 function submit(){
- var envs=two?sel.slice(0,2):sel.slice(0,1);
- var plan={envs:envs.map(function(e){return {type:e.type,cand:e.cand,d:e.d,good:e.good};})};
- var err=MM.validPlan(G,human,plan);if(err){$('#err').textContent=err;return;}
+ var plan={envs:sel.map(function(e){return {type:e.type,cand:e.type==='gamble'?G.players[human].cand:e.cand,d:e.d,good:e.good};})};
+ var err=MM.validPlan(G,human,plan);if(err){$('#err').textContent=errText(err);return;}
  var plans=G.players.map(function(P,i){return P.human?plan:MM.aiPlan(G,i);});
- MM.submitPlans(G,plans);MM.resolveAll(G);
- phase='result';
- surveyDone=true;MM.surveyPhase(G);
- render();window.scrollTo(0,0);
+ MM.submitPlans(G,plans);MM.resolveAll(G);MM.surveyPhase(G,{});
+ phase='result';render();window.scrollTo(0,0);
 }
+function errText(e){if(/足りない/.test(e))return e.replace('のカードが足りない','のカードが足りません。');if(/大勝負/.test(e))return '大勝負は自分の候補にだけ打てます。';return e;}
 function nextRound(){
  MM.endRound(G);
- if(G.round<5){MM.startRound(G);sel=defaultSel();two=sel.length>1;phase='plan';}
+ if(G.round<5){MM.startRound(G);sel=defaultSel();phase='plan';}
  else{res=MM.count(G);cidx=0;phase='count';G.log.push({r:5,t:'開票を始める',cls:'r'});}
  render();window.scrollTo(0,0);
 }
 function roundResult(){
  var rl=G.log.filter(function(l){return l.r===G.round&&l.cls!=='r';});
  var lines=rl.map(function(l){return '<div class="ln '+(l.cls||'')+(l.t.indexOf('（あなたの封筒）')>=0?' mine':'')+(l.t.indexOf('〔立会人として見ました〕')>=0?' wit':'')+'">'+esc(l.t)+'</div>';}).join('');
- var tail;
- tail='<div class="row" style="margin-top:10px"><button class="pri" id="next">'+(G.round<5?'ラウンド '+(G.round+1)+' へ':'開票へ')+'</button></div>';
+ var tail='<div class="row" style="margin-top:10px"><button class="pri" id="next">'+(G.round<5?'ラウンド '+(G.round+1)+' へ':'開票へ')+'</button></div>';
  return '<h3>ラウンド '+G.round+' で起きたこと</h3><div class="card roundres">'+lines+tail+'</div>';
 }
+function issT(i){return MM.ISSN[i]||i;}
+function issD(i){var L=[];G.ds.forEach(function(D,j){if(MM.ICON[j].indexOf(i)>=0)L.push(D.name);});return L;}
 function districtCards(){
- var P=G.players[human];
  return '<div class="grid">'+G.ds.map(function(D,i){
-   var s=P.seen[i],t=MM.effT(G,i);
-   var tray=D.tray.map(function(n,c){return n?cname(c)+' '+MMV.v(n):'';}).filter(Boolean).join(' ')||'なし';
-   var hm=false;
-   return '<div class="card'+(hm?' me':'')+'"><div class="dname">'+(i+1)+' '+esc(D.name)+(hm?'（地元）':'')+'</div>'+
-    '<div class="small">有権者 '+MMV.p(D.pop)+'</div>'+
-    '<div>投票に行く人 <b>'+MMV.p(t)+'</b>'+(D.tmod?'<span class="small">　ニュースで '+(D.tmod>0?'+':'−')+MMV.p(Math.abs(D.tmod))+'</span>':'')+'</div>'+
-    '<div class="small">引ける数　演説 '+D.lv.face+'　SNS '+D.lv.net+'　新聞テレビ '+(D.lv.paper>=2?1:0)+'</div>'+
-    '<div class="small">期日前: '+tray+'</div>'+
-    '<div class="small">あなたが見た袋: '+(s?(s.r===0?'準備時':'ラウンド '+s.r)+' '+esc(MM.fmt(s.c)):'まだ見ていません')+'</div></div>';
+   var t=MM.effT(G,i),box=D.tray.reduce(function(a,b){return a+b;},0);
+   return '<div class="card"><div class="dname">'+(i+1)+' '+esc(D.name)+'</div>'+
+    '<div class="small">有権者 '+hito(D.pop)+'</div>'+
+    '<div>投票に行く人 <b>'+hito(t)+'</b>'+(t!==D.base?' <span class="small">（はじめは '+hito(D.base)+'）</span>':'')+'</div>'+
+    '<div class="small">対面 '+MM.MARK[D.lv.face]+'　ネット '+MM.MARK[D.lv.net]+'　紙電波 '+MM.MARK[D.lv.paper]+'</div>'+
+    '<div class="small">町の課題: '+MM.ICON[i].map(issT).join('／')+'</div>'+
+    '<div class="small">期日前の箱: '+(box?hito(box):'まだ誰もいません')+(G.callMark[i]?'　呼びかけの印があります':'')+'</div></div>';
  }).join('')+'</div>';
 }
 function candCards(){
- return '<div class="cands">'+MM.CANDS.map(function(C,c){
+ return '<div class="cands">'+[0,1,2,3].map(function(c){
    if(c===G.out)return '<div class="card cand k'+c+'"><b>'+cname(c)+'</b> <span class="small">3 人戦では使いません。</span></div>';
-   var bd=G.baseD[c].map(function(x){return G.ds[x[0]].name+' '+x[1];}).join('、');
-   var mine=G.players[human].cand===c;
-   return '<div class="card cand k'+c+(mine?' me':'')+'"><b>'+cname(c)+'の候補</b>'+(mine?'（あなたの候補）':'')+
-    candLines(C,c,bd)+'</div>';
+   var mine=G.players[human].cand===c,K=G.C[c].koho||{};
+   return '<div class="card cand k'+c+(mine?' me':'')+'"><div>'+cname(c)+'の陣営'+(mine?' <span class="small">あなたの候補です</span>':'')+'</div>'+
+    '<div class="kname">'+esc(G.C[c].name||'')+'</div>'+(K.title?'<div class="small">'+esc(K.title)+'</div>':'')+(K.catch?'<div class="kcatch">「'+esc(K.catch)+'」</div>':'')+
+    candLines(c,K)+'</div>';
  }).join('')+'</div>';
 }
-function candLines(C,c,bd){
- var fv=String(C.fav).replace(/^paper.*/,'paper');
- var favAct={face:'演説',net:'SNS（良い話）',paper:'新聞テレビ'}[fv];
- var pt=MM.PLEDGE[C.pledge].t.split(' '),layer=pt[0],th=pt[1];
- var pd=G.ds.filter(function(D){return MM.PLEDGE[C.pledge].f(D.age);}).map(function(D){return D.name;});
- var early=G.ds.reduce(function(a,D){return a+D.tray[c];},0);
+function candLines(c,K){
+ var C=G.C[c],bd=G.baseD[c].map(function(x){return G.ds[x[0]].name+' '+x[1];}).join('、');
+ var favAct={face:'演説',net:'SNS の良い話',paper:'新聞テレビ'}[C.fav];
+ var heat=G.gheat[c]>=G.round&&G.gheat[c]>0;
  function ln(k,v,n){return '<div class="cl"><b>'+k+'</b> '+v+(n?'<span class="cn">'+n+'</span>':'')+'</div>';}
  return '<div class="clines">'+
-  ln('地盤',esc(bd),'最初から袋に入っている、この候補の支持者のコマの数です。')+
-  ln('得意',MM.CHN[fv],favAct+'でこの候補を広めるときは、1 個多く引けます。')+
-  ln('討論',C.debate+' / 3','ニュース「'+MM.EVENTS.debate.name+'」が出ると、この数がいちばん高い候補が全地区で 1 個ずつ引きます。白が出たら自分の色に替えます。')+
-  ln('公約',pd.length?esc(pd.join('、'))+'に届く':'届く地区なし','ニュース「'+MM.EVENTS.koho.name+'」が出ると、公約が届く地区で 1 個ずつ引きます。白が出たら自分の色に替えます。')+
-  (C.weak?ln('弱み',esc(G.ds[G.weakD[c]].name),'この地区でうわさを受けると、相手は 1 個多く引けます。'):'')+
-  ln('火消しトークン',G.fire[c]?'あり':'なし','あると、次に来るうわさか悪い SNS を 1 回止めます。')+
-  ln('期日前',MMV.v(early),'期日前の箱に入っている、この候補の票です。')+
+  ln('地盤',esc(bd||'なし'),'はじめから袋に入っている、この候補の支持者のコマです。')+
+  ln('得意',MM.CHN[C.fav],favAct+'でこの候補を広めるときは、1 個多く引けます。')+
+  ln('討論',C.debate+' / 3','ニュース「公開討論会」で、この数がいちばん高い候補が全地区で 1 個ずつ引きます。')+
+  ln('公約',issT(K.pledge),'ニュース「選挙公報が届く」で、'+esc(issD(K.pledge).join('、'))+'で 1 個ずつ引きます。')+
+  (K.weak?ln('弱み',issT(K.weak.issue)+'の地区','「'+esc(K.weak.story)+'」。'+esc(issD(K.weak.issue).join('、'))+'でこの候補を狙ううわさは、白に替える数の上限がなくなります。'):'')+
+  ln('火消しトークン',G.fire[c]?'あります':'ありません','あると、次に来るうわさか悪い SNS を 1 回止めます。')+
+  ln('注目の印',heat?'あります':'ありません',heat?'ラウンド '+G.gheat[c]+' の終わりまで、この候補を狙ううわさは上限がなくなります。':'新聞テレビを打つと付きます。')+
   '</div>';
 }
 function selOpts(arr,v){return arr.map(function(o){return '<option value="'+o[0]+'"'+(String(o[0])===String(v)?' selected':'')+'>'+esc(o[1])+'</option>';}).join('');}
 function envForm(i){
  var e=sel[i],P=G.players[human];
- var types=Object.keys(MM.ACT).map(function(t){return [t,MM.ACT[t]+'（残り '+P.hand[t]+'）'];});
- var noD=e.type==='tv'||e.type==='fire',noC=e.type==='poll';
+ var types=ORDER.filter(function(t){return P.hand[t]>0||e.type===t;}).map(function(t){return [t,ANAME[t]+'（残り '+(P.hand[t]||0)+' 枚）'];});
+ var noD=e.type==='tv'||e.type==='fire'||e.type==='sns'||e.type==='gamble',noC=e.type==='call'||e.type==='gamble';
  return '<div class="env"><b>封筒 '+(i+1)+'</b><div class="row">'+
   '<label>行動 <select data-i="'+i+'" data-k="type">'+selOpts(types,e.type)+'</select></label>'+
-  (noC?'':'<label>候補 <select data-i="'+i+'" data-k="cand">'+selOpts([0,1,2,3].filter(function(c){return c!==G.out;}).map(function(c){return [c,CN[c]];}),e.cand)+'</select></label>')+
+  (noC?'':'<label>候補 <select data-i="'+i+'" data-k="cand">'+selOpts(cols().map(function(c){return [c,CN[c]+'（'+kname(c)+'）'];}),e.cand)+'</select></label>')+
   (noD?'':'<label>地区 <select data-i="'+i+'" data-k="d">'+selOpts(G.ds.map(function(D,j){return [j,(j+1)+' '+D.name];}),e.d)+'</select></label>')+
-  (e.type==='sns'?'<label>良/悪 <select data-i="'+i+'" data-k="good">'+selOpts([['1','良（白→その色）'],['0','悪（その色→白）']],e.good?'1':'0')+'</select></label>':'')+
+  (e.type==='sns'?'<label>話 <select data-i="'+i+'" data-k="good">'+selOpts([['1','良い話'],['0','悪い話']],e.good?'1':'0')+'</select></label>':'')+
   '</div><div class="small">'+hint(e)+'</div></div>';
 }
+function capWhy(d,c){var w=[];if(MM.wkHas(G,c,d))w.push('弱みの地区');if(G.gheat[c]>=G.round&&G.gheat[c]>0)w.push('注目の印');if(G.rumorK>3)w.push('疑心暗鬼');return w;}
 function hint(e){
- var c=e.cand,d=e.d,D=G.ds[d];
+ var c=e.type==='gamble'?G.players[human].cand:e.cand,d=e.d,D=G.ds[d],cn=CN[c];
  switch(e.type){
-  case 'speech':return D.name+'の袋から '+MM.kFace(G,d,c,true)+' 個引きます。白が出たら'+CN[c]+'に替えます。';
-  case 'rumor':return D.name+'の袋から '+MM.kRumor(G,d,c)+' 個引きます。'+CN[c]+'が出たら白に戻します。'+CN[c]+'に火消しトークンがあると止められます。';
-  case 'sns':return D.name+'の袋から '+MM.kNet(G,d,c,e.good)+' 個引きます。'+(e.good?'白が出たら'+CN[c]+'に替えます。':CN[c]+'が出たら白に戻します。火消しトークンがあると止められます。');
-  case 'tv':return '全地区で合わせて '+G.ds.reduce(function(a,X,j){return a+MM.kTv(G,j,c);},0)+' 個引きます。白が出たら'+CN[c]+'に替えます。';
-  case 'mob':return CN[c]+'のコマを期日前トレイに '+G.mobN+' 個置きます。開票で必ず数える '+MMV.v(G.mobN)+'になります。';
-  case 'fire':return CN[c]+'の席に火消しトークンを置きます。次に来るうわさか悪い SNS を 1 回止めます。';
+  case 'speech':return D.name+'の袋から '+MM.kFace(G,d,c,true)+' 個引きます。白が出たら'+cn+'に替えます。';
+  case 'rumor':var cap=MM.capOf(G,d,c),why=capWhy(d,c);
+   return D.name+'の袋から '+MM.kRumor(G,d,c)+' 個引きます。'+cn+'が出たら白に戻します。'+(cap?'白に戻すのは '+cap+' 個までです。':'今は'+why.join('と')+'があるので、上限はありません。')+(G.fire[c]?cn+'には火消しトークンがあるので、止められます。':'');
+  case 'sns':var n=G.ds.reduce(function(a,X,j){return a+MM.kNetW(G,j,c,e.good);},0);
+   return '全地区で、合わせて '+n+' 個引きます。'+(e.good?'白が出たら'+cn+'に替えます。':cn+'が出たら白に戻します。'+(G.fire[c]?cn+'には火消しトークンがあるので、止められます。':''));
+  case 'tv':return '紙電波が ◎ か ○ の地区で、合わせて '+G.ds.reduce(function(a,X,j){return a+MM.kTv(G,j,c);},0)+' 個引きます。白が出たら'+cn+'に替えます。'+cn+'には注目の印が付きます。';
+  case 'mob':return D.name+'の袋から 3 個引きます。'+cn+'が出たら、出た分を全部期日前の箱へ入れます。'+(G.mobN>1?'このラウンドは 2 回行います。':'')+'ほかの人には、入った人数だけが伝わります。';
+  case 'call':return G.callMark[d]?D.name+'にはもう呼びかけの印があるので、効きません。':D.name+'で投票に行く人が 2 千人増えます。開票でこの地区から引く数が 2 個増えます。';
+  case 'fire':return G.fire[c]?cn+'にはもうトークンがあるので、空振りになります。':cn+'の席に火消しトークンを置きます。次に'+cn+'を狙ううわさか悪い SNS を 1 回止めます。';
+  case 'gamble':var L=G.nP===3?2:3;return '全地区で '+L+' 個ずつ引き、'+cn+'が出たら白に戻します。そのあと 5 地区でサイコロを振ります。1 の目が 2 地区以上なら当たりで、その地区で 5 個引いて全部'+cn+'に替えます。当たるのは 5 回に 1 回ほどです。';
  }
  return '';
 }
@@ -638,7 +1050,7 @@ function render(){
  if(phase==='setup'||!G){
    h+='<h2>遊ぶ（あなた 1 人＋コンピュータ）</h2><div class="card"><div class="row">'+
     '<label>人数 <select id="s-np">'+selOpts([[4,'4 人（コンピュータ 3）'],[3,'3 人（コンピュータ 2）']],cfg.nP)+'</select></label>'+
-    '</div><p class="small">あなたの参謀カードは、ゲームを始めると配られます。コンピュータの手と封筒の出し主は見えません。はじめての人は、「遊び方」のチュートリアルでルールと操作を確認できます。</p>'+
+    '</div><p class="small">候補者は 10 人の中から 4 人が選ばれます。あなたの参謀カードは、ゲームを始めると配られます。コンピュータの手と封筒の出し主は見えません。はじめての人は、「遊び方」のチュートリアルでルールと操作を確かめられます。</p>'+
     '<button class="pri" id="start">ゲームを始める</button></div>';
    el.innerHTML=h;
    $('#start').onclick=function(){cfg.nP=+$('#s-np').value;startGame();};
@@ -647,21 +1059,19 @@ function render(){
  var P=G.players[human];
  h+='<h3>候補</h3>'+candCards();
  h+='<div class="card me"><b>あなたの立場</b><div class="small">ゲームのあいだ変わらず、ほかの人には秘密です。</div><div class="row">'+
-   '<span>参謀カード: '+cname(P.cand)+'</span>'+'</div>'+
-   '<div class="small">手札の残り: '+Object.keys(MM.ACT).map(function(t){return MM.ACT[t]+' '+P.hand[t];}).join('、')+'</div></div>';
+   '<span>参謀カード: '+cfull(P.cand)+'</span></div>'+
+   '<div class="small">手札の残り: '+ORDER.filter(function(t){return P.hand[t]>0;}).map(function(t){return ANAME[t]+' '+P.hand[t]+' 枚';}).join('、')+'</div></div>';
  h+='<div class="card"><div class="row"><span class="big">'+(phase==='count'?'開票':'ラウンド '+G.round+' / 5')+'</span>'+
    (phase==='count'?'':'<span>選管: '+esc(G.players[G.senkan].name)+'</span>')+'</div>'+
    (phase==='plan'?'<div>ニュース: <b>'+esc(MM.EVENTS[G.events[G.round-1]].name)+'</b> <span class="small">'+esc(MM.EVENTS[G.events[G.round-1]].text)+'</span></div>':'')+'</div>';
  if(phase==='plan'){
-   h+='<h3>作戦</h3><p class="small">封筒を 1 枚か 2 枚、投函できます。</p><div class="card">'+envForm(0)+
-     (sel.length>1?'<label class="chk"><input type="checkbox" id="two"'+(two?' checked':'')+'> 2 枚目を入れる'+'</label>'+(two?envForm(1):''):'<p class="small">残りの手札が 1 枚なので、封筒は 1 枚になります。</p>')+
-     '<p class="small">袋の中身の手がかりは、封筒を開けて引いたコマと、ラウンド 2 と 4 の終わりの公開世論調査です。'+'</p>'+
-     '<div class="row"><button class="pri" id="submit">投函する</button><span class="ng" id="err"></span></div></div>';
+   h+='<h3>作戦</h3><p class="small">封筒を 2 枚、投函します。</p><div class="card">'+sel.map(function(e,i){return envForm(i);}).join('')+
+     '<div class="row"><button class="pri" id="submit"'+(sel.length===2?'':' disabled')+'>投函する</button><span class="ng" id="err">'+(sel.length===2?'':'封筒は毎ラウンド 2 枚です。')+'</span></div></div>';
  }else if(phase==='result'){
    h+=roundResult();
  }else if(phase==='count'){
    h+='<h3>開票</h3><div class="card">'+countTable()+
-    (cidx<5?'<button class="pri" id="count-next">'+(cidx+1)+' '+esc(G.ds[cidx].name)+' を開票する</button>':'')+'</div>';
+    (cidx<5?'<button class="pri" id="count-next">'+(cidx+1)+' '+esc(G.ds[cidx].name)+'を開票する</button>':'')+'</div>';
    if(cidx>=5)h+=resultHtml();
  }
  h+='<h3>地区</h3>'+districtCards()+'<h3>ログ</h3>'+logHtml()+
@@ -671,35 +1081,43 @@ function render(){
  $('#restart').onclick=function(){phase='setup';G=null;render();};
  if(phase==='plan'){
    el.querySelectorAll('select[data-i]').forEach(function(s){s.onchange=function(){var i=+s.dataset.i,k=s.dataset.k;
-     sel[i][k]=k==='type'?s.value:(k==='good'?s.value==='1':+s.value);render();};});
-   var tw=$('#two');if(tw)tw.onchange=function(){two=tw.checked;render();};
+     sel[i][k]=k==='type'?s.value:(k==='good'?s.value==='1':+s.value);
+     if(k==='type'){var t=s.value,own=G.players[human].cand;if(t==='rumor'&&sel[i].cand===own)sel[i].cand=others(own)[0];
+       if(t!=='rumor'&&t!=='sns')sel[i].cand=own;sel[i].good=t!=='rumor';}
+     render();};});
    $('#submit').onclick=submit;
  }
  if(phase==='result')$('#next').onclick=nextRound;
  if(phase==='count'&&cidx<5)$('#count-next').onclick=function(){
-   var x=res.per[cidx];
-   G.log.push({r:5,t:G.ds[cidx].name+': 投票に行く人 '+MMV.p(x.t)+' → 引いた '+x.t+' 個 '+MM.fmt(x.drawn)+'（白は棄権・白票）＋ 期日前 '+MM.fmt(x.tray.concat([0]))+'。累計 '+cols().map(function(c){return CN[c]+' '+MMV.v(x.run[c]);}).join('・'),cls:''});
+   var x=res.per[cidx],v=votesOf(cidx);
+   G.log.push({r:5,t:G.ds[cidx].name+': 投票に行く人 '+x.t+' → 引いた '+x.t+' 個 '+MM.fmt(x.drawn)+'、期日前の箱 '+MM.fmt(x.tray.concat([0]))+'。'+(x.white?'白 '+x.white+' 個は'+whiteText(v):'白は出なかった')+'。累計 '+cols().map(function(c){return CN[c]+' '+x.run[c];}).join('・'),cls:''});
    cidx++;
    if(cidx>=5)fbAfterEnd(G);
-   if(cidx>=5){G.log.push({r:5,t:'当選: '+CN[res.win]+'（'+MMV.v(res.tot[res.win])+'）'+(res.tied.length>1?' 同数 '+res.tied.map(function(c){return CN[c];}).join('・')+' からくじで決定':''),cls:'r'});}
+   if(cidx>=5){G.log.push({r:5,t:'当選: '+CN[res.win]+' '+kname(res.win)+'（'+hyo(res.tot[res.win])+'）'+(res.tied.length>1?' 同数 '+res.tied.map(function(c){return CN[c];}).join('・')+' からくじで決定':''),cls:'r'});}
    render();
  };
 }
-function cols(){return [0,1,2,3].filter(function(c){return c!==G.out;});}
+function votesOf(i){var x=res.per[i],pr=i>0?res.per[i-1].run:[0,0,0,0],v=[0,0,0,0],wa=[0,0,0,0],ws=0;
+ for(var c=0;c<4;c++){v[c]=x.run[c]-pr[c];wa[c]=v[c]-x.drawn[c]-x.tray[c];ws+=wa[c];}
+ return {v:v,wa:wa,voidN:x.white-ws};}
+function whiteText(o){var to=[0,1,2,3].filter(function(c){return o.wa[c]>0;});
+ if(!to.length)return '色の票が無かったので、棄権';
+ return to.map(function(c){return CN[c]+'に '+o.wa[c];}).join('、')+(o.voidN?'、端数の '+o.voidN+' 個は無効票':'');}
 function countTable(){
  var rows='';
- for(var i=0;i<cidx;i++){var x=res.per[i];rows+='<tr><td>'+(i+1)+' '+esc(G.ds[i].name)+'</td><td class="n">'+x.t+'</td>'+
-   cols().map(function(c){return '<td class="n">'+MMV.n(x.drawn[c])+(x.tray[c]?'＋'+MMV.n(x.tray[c]):'')+'</td>';}).join('')+'<td class="n">'+MMV.n(x.drawn[4])+'</td></tr>';}
+ for(var i=0;i<cidx;i++){var x=res.per[i],o=votesOf(i);rows+='<tr><td>'+(i+1)+' '+esc(G.ds[i].name)+'</td><td class="n">'+x.t+'</td>'+
+   cols().map(function(c){return '<td class="n">'+x.drawn[c]+(x.tray[c]?'＋'+x.tray[c]:'')+(o.wa[c]?'＋白'+o.wa[c]:'')+'</td>';}).join('')+'<td class="n">'+x.white+'</td></tr>';}
  var run=cidx>0?res.per[cidx-1].run:[0,0,0,0];
- rows+='<tr><th>累計</th><th></th>'+cols().map(function(c){return '<th class="n">'+MMV.n(run[c])+'</th>';}).join('')+'<th></th></tr>';
- return '<div class="tw"><table><tr><th>地区</th><th class="n">引く</th>'+cols().map(function(c){return '<th class="n">'+cname(c)+'</th>';}).join('')+'<th class="n">白</th></tr>'+rows+'</table></div><p class="small">色と白の列は票の数で、白は棄権や白票です。「＋」の後ろは、動員で期日前に入れた票です。「引く」は袋から引いたコマの数です。</p>';
+ rows+='<tr><th>累計</th><th></th>'+cols().map(function(c){return '<th class="n">'+run[c]+'</th>';}).join('')+'<th></th></tr>';
+ return '<div class="tw"><table><tr><th>地区</th><th class="n">引く</th>'+cols().map(function(c){return '<th class="n">'+cname(c)+'</th>';}).join('')+'<th class="n">白</th></tr>'+rows+'</table></div>'+
+  '<p class="small">数はコマの数で、1 個が千人です。「＋」のあとは、期日前の箱の票と、その地区でいちばん票の多い候補に入った白です。</p>';
 }
 function resultHtml(){
- var P=G.players[human],winP=res.winP;
- var msg=winP===human?'<span class="ok">あなたの勝ち</span>':(winP<0?'<span class="ng">あなたの負け</span>':'<span class="ng">'+esc(G.players[winP].name)+'の勝ち</span>');
- return '<div class="card"><div class="big">当選: '+cname(res.win)+'（'+MMV.v(res.tot[res.win])+'）</div>'+
-  (res.tied.length>1?'<p>'+res.tied.map(function(c){return CN[c];}).join('と')+'が同数だったので、くじで決まりました。</p>':'<p>2 位との差は '+MMV.v(res.margin)+'です。</p>')+
-  '<p class="big">'+msg+'</p><h3>参謀カードの公開</h3><ul>'+G.players.map(function(Q){return '<li>'+esc(Q.name)+': '+cname(Q.cand)+(Q.human?'':'（作戦: '+MM.STRATS[Q.strat].name+'）')+'</li>';}).join('')+
+ var winP=res.winP;
+ var msg=winP===human?'<span class="ok">あなたの勝ちです</span>':'<span class="ng">'+esc(winP>=0?G.players[winP].name:'誰か')+'の勝ちです</span>';
+ return '<div class="card"><div class="big">当選: '+cfull(res.win)+'（'+hyo(res.tot[res.win])+'）</div>'+
+  (res.tied.length>1?'<p>'+res.tied.map(function(c){return CN[c];}).join('と')+'が同数だったので、くじで決まりました。</p>':'<p>2 位との差は '+hyo(res.margin)+'でした。</p>')+
+  '<p class="big">'+msg+'</p><h3>参謀カードの公開</h3><ul>'+G.players.map(function(Q){return '<li>'+esc(Q.name)+': '+cfull(Q.cand)+(Q.human?'':'（作戦: '+MM.STRATS[Q.strat].name+'）')+'</li>';}).join('')+
   '</ul><button class="pri" id="again">もう 1 局</button>'+fbEndLink()+'</div>';
 }
 document.addEventListener('click',function(e){if(e.target&&e.target.id==='again')startGame();});
@@ -739,27 +1157,25 @@ var t0=store('mm-tab');if(t0&&t0!=='play'){var bt=$('#tabbtn-'+t0);if(bt)bt.clic
 var MM=window.MM;
 if(!MM||!document.getElementById('tab-play'))return;
 var CN=MM.CN,W=4;
-var C2I={'赤':0,'青':1,'黄':2,'緑':3,'白':4};
+var C2I={'時計塔':0,'橋':1,'桜':2,'広場':3,'白':4},CRE='(時計塔|橋|桜|広場|白)';
 var TUT_SEED=1116;
 var RM=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
 function reduced(){return !!RM.matches;}
 function $(s,r){return (r||document).querySelector(s);}
 function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function chip(c){return '<span class="chip c'+c+'"></span>';}
+function chip(c){return window.MMUI?window.MMUI.chip(c):'<span class="chip c'+c+'"></span>';}
 function cname(c){return chip(c)+'<span class="t'+c+'">'+CN[c]+'</span>';}
-function mmTalk(D){
- var F=['','あまり効きません','そこそこ効きます','よく効きます'],N=['','あまり届きません','そこそこ届きます','よく届きます'];
- return D.name+'では、顔を合わせて話すのが'+F[D.lv.face]+'。演説では '+D.lv.face+' 個引けます。ネットの話は'+N[D.lv.net]+'。SNS では '+D.lv.net+' 個引けます。'+(D.lv.paper>=2?'新聞やテレビも届くので、新聞テレビでは 1 個引けます。':'新聞やテレビはあまり届かないので、新聞テレビでは引けません。');
-}
+function kn(c){var g=cur.G;return g&&g.C[c]&&g.C[c].name?g.C[c].name:'';}
 function cube(c,extra,style){return '<span class="gd-cube gd-q'+c+(extra?' '+extra:'')+'"'+(style?' style="'+style+'"':'')+'></span>';}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 var cur={G:null,res:null};
 var T={on:false,i:0,ff:false,lastScroll:'',pre:null};
-var _new=MM.newGame,_count=MM.count;
-MM.newGame=function(o){
- if(T.on)o=Object.assign({},o,{seed:TUT_SEED,nP:4,strats:['balance','survey','rumor','mobilize']});
- var g=_new.call(MM,o);cur.G=g;cur.res=null;return g;
+var _new=MM.newGame,_v04=MM.v04Game,_count=MM.count;
+MM.newGame=function(o){var g=_new.call(MM,o);if(o&&o.log){cur.G=g;cur.res=null;}return g;};
+MM.v04Game=function(o){
+ if(T.on)o=Object.assign({},o,{seed:TUT_SEED,nP:4,strats:['balance','speechy','wide','rumor']});
+ return _v04.call(MM,o);
 };
 MM.count=function(G){var r=_count.apply(MM,arguments);if(G===cur.G)cur.res=r;return r;};
 function G(){return cur.G;}
@@ -783,10 +1199,10 @@ function countTable(){
 }
 function parseDrawn(s){
  if(s==null)return null;var a=[0,0,0,0,0];if(s==='なし')return a;
- s.split('・').forEach(function(p){var m=p.match(/^([赤青黄緑白]) (\d+)/);if(m)a[C2I[m[1]]]+=+m[2];});return a;
+ s.split('・').forEach(function(p){var m=p.match(new RegExp('^'+CRE+' (\\d+)'));if(m)a[C2I[m[1]]]+=+m[2];});return a;
 }
 function parseLine(t){
- var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?(?:〔立会人として見ました〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|世論調査)「([^」]*)」→ (.*)$/);
+ var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?(?:〔立会人として見ました〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|投票の呼びかけ|大勝負)「([^」]*)」→ (.*)$/);
  if(!m)return null;
  var o={i:+m[1],n:+m[2],mine:!!m[3],opener:m[4]||null,kind:m[5],arg:m[6],rest:m[7]};
  o.byMe=o.opener==='あなた';o.witness=t.indexOf('〔立会人として見ました〕')>=0;
@@ -796,28 +1212,31 @@ function parseLine(t){
  var dm=o.rest.match(/引く (\d+)（(.*?) を(?:全員に)?見せた）/);
  if(dm){o.k=+dm[1];o.drawn=parseDrawn(dm[2]);}
  else{var km=o.rest.match(/引く (?:計 )?(\d+)/);o.k=km?+km[1]:null;o.drawn=null;}
- var cm=o.rest.match(/([赤青黄緑白]) −(\d+)・([赤青黄緑白]) \+(\d+)/);
+ var cm=o.rest.match(new RegExp(CRE+' −(\\d+)・'+CRE+' \\+(\\d+)'));
  if(cm)o.conv={from:C2I[cm[1]],to:C2I[cm[3]],n:+cm[2]};
  o.nullified=/火消しトークンで無効/.test(o.rest);
- var mb=o.rest.match(/期日前トレイに([赤青黄緑]) \+(\d+)/);if(mb)o.mob={c:C2I[mb[1]],n:+mb[2]};
+ var mb=o.rest.match(/^(\d+) 人が期日前に投票した/);o.mobN=mb?+mb[1]:(o.kind==='動員'?0:null);
+ var mc=o.rest.match(new RegExp('期日前の箱に'+CRE+' \\+(\\d+)'));if(mc)o.mob={c:C2I[mc[1]],n:+mc[2]};
  o.fireSet=/火消しトークン \+1/.test(o.rest);
  o.fireMiss=o.kind==='火消し'&&/空振り/.test(o.rest);
+ o.callVoid=o.kind==='投票の呼びかけ'&&/効かない/.test(o.rest);
+ o.hit=o.kind==='大勝負'&&/当たり/.test(o.rest);
+ var gd=o.rest.match(/1 の目 (\d+) 地区/);o.dice=gd?+gd[1]:null;
  return o;
 }
 function changeText(o){
  var cn=o.cand!=null?CN[o.cand]:'';
- if(o.nullified)return cn+'の火消しトークンで止まりました。トークンが 1 減り、袋は変わりません';
- if(o.hidden)return (o.opener?o.opener+'が':'開けた人が')+'一人で開けて引きました。引いたコマと替わった数は、あなたには分かりません';
+ if(o.nullified)return cn+'の火消しトークンで止まりました。トークンが 1 個減り、袋は変わりません。';
+ if(o.kind==='動員')return o.mobN?o.dname+'で '+o.mobN+' 人が期日前に投票しました。'+(o.mob?'期日前の箱に'+CN[o.mob.c]+'が '+o.mob.n+' 個入りました。':'誰の票かは、開けた人と立会人しか知りません。'):'誰も応じませんでした。';
+ if(o.kind==='投票の呼びかけ')return o.callVoid?'その地区にはもう呼びかけの印があったので、効きませんでした。':o.dname+'で投票に行く人が 2 千人増えました。';
+ if(o.kind==='大勝負')return 'サイコロの 1 の目は '+(o.dice||0)+' 地区で、'+(o.hit?'当たりでした。':'外れでした。');
+ if(o.hidden)return (o.opener?o.opener+'が':'開けた人が')+'立会人と開けて引きました。引いたコマと替わった数は、あなたには分かりません。';
  switch(o.kind){
-  case '演説':case 'SNS（良）':
-   return o.conv?o.dname+'の袋で 白が '+o.conv.n+' 減り、'+cn+'が '+o.conv.n+' 増えました':'白が出なかったので、何も変わりませんでした';
+  case '演説':case 'SNS（良）':case '新聞テレビ':
+   return o.conv&&o.conv.n?(o.dname?o.dname+'の袋で':'全地区の合計で')+'、白が '+o.conv.n+' 個減り、'+cn+'が '+o.conv.n+' 個増えました。':'白が出ず、何も変わりませんでした。';
   case 'うわさ':case 'SNS（悪）':
-   return o.conv?o.dname+'の袋で '+cn+'が '+o.conv.n+' 減り、白が '+o.conv.n+' 増えました':cn+'が出なかったので空振りでした。袋は変わりません';
-  case '新聞テレビ':
-   return o.conv&&o.conv.n?'全地区の合計で 白が '+o.conv.n+' 減り、'+cn+'が '+o.conv.n+' 増えました':'白が出なかったので、何も変わりませんでした';
-  case '動員':return o.mob?o.dname+'の期日前トレイに '+cn+'が '+o.mob.n+' 増えました。開票で必ず数える票で、袋は変わりません':'';
-  case '火消し':return o.fireMiss?'すでにトークンがあったので空振りでした':cn+'の火消しトークンが 1 増えました';
-  case '世論調査':return '袋から引いて見せました。何も変わりません';
+   return o.conv&&o.conv.n?(o.dname?o.dname+'の袋で':'全地区の合計で')+'、'+cn+'が '+o.conv.n+' 個減り、白が '+o.conv.n+' 個増えました。':cn+'が出ず、空振りでした。袋は変わりません。';
+  case '火消し':return o.fireMiss?'すでにトークンがあったので、空振りでした。':cn+'の火消しトークンが 1 個増えました。';
  }
  return '';
 }
@@ -826,19 +1245,27 @@ function mem(){var g=G();if(!g||!memo)return {};var x=memo.get(g);if(!x){x={roun
 function animOK(){return !reduced()&&!document.body.classList.contains('gd-fast');}
 function miniHtml(o){
  var h='',d=o.dname?'<span>'+esc(o.dname)+'</span>':'';
- if(o.kind==='動員'&&o.mob){
-   return '<div class="gd-mini">'+d+'<span class="gd-arrow">→</span><span class="gd-tray">'+cube(o.mob.c)+'</span><span>期日前トレイ '+CN[o.mob.c]+' +'+o.mob.n+'</span></div>';
+ if(o.kind==='動員'){
+   var cs='';for(var q=0;q<(o.mobN||0);q++)cs+=cube(o.mob?o.mob.c:9);
+   return '<div class="gd-mini">'+d+'<span class="gd-arrow">→</span><span class="gd-tray">'+(cs||'—')+'</span><span>期日前の箱 +'+(o.mobN||0)+(o.mob?'（'+CN[o.mob.c]+'）':'（中は見えません）')+'</span></div>';
+ }
+ if(o.kind==='投票の呼びかけ'){
+   return '<div class="gd-mini">'+d+'<span>'+(o.callVoid?'印があるので効きません':'投票に行く人 +2 千人')+'</span></div>';
+ }
+ if(o.kind==='大勝負'){
+   var dc='';for(var z=0;z<5;z++)dc+='<span class="gd-die'+(z<(o.dice||0)?' one':'')+'">'+(z<(o.dice||0)?'1':'・')+'</span>';
+   return '<div class="gd-mini"><span>サイコロ</span>'+dc+'<span>'+(o.hit?'当たり':'外れ')+'</span></div>';
  }
  if(o.kind==='火消し'){
    return '<div class="gd-mini"><span class="gd-token"></span><span>'+(o.fireMiss?'空振り':CN[o.cand]+'の席に火消しトークン +1')+'</span></div>';
  }
  if(o.nullified){
-   return '<div class="gd-mini"><span class="gd-token"></span><span>火消しトークン −1　袋はそのままです</span></div>';
+   return '<div class="gd-mini"><span class="gd-token"></span><span>火消しトークン −1・袋は変わらない</span></div>';
  }
- if(o.kind==='新聞テレビ'){
+ if(o.kind==='新聞テレビ'||(!o.dname&&(o.kind==='SNS（良）'||o.kind==='SNS（悪）')&&!o.hidden)){
    var n=o.conv?o.conv.n:0,cs='';
-   for(var t=0;t<n;t++)cs+=cube(o.cand,'cv','--j:'+t+';--f:var(--white-coma)');
-   return '<div class="gd-mini"><span class="gd-tv"></span><span>全地区 引く '+(o.k||0)+'</span><span class="gd-arrow">→</span>'+(cs||'<span>白なし</span>')+'<span class="gd-ret">↩ 各袋へ戻す</span></div>';
+   var cvTo=o.conv?o.conv.to:o.cand,cvFr=o.conv?o.conv.from:W;for(var t=0;t<n;t++)cs+=cube(cvTo,'cv','--j:'+t+';--f:var(--'+(cvFr===W?'white-coma':['red','blue','yellow','green'][cvFr])+')');
+   return '<div class="gd-mini"><span class="gd-tv"></span><span>全地区で '+(o.k||0)+' 個引く</span><span class="gd-arrow">→</span>'+(cs||'<span>白なし</span>')+'<span class="gd-ret">↩ 各袋へ戻す</span></div>';
  }
  var list=[];
  if(o.drawn){for(var c=0;c<5;c++)for(var j=0;j<o.drawn[c];j++)list.push(c);}
@@ -849,9 +1276,9 @@ function miniHtml(o){
    if(o.conv&&c===o.conv.from&&left>0){left--;h+=cube(o.conv.to,'cv','--j:'+j+';--f:var(--'+(o.conv.from===W?'white-coma':['red','blue','yellow','green'][o.conv.from])+')');}
    else h+=cube(c,'','--j:'+j);
  });
- if(!list.length)h+='<span>（引けるコマがありません）</span>';
- var tag=o.hidden?'↩ '+(o.opener?esc(o.opener)+'が見て':'開けた人が見て')+'戻しました':o.kind==='世論調査'?'↩ 見せて戻す':(o.conv?'↩ 替えて戻す（'+CN[o.conv.from]+' −'+o.conv.n+'　'+CN[o.conv.to]+' +'+o.conv.n+'）':'↩ そのまま戻す');
- return h+'<span class="gd-ret">'+tag+'</span>'+(o.byMe&&!o.hidden?'<span class="gd-a2me">あなたが開けました。色は、あなたと左隣の立会人に見えます</span>':o.witness&&!o.hidden?'<span class="gd-a2me">立会人として見ました</span>':'')+'</div>';
+ if(!list.length)h+='<span>（引けるコマなし）</span>';
+ var tag=o.hidden?'↩ '+(o.opener?esc(o.opener)+'と立会人が見て':'開けた人と立会人が見て')+'戻しました':(o.conv?'↩ 替えて戻す（'+CN[o.conv.from]+' −'+o.conv.n+'・'+CN[o.conv.to]+' +'+o.conv.n+'）':'↩ そのまま戻す');
+ return h+'<span class="gd-ret">'+tag+'</span>'+(o.byMe&&!o.hidden?'<span class="gd-a2me">あなたが開けました。色は、あなたと左隣の立会人に見えます。</span>':o.witness&&!o.hidden?'<span class="gd-a2me">立会人として見ました。</span>':'')+'</div>';
 }
 function parsePoll(t){
  var m=t.match(/^公開世論調査（([^）]*)）: (.*)$/);if(!m)return null;
@@ -865,18 +1292,14 @@ function pollHtml(pl){
    for(var c=0;c<5;c++)for(var k=0;k<x.drawn[c];k++){h+=cube(c,'','--j:'+j);j++;}
    h+='</span>';
  });
- return h+'<span class="gd-ret">↩ 全員に見せて、そのまま戻します</span></div>';
+ return h+'<span class="gd-ret">↩ 全員に見せて、そのまま戻す（袋は変わらない）</span></div>';
 }
 (function(){var st=document.createElement('style');st.textContent=
  '.gd-a2poll{gap:6px 10px}.gd-a2pd{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}'+
  '.gd-a2me{flex-basis:100%;font-size:11.5px;color:var(--ink)}'+
- '.gd-a2pub{border-left:3px solid var(--ink);padding-left:6px}';
+ '.gd-a2pub{border-left:3px solid var(--ink);padding-left:6px}'+
+ '.gd-die{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:1.5px solid var(--ink);border-radius:4px;font-size:12px;font-weight:700}.gd-die.one{background:var(--ink);color:var(--bg)}';
  document.head.appendChild(st);})();
-function hideHome(){
- var g=G();if(!g||g.home!=='off')return;
- $$('#tab-play .card.me span').forEach(function(s){if(/^地元: /.test(s.textContent))s.parentNode.removeChild(s);});
- $$('#tab-play .grid .card.me').forEach(function(c){c.classList.remove('me');var dn=c.querySelector('.dname');if(dn)dn.textContent=dn.textContent.replace('（地元）','');});
-}
 var STEP=0.45,LEAD=0.8;
 function decorateRound(){
  var box=$('#tab-play .roundres');if(!box||box.dataset.gd)return;box.dataset.gd='1';
@@ -889,7 +1312,7 @@ function decorateRound(){
  var envs=[],t=0,firstEnv=-1;
  lns.forEach(function(el,ix){var o=parseLine(el.textContent);if(o){envs.push({el:el,o:o});if(firstEnv<0)firstEnv=ix;}});
  if(envs.length&&isNew){
-   var row='<span>投函箱をふって混ぜ、選管の左から 1 枚ずつ配ります。受け取った人が開けます</span>';
+   var row='<span>投函箱をふって混ぜ、選管の左から 1 枚ずつ配ります。受け取った人が、左隣の立会人と開けます。</span>';
    var er='';envs.forEach(function(x,k){er+='<span class="gd-env'+(x.o.mine?' mine':'')+'" style="--s:'+(k%2?-1:1)*(1+k%3*.4)+';--o:'+(LEAD+k*STEP)+'s" title="封筒 '+x.o.i+'"></span>';});
    var div=document.createElement('div');div.className='gd-envrow';div.innerHTML=er+row;
    var at=lns[firstEnv]||lns[0];if(at)box.insertBefore(div,at);
@@ -911,7 +1334,7 @@ function decorateRound(){
  $$(':scope > :not(.ln):not(.gd-envrow)',box).forEach(function(el){el.classList.add('gd-tail');el.style.setProperty('--d',(t+0.5).toFixed(2)+'s');});
  if(anim){
    if(isNew)box.classList.add('gd-anim');else box.classList.add('gd-anim','gd-noslide');
-   var sk=document.createElement('div');sk.className='gd-skip';sk.textContent='動きの途中です。押すと最後の形にとびます';
+   var sk=document.createElement('div');sk.className='gd-skip';sk.textContent='演出の途中です。押すと最後の形にとびます。';
    box.insertBefore(sk,box.firstChild);
    var end=function(){if(!box.classList.contains('gd-anim'))return;box.classList.remove('gd-anim');if(sk.parentNode)sk.parentNode.removeChild(sk);tick();};
    box.addEventListener('click',end,{once:true});
@@ -927,18 +1350,21 @@ function decorateCount(){
  var anim=animOK()&&k>m.count;m.count=k;
  var seq=[];for(var c=0;c<5;c++)for(var j=0;j<x.drawn[c];j++)seq.push(c);
  var s=(k*7919)>>>0;for(var a=seq.length-1;a>0;a--){s=(s*1103515245+12345)>>>0;var b=s%(a+1);var tmp=seq[a];seq[a]=seq[b];seq[b]=tmp;}
+ var pr=k>1?res.per[k-2].run:[0,0,0,0],wa=[0,0,0,0];for(var cw=0;cw<4;cw++)wa[cw]=x.run[cw]-pr[cw]-x.drawn[cw]-x.tray[cw];
  var cols=[[],[],[],[],[]];seq.forEach(function(c,j){cols[c].push(cube(c,'gd-cc','--j:'+j));});
  var tj=seq.length;for(var c2=0;c2<4;c2++)for(var q=0;q<x.tray[c2];q++){cols[c2].push(cube(c2,'gd-cc tr','--j:'+tj));tj++;}
  var e=(tj*0.12+0.45).toFixed(2)+'s';
- var h='<div class="gd-ct">'+(x.d+1)+' '+esc(D.name)+'　投票に行く人が '+MMV.p(x.t)+'なので、袋から '+x.t+' 個引きます</div><div class="gd-cols">';
+ var h='<div class="gd-ct">'+(x.d+1)+' '+esc(D.name)+': 投票に行く人は '+(window.MMV?MMV.p(x.t):x.t)+'です。袋から '+x.t+' 個引きます。</div><div class="gd-cols">';
  for(var c3=0;c3<5;c3++){
    if(c3===g.out)continue;
-   var n=c3<4?x.drawn[c3]+x.tray[c3]:x.drawn[4];
-   h+='<div class="gd-col"><div class="gd-ch">'+(c3<4?cname(c3):chip(4)+'白')+'</div><div class="gd-stack">'+cols[c3].join('')+'</div><div class="gd-n" style="--e:'+e+'">'+MMV.n(n)+'</div></div>';
+   var n=c3<4?x.drawn[c3]+x.tray[c3]+wa[c3]:x.drawn[4];
+   h+='<div class="gd-col"><div class="gd-ch">'+(c3<4?cname(c3):chip(4)+'白')+'</div><div class="gd-stack">'+cols[c3].join('')+'</div><div class="gd-n" style="--e:'+e+'">'+n+(c3<4&&wa[c3]?'<span class="small">（白 '+wa[c3]+'）</span>':'')+'</div></div>';
  }
- var tray=[0,1,2,3].filter(function(c){return x.tray[c];}).map(function(c){return CN[c]+' '+MMV.v(x.tray[c]);});
- h+='</div><div class="gd-sum" style="--e:'+e+'">白の '+x.drawn[4]+' 個は、棄権か白票なので数えません。'+(tray.length?'点線の枠は、期日前に入れた票です（'+tray.join('、')+'）。':'期日前の票はありません。')+
-   '累計は、'+x.run.map(function(n,c){return c===g.out?'':CN[c]+' '+MMV.v(n);}).filter(Boolean).join('、')+' です。'+'</div>';
+ var tray=[0,1,2,3].filter(function(c){return x.tray[c];}).map(function(c){return CN[c]+' '+x.tray[c];});
+ var wt=[0,1,2,3].filter(function(c){return wa[c]>0;});
+ h+='</div><div class="gd-sum" style="--e:'+e+'">'+(x.drawn[4]?'白 '+x.drawn[4]+' 個は、'+(wt.length?wt.map(function(c){return CN[c]+'に '+wa[c];}).join('、')+' 入りました。':'色の票が無かったので棄権です。'):'白は出ませんでした。')+
+   (tray.length?'点線の枠は期日前の箱の票です（'+tray.join('、')+'）。':'期日前の箱は空でした。')+
+   '累計は '+x.run.map(function(n,c){return c===g.out?'':CN[c]+' '+n;}).filter(Boolean).join('、')+' です。</div>';
  var st=document.createElement('div');st.className='gd-count'+(anim?' gd-anim':'');st.innerHTML=h;
  card.insertBefore(st,card.firstChild);
  if(anim){
@@ -951,17 +1377,17 @@ function decorateResult(){
  var m=mem();if(!m.pop&&animOK())card.classList.add('gd-pop');m.pop=true;
 }
 function onRender(){
- try{hideHome();decorateRound();decorateCount();decorateResult();}catch(err){if(window.console)console.warn('guide: 演出を付けられなかった',err);}
+ try{decorateRound();decorateCount();decorateResult();}catch(err){if(window.console)console.warn('guide: 演出を付けられなかった',err);}
  tick();
 }
 new MutationObserver(onRender).observe(document.getElementById('tab-play'),{childList:true});
 function svgFlow(){
- var h='<svg class="gd-svg" viewBox="0 0 340 562" role="img" aria-label="1 局の流れです。準備のあとラウンドを 5 回行い、ラウンド 2 と 4 の終わりに公開世論調査をして、最後に開票します">';
+ var h='<svg class="gd-svg" viewBox="0 0 340 562" role="img" aria-label="1 局の流れ: 準備、ラウンドを 5 回（ラウンド 2・4 の終わりだけ公開世論調査）、開票">';
  h+='<defs><marker id="gd-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ar" d="M0,0L10,5L0,10z"/></marker></defs>';
- h+='<rect class="bx" x="70" y="8" width="200" height="34" rx="6"/><text x="170" y="30" text-anchor="middle" class="b">準備（袋・地盤・参謀カード）</text>';
+ h+='<rect class="bx" x="70" y="8" width="200" height="34" rx="6"/><text x="170" y="30" text-anchor="middle" class="b">準備（候補者 4 人・袋・地盤）</text>';
  h+='<line class="ln" x1="170" y1="42" x2="170" y2="70" marker-end="url(#gd-ah)"/>';
  h+='<rect class="grp" x="40" y="74" width="270" height="322" rx="8"/><text x="50" y="90" class="m">1 ラウンド（全部で 5 ラウンド）</text>';
- var lbl=['① ニュース（イベント 1 枚）','② 作戦（封筒 2 枚を秘密で）','③ 開封（混ぜて配って開ける）'];
+ var lbl=['① ニュースを 1 枚めくる','② 作戦（封筒 2 枚を秘密に）','③ 開封（立会人と開ける）'];
  for(var i=0;i<3;i++){var yy=98+i*48;h+='<rect class="bx" x="50" y="'+yy+'" width="240" height="32" rx="6"/><text x="170" y="'+(yy+21)+'" text-anchor="middle">'+lbl[i]+'</text>';
    h+='<line class="ln" x1="170" y1="'+(yy+32)+'" x2="170" y2="'+(yy+(i<2?46:38))+'" marker-end="url(#gd-ah)"/>';}
  h+='<polygon class="dia" points="170,234 255,258 170,282 85,258"/><text x="170" y="262" text-anchor="middle" class="b">ラウンド 2 か 4？</text>';
@@ -974,19 +1400,19 @@ function svgFlow(){
  h+='<polygon class="dia" points="170,414 270,446 170,478 70,446"/><text x="170" y="450" text-anchor="middle" class="b">5 ラウンド目が済んだ？</text>';
  h+='<path class="ln" d="M70,446 H10 V114 H48" marker-end="url(#gd-ah)"/><text x="16" y="438" class="m">いいえ</text><text x="16" y="466" class="m">次の</text><text x="16" y="479" class="m">ラウンド</text>';
  h+='<line class="ln" x1="170" y1="478" x2="170" y2="502" marker-end="url(#gd-ah)"/><text x="178" y="496" class="m">はい</text>';
- h+='<rect class="bx" x="30" y="504" width="280" height="50" rx="6"/><text x="170" y="524" text-anchor="middle" class="b">開票（地区 1 から順に）</text><text x="170" y="543" text-anchor="middle" class="m">最多得票の候補の参謀が勝ちます</text>';
+ h+='<rect class="bx" x="30" y="504" width="280" height="50" rx="6"/><text x="170" y="524" text-anchor="middle" class="b">開票（地区 1 から順に）</text><text x="170" y="543" text-anchor="middle" class="m">いちばん票の多い候補の参謀が勝ちます</text>';
  return h+'</svg>';
 }
 function svgEnv(){
  var h='<svg class="gd-svg" viewBox="0 0 340 254" role="img" aria-label="封筒の流れ: 混ぜて配り、受け取った人が開ける。誰が何を知るかは 3 つに分かれる">';
  h+='<defs><marker id="gd-ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ar" d="M0,0L10,5L0,10z"/></marker></defs>';
- h+='<rect class="bx" x="20" y="6" width="300" height="44" rx="6"/><text x="170" y="25" text-anchor="middle" class="b">封筒に行動カードと候補と地区を入れます</text><text x="170" y="42" text-anchor="middle" class="m">自分が支援する候補者以外を対象にすることも可能です</text>';
+ h+='<rect class="bx" x="20" y="6" width="300" height="44" rx="6"/><text x="170" y="25" text-anchor="middle" class="b">封筒 2 枚に、行動カードとチップ</text><text x="170" y="42" text-anchor="middle" class="m">ほかの人の候補を選んでもかまいません</text>';
  h+='<line class="ln" x1="170" y1="50" x2="170" y2="66" marker-end="url(#gd-ah2)"/>';
  h+='<rect class="bx" x="20" y="68" width="300" height="32" rx="6"/><text x="170" y="89" text-anchor="middle">投函箱で混ぜ、選管の左から 1 枚ずつ配ります</text>';
  h+='<line class="ln" x1="170" y1="100" x2="170" y2="116" marker-end="url(#gd-ah2)"/>';
- h+='<rect class="bx" x="20" y="118" width="300" height="32" rx="6"/><text x="170" y="139" text-anchor="middle">受け取った人が開けて、袋から引いて替えます</text>';
+ h+='<rect class="bx" x="20" y="118" width="300" height="32" rx="6"/><text x="170" y="139" text-anchor="middle">受け取った人が、立会人と引いて替えます</text>';
  h+='<line class="ln" x1="170" y1="150" x2="170" y2="164"/><path class="ln" d="M56,164 H284"/>';
- var bx=[[4,'全員が知る',['読み上げる中身:','行動と候補と地区','と引いた個数']],[118,'開けた人と立会人',['引いたコマの色','と替わった数','（袋の口を隠す）']],[232,'出した人が知る',['誰の封筒か','ほかの人は','推理します']]];
+ var bx=[[4,'全員が知る',['読み上げる中身','（動員は地区と','人数だけ）']],[118,'開けた人と立会人',['引いたコマの色','と替わった数','（左隣が立会人）']],[232,'出した人だけ',['誰の封筒か','（ほかの人は','読み合う）']]];
  bx.forEach(function(b){var cx=b[0]+52;h+='<line class="ln" x1="'+cx+'" y1="164" x2="'+cx+'" y2="174" marker-end="url(#gd-ah2)"/>';
    h+='<rect class="bx" x="'+b[0]+'" y="176" width="104" height="72" rx="6"/>';[b[1]].concat(b[2]).forEach(function(t,i){h+='<text x="'+cx+'" y="'+(194+i*15)+'" text-anchor="middle"'+(i?' class="m"':' class="b"')+'>'+t+'</text>';});});
  return h+'</svg>';
@@ -995,38 +1421,38 @@ function svgBag(){
  function bag(x,y,cs,lab){var s='<path class="bag" d="M'+(x+10)+','+y+' h40 l6,10 q8,46 -26,46 q-34,0 -26,-46 z"/>';
    cs.forEach(function(c,i){s+='<rect class="q'+c+'" x="'+(x+12+(i%4)*9)+'" y="'+(y+18+Math.floor(i/4)*9)+'" width="8" height="8" rx="1.5"/>';});
    return s+'<text x="'+(x<100?x:x+60)+'" y="'+(y+70)+'" text-anchor="'+(x<100?'start':'end')+'" class="m">'+lab+'</text>';}
- var h='<svg class="gd-svg" viewBox="0 0 340 190" role="img" aria-label="引いて、替えて、戻す: 演説で 3 個引き、白 2 個を赤に替えて袋に戻す">';
+ var h='<svg class="gd-svg" viewBox="0 0 340 190" role="img" aria-label="引いて、替えて、戻す: 演説で 3 個引き、白 2 個を時計塔の色に替えて袋に戻す">';
  h+='<defs><marker id="gd-ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ar" d="M0,0L10,5L0,10z"/></marker></defs>';
- h+='<text x="6" y="16" class="b">例: 団地で赤の候補が演説をして 3 個引きます</text>';
+ h+='<text x="6" y="16" class="b">例: 演説「時計塔・団地」（団地は対面 ◎ で 3 個）</text>';
  h+=bag(4,32,[0,0,4,4,4,4,4,4,1,4],'団地の袋 10 個');
  h+='<line class="ln" x1="74" y1="62" x2="100" y2="62" marker-end="url(#gd-ah3)"/>';
  h+='<text x="138" y="40" text-anchor="middle" class="b">① 3 個引く</text>';
  [4,4,1].forEach(function(c,i){h+='<rect class="q'+c+'" x="'+(112+i*18)+'" y="52" width="14" height="14" rx="2"/>';});
  h+='<text x="138" y="84" text-anchor="middle" class="m">開けた人と立会人</text>';
  h+='<line class="ln" x1="170" y1="62" x2="190" y2="62" marker-end="url(#gd-ah3)"/>';
- h+='<text x="228" y="40" text-anchor="middle" class="b">② 白を赤に替える</text>';
+ h+='<text x="228" y="40" text-anchor="middle" class="b">② 白を時計塔の色に</text>';
  [0,0,1].forEach(function(c,i){h+='<rect class="q'+c+'" x="'+(202+i*18)+'" y="52" width="14" height="14" rx="2"/>';});
- h+='<text x="228" y="84" text-anchor="middle" class="m">青はそのまま</text>';
+ h+='<text x="228" y="84" text-anchor="middle" class="m">橋の色はそのまま</text>';
  h+='<line class="ln" x1="262" y1="62" x2="278" y2="62" marker-end="url(#gd-ah3)"/>';
- h+=bag(276,32,[0,0,0,0,4,4,4,4,1,4],'③ 袋に戻す');
+ h+=bag(276,32,[0,0,0,0,4,4,4,4,1,4],'③ 戻す（10 個）');
  h+='<rect class="bx2" x="6" y="122" width="328" height="62" rx="6"/>';
- h+='<text x="16" y="141">団地の袋は、白が 2 減り、赤が 2 増えます。</text>';
+ h+='<text x="16" y="141">団地の袋で、白が 2 個減り、時計塔が 2 個増えます。</text>';
  h+='<text x="16" y="159" class="m">うわさは逆向きで、狙った色を白に戻します。</text>';
+ h+='<text x="16" y="175" class="m">袋の中身を全部知っている人はいません。</text>';
  return h+'</svg>';
 }
 function svgCount(){
- var h='<svg class="gd-svg" viewBox="0 0 340 212" role="img" aria-label="開票では、投票に行く人と同じ数のコマを袋から引きます。白は棄権として数えず、期日前トレイの票を足します">';
+ var h='<svg class="gd-svg" viewBox="0 0 340 222" role="img" aria-label="開票: 投票に行く人の数だけ袋から引き、期日前の箱の票を足し、白はその地区でいちばん票の多い候補に入る">';
  h+='<defs><marker id="gd-ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ar" d="M0,0L10,5L0,10z"/></marker></defs>';
- h+='<text x="6" y="16" class="b">例: 団地では 1 万人のうち 8 千人が投票</text>';
- h+='<path class="bag" d="M14,30 h40 l6,10 q8,46 -26,46 q-34,0 -26,-46 z"/><text x="34" y="100" text-anchor="middle" class="m">袋 10 個</text>';
- h+='<line class="ln" x1="72" y1="60" x2="100" y2="60" marker-end="url(#gd-ah4)"/><text x="86" y="52" text-anchor="middle" class="m">8 個</text>';
- var cols=[[0,0,0,0],[1],[4,4,4]],lab=['赤 4','青 1','白 3 は棄権'],cl=[0,1,4];
+ h+='<text x="6" y="16" class="b">例: 団地（有権者 1 万人・投票に行く人 7 千人）</text>';
+ h+='<path class="bag" d="M14,30 h40 l6,10 q8,46 -26,46 q-34,0 -26,-46 z"/><text x="34" y="100" text-anchor="middle" class="m">袋</text>';
+ h+='<line class="ln" x1="72" y1="60" x2="100" y2="60" marker-end="url(#gd-ah4)"/><text x="86" y="52" text-anchor="middle" class="m">7 個</text>';
+ var cols=[[0,0,0],[1],[4,4,4]],lab=['時計塔 3','橋 1','白 3'];
  cols.forEach(function(cs,i){var x=110+i*52;cs.forEach(function(c,j){h+='<rect class="q'+c+'" x="'+(x+4)+'" y="'+(74-j*16)+'" width="14" height="14" rx="2"/>';});
    h+='<line class="ln" x1="'+x+'" y1="90" x2="'+(x+40)+'" y2="90"/><text x="'+(x+18)+'" y="104" text-anchor="middle" class="m">'+lab[i]+'</text>';});
- h+='<text x="268" y="56" class="m">2 千人は</text><text x="268" y="70" class="m">投票に</text><text x="268" y="84" class="m">行きません</text>';
- h+='<path class="tray" d="M14,130 q20,16 40,0"/><rect class="q0" x="27" y="118" width="14" height="14" rx="2"/>';
- h+='<text x="64" y="134">期日前に入れた赤 1 千票も数えます</text>';
- h+='<rect class="bx2" x="6" y="150" width="328" height="56" rx="6"/><text x="16" y="168">赤は袋の 4 千と期日前の 1 千で 5 千票です。</text><text x="16" y="184" class="m">全地区の合計が最多の候補が当選します。</text><text x="16" y="199" class="m">引かなかったコマは、見ずに袋へ戻します。</text>';
+ h+='<path class="tray" d="M14,130 q20,16 40,0"/><rect class="q1" x="27" y="118" width="14" height="14" rx="2"/>';
+ h+='<text x="64" y="134">＋ 期日前の箱の 橋 1 も数えます</text>';
+ h+='<rect class="bx2" x="6" y="150" width="328" height="66" rx="6"/><text x="16" y="168">いちばん多い時計塔に、白 3 個も入ります。</text><text x="16" y="185" class="m">この地区は 時計塔 6 千票、橋 2 千票です。</text><text x="16" y="201" class="m">並んだときは白を同じ数ずつ分け、端数は無効票です。</text>';
  return h+'</svg>';
 }
 function svgPoll(){
@@ -1037,35 +1463,47 @@ function svgPoll(){
    h+='<path class="bag" d="M'+(x+8)+',30 h30 l5,8 q6,34 -20,34 q-26,0 -20,-34 z"/>';
    h+='<text x="'+(x+23)+'" y="86" text-anchor="middle" class="m">'+nm[i]+'</text>';
    cs[i].forEach(function(c,j){h+='<rect class="q'+c+'" x="'+(x+7+j*17)+'" y="94" width="14" height="14" rx="2"/>';});}
- h+='<text x="6" y="128">全員に見せて、そのまま袋に戻します。</text>';
- h+='<text x="6" y="144" class="m">全員が同じ手がかりを持ちます。</text>';
+ h+='<text x="6" y="128">全員に見せて、そのまま袋に戻す（袋は変わらない）。</text>';
+ h+='<text x="6" y="144" class="m">2 個だけなので袋の一部。全員が同じ手がかりを持つ。</text>';
  return h+'</svg>';
 }
 function guideHtml(){
- var g0=_new.call(MM,{seed:1,nP:4});
- var dist=g0.ds.map(function(D,i){return '<tr><td>'+(i+1)+' '+esc(D.name)+'</td><td class="n">'+MMV.p(D.pop)+'</td><td class="n"><b>'+MMV.p(D.base)+'</b></td><td class="n">'+D.lv.face+'</td><td class="n">'+D.lv.net+'</td><td class="n">'+(D.lv.paper>=2?1:0)+'</td></tr>';}).join('');
+ var g0=_new.call(MM,Object.assign({},MM.V04,{seed:1,nP:4,cands:MM.dealCands(1,4)}));
+ var P=window.MMV?MMV.p:function(x){return x;};
+ var dist=g0.ds.map(function(D,i){return '<tr><td>'+(i+1)+' '+esc(D.name)+'</td><td class="n">'+P(D.pop)+'</td><td class="n"><b>'+P(D.base)+'</b></td><td class="n">'+MM.MARK[D.lv.face]+'</td><td class="n">'+MM.MARK[D.lv.net]+'</td><td class="n">'+MM.MARK[D.lv.paper]+'</td><td>'+MM.ICON[i].map(function(x){return MM.ISSN[x];}).join('<br>')+'</td></tr>';}).join('');
+ var FAV={face:'対面',net:'ネット',paper:'紙電波'};
+ function bt(L){return MM.place(L).map(function(x){return g0.ds[x[0]].name+' '+x[1];}).join('、');}
+ var kt=MM.KOHO.map(function(k){return '<tr><td><b>'+esc(k.name)+'</b><br><span class="small">'+esc(k.title)+'</span></td><td>'+FAV[k.fav]+'</td><td class="n">'+k.debate+'</td><td>'+MM.ISSN[k.pledge]+'</td><td>'+(k.weak?MM.ISSN[k.weak.issue]:'なし')+'</td><td class="gd-w">'+esc(bt(k.base4))+(bt(k.base3)!==bt(k.base4)?'<br><span class="small">3 人戦: '+esc(bt(k.base3))+'</span>':'')+'</td></tr>';}).join('');
  var ACTS=[
-  ['演説',3,'その地区で、選んだ候補の評判を上げるための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、その地区で顔を合わせて話すのがよく効くなら 3 個、そこそこなら 2 個、あまり効かないなら 1 個のコマを袋から引きます。候補の得意な手段が対面なら、もう 1 個引けます。白いコマはその候補の色に替え、ほかの色はそのまま袋に戻します。','3 個引いたなら、3000 人に演説を聞いてもらえたということです。まだ誰に入れるか決めていなかった人は、その候補を支持するようになります。'],
-  ['うわさ',3,'ほかの候補の評判を落とすための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、どの地区でも袋から 3 個のコマを引き、その候補の色のコマを白に戻します。候補の弱みの地区では、もう 1 個引きます。その候補の席に火消しトークンがあれば、うわさは止められ、袋は動きません。','3 個引いたなら、3000 人がうわさを耳にしたということです。その候補を支持していた人は気持ちが揺らぎ、まだ決めていない人に戻ります。'],
-  ['SNS',2,'ネットで評判を広めたり、ほかの候補の悪い話を流したりする行動です。','候補と地区を選び、良い話か悪い話かを決めて封筒に入れます。封筒を開けた人は、その地区でネットがよく届くなら 3 個、そこそこなら 2 個、あまり届かないなら 1 個のコマを引きます。良い話なら白いコマをその候補の色に替え、悪い話ならその候補の色のコマを白に戻します。悪い話は、火消しトークンで止められます。','良い話は演説と同じように、まだ決めていない人を支持者に変えます。悪い話はうわさと同じように、支持者の気持ちを揺らがせます。'],
-  ['新聞テレビ',1,'街全体に、薄く広く名前を知ってもらうための行動です。','候補を選んで封筒に入れます。地区は選びません。新聞やテレビが届く地区では、それぞれ袋から 1 個ずつ引き、白いコマをその候補の色に替えます。得意な手段が紙電波の候補なら、2 個ずつ引けます。','一つの地区で動く人は少なくても、街のあちこちで少しずつ支持が広がります。'],
-  ['動員',2,'確実な票を先に固めるための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、その候補の色のコマを 1 個、その地区の期日前トレイに置きます。袋の中身は変わりません。','1 個は、1000 人が期日前投票を済ませたということです。この票は開票で必ず数えられ、あとから動くことはありません。'],
-  ['火消し',1,'うわさや悪い話から候補を守るための行動です。','候補を選んで封筒に入れます。封筒を開けた人は、その候補の席に火消しトークンを置きます。トークンは 1 つまでなので、すでにあるときは何も起きません。','次にその候補へのうわさか悪い SNS が来たとき、トークンを 1 つ使ってそれを止めます。悪い話が広がる前に打ち消せたということです。']];
+  ['演説',5,'その地区で、選んだ候補の評判を上げるための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、その地区で顔を合わせて話すのがよく効くなら 3 個、そこそこなら 2 個、あまり効かないなら 1 個のコマを袋から引きます。候補の得意な手段が対面なら、もう 1 個引けます。白いコマはその候補の色に替え、ほかの色はそのまま袋に戻します。','3 個引いたなら、3000 人に演説を聞いてもらえたということです。まだ誰に入れるか決めていなかった人は、その候補を支持するようになります。'],
+  ['うわさ',2,'ほかの候補の評判を落とすための行動です。','狙う候補と地区を選んで封筒に入れます。封筒を開けた人は、どの地区でも袋から 4 個のコマを引き、その候補の色のコマを白に戻します。白に戻すのは 2 個までです。狙った候補に注目の印があるとき、弱みの地区のとき、ニュース「疑心暗鬼が広がる」のラウンドには、上限がなくなります。その候補の席に火消しトークンがあれば、うわさは止められ、袋は動きません。','4 個引いたなら、4000 人がうわさを耳にしたということです。その候補を支持していた人は気持ちが揺らぎ、まだ決めていない人に戻ります。'],
+  ['SNS',2,'ネットで評判を広めたり、ほかの候補の悪い話を流したりする行動です。','候補を選び、良い話か悪い話かを決めて封筒に入れます。地区は選びません。ネットがよく届く地区では 2 個、そこそこ届く地区では 1 個のコマを引きます。あまり届かない地区では引きません。良い話なら白いコマをその候補の色に替え、悪い話ならその候補の色のコマを白に戻します。悪い話は、火消しトークンで止められます。','ネットの話は街じゅうに少しずつ広がります。良い話は支持を増やし、悪い話は支持者の気持ちを揺らがせます。'],
+  ['新聞テレビ',1,'街全体に、薄く広く名前を知ってもらうための行動です。','候補を選んで封筒に入れます。地区は選びません。新聞やテレビが届く地区では、それぞれ袋から 1 個ずつ引き、白いコマをその候補の色に替えます。得意な手段が紙電波の候補なら、2 個ずつ引けます。打った候補には注目の印が付きます。','一つの地区で動く人は少なくても、街のあちこちで少しずつ支持が広がります。そのかわり世の中の目が集まり、次のラウンドの終わりまで、うわさで崩れやすくなります。'],
+  ['動員',2,'確実な票を先に固めるための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、その地区の袋から 3 個引き、その候補の色が出たら、出た分を全部その地区の期日前の箱へ入れます。読み上げるのは地区の名前と人数だけで、候補の名前は言いません。','1 個は、1000 人が期日前投票を済ませたということです。この票は開票で必ず数えられます。誰に入れたかは、開票まで分かりません。'],
+  ['投票の呼びかけ',1,'その地区で、投票に行く人を増やすための行動です。','地区を選んで封筒に入れます。候補は選びません。その地区で投票に行く人が 2 千人増え、開票で袋から引く数が 2 個増えます。呼びかけの印を置き、その地区にはもう呼びかけを出せません。','支持者の多い地区で呼びかけると、その分だけ得をします。白い浮動票も、その地区でいちばんの候補に流れます。'],
+  ['火消し',1,'うわさや悪い話から候補を守るための行動です。','候補を選んで封筒に入れます。封筒を開けた人は、その候補の席に火消しトークンを置きます。トークンは 1 つまでなので、すでにあるときは何も起きません。','次にその候補へのうわさか悪い SNS が来たとき、トークンを 1 つ使ってそれを止めます。悪い話が広がる前に打ち消せたということです。'],
+  ['大勝負',1,'候補者が打って出る、大きな賭けの一手です。1 局に 1 回使えます。','自分の候補を選んで封筒に入れます。まず全部の地区で袋から 3 個ずつ引き、自分の色を白に戻します。3 人で遊ぶときは 2 個です。次に 5 つの地区でサイコロを振り、1 の目が 2 地区以上で出たら当たりです。当たった地区では 5 個引いて、引いたコマを全部自分の色に替えます。','当たるのは 5 回に 1 回ほどで、平均すると損をします。当たれば大きく伸びる、振れ幅の大きい札です。']];
  var at=ACTS.map(function(a){return '<div class="gd-act"><div class="gd-actcard" aria-hidden="true"><span class="gd-actk">行動</span><b>'+a[0]+'</b><span class="gd-actn">手札 '+a[1]+' 枚</span></div><div class="gd-acttx"><p>'+a[2]+'</p><p>'+a[3]+'</p><p class="gd-actmean">'+a[4]+'</p></div></div>';}).join('');
+ var evs=Object.keys(MM.EVENTS).filter(function(k){return k!=='paperpoll';}).map(function(k){return '<tr><td><b>'+esc(MM.EVENTS[k].name)+'</b></td><td class="gd-w">'+esc(MM.EVENTS[k].text)+'</td></tr>';}).join('');
  return '<h2>遊び方</h2>'+'<figure class="gd-art"><div class="pic"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDQ4MCIgd2lkdGg9IjEyMDAiIGhlaWdodD0iNDgwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IuWkleaaruOCjOOBruS4mOOBruWbo+WcsOOBqOmnheWJjeOAgeaJi+WJjeOBq+mBuOaMmeODneOCueOCv+ODvOaOsuekuuadv+OAguWPpOWFuOe1teeUu+iqv+OBruS4i+abuOOBjSI+PGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0ic2t5IiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNGU0YTY4Ii8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNhNzc2OGEiLz48c3RvcCBvZmZzZXQ9Ii43NSIgc3RvcC1jb2xvcj0iI2UzYTc3NyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2YwY2Y5ZSIvPjwvbGluZWFyR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0ic3VuIiBjeD0iODMlIiBjeT0iNTglIiByPSIzOCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZjFjZiIgc3RvcC1vcGFjaXR5PSIuOTUiLz48c3RvcCBvZmZzZXQ9Ii4yNSIgc3RvcC1jb2xvcj0iI2Y2Y2Y5MiIgc3RvcC1vcGFjaXR5PSIuNiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Y2Y2Y5MiIgc3RvcC1vcGFjaXR5PSIwIi8+PC9yYWRpYWxHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJmYWRlTCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2YxZThkNiIgc3RvcC1vcGFjaXR5PSIuOTMiLz48c3RvcCBvZmZzZXQ9Ii4zMiIgc3RvcC1jb2xvcj0iI2YxZThkNiIgc3RvcC1vcGFjaXR5PSIuNTUiLz48c3RvcCBvZmZzZXQ9Ii41NSIgc3RvcC1jb2xvcj0iI2YxZThkNiIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJmYWRlQiIgeDE9IjAiIHkxPSIxIiB4Mj0iMCIgeTI9IjAiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2YxZThkNiIgc3RvcC1vcGFjaXR5PSIuOTUiLz48c3RvcCBvZmZzZXQ9Ii4zIiBzdG9wLWNvbG9yPSIjZjFlOGQ2IiBzdG9wLW9wYWNpdHk9Ii41Ii8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2YxZThkNiIgc3RvcC1vcGFjaXR5PSIwIi8+PC9saW5lYXJHcmFkaWVudD4KPGZpbHRlciBpZD0icGFpbnQiIHg9Ii0yJSIgeT0iLTMlIiB3aWR0aD0iMTA0JSIgaGVpZ2h0PSIxMDYlIj4KPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDEyIDAuMDMiIG51bU9jdGF2ZXM9IjMiIHNlZWQ9IjUiIHJlc3VsdD0idyIvPgo8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0idyIgc2NhbGU9IjkiIHhDaGFubmVsU2VsZWN0b3I9IlIiIHlDaGFubmVsU2VsZWN0b3I9IkciIHJlc3VsdD0iZCIvPgo8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIyIiBzZWVkPSIyIiByZXN1bHQ9Im4iLz4KPGZlQ29sb3JNYXRyaXggaW49Im4iIHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIC40NSAgMCAwIDAgMCAuMzggIDAgMCAwIDAgLjMgIDAgMCAwIC4xOCAwIiByZXN1bHQ9Im4yIi8+CjxmZUNvbXBvc2l0ZSBpbj0ibjIiIGluMj0iZCIgb3BlcmF0b3I9ImF0b3AiIHJlc3VsdD0ibjMiLz4KPGZlTWVyZ2U+PGZlTWVyZ2VOb2RlIGluPSJkIi8+PGZlTWVyZ2VOb2RlIGluPSJuMyIvPjwvZmVNZXJnZT48L2ZpbHRlcj4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI0ODAiIGZpbGw9InVybCgjc2t5KSIvPjxnIGZpbHRlcj0idXJsKCNwYWludCkiPgo8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI0ODAiIGZpbGw9InVybCgjc2t5KSIvPjxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjQ4MCIgZmlsbD0idXJsKCNzdW4pIi8+CjxnIGZpbGw9IiNmNmUyYzQiIG9wYWNpdHk9Ii40NSI+PGVsbGlwc2UgY3g9Ijc2MCIgY3k9IjkwIiByeD0iMTYwIiByeT0iMTYiLz48ZWxsaXBzZSBjeD0iMTAxMCIgY3k9IjYwIiByeD0iMTMwIiByeT0iMTIiLz48ZWxsaXBzZSBjeD0iNTYwIiBjeT0iMTQwIiByeD0iMTIwIiByeT0iMTAiLz48L2c+CjxwYXRoIGQ9Ik0wIDMzMCBRMzAwIDMwMCA1MjAgMzEyIFQxMjAwIDI3MCBWNDgwIEgweiIgZmlsbD0iIzhlN2E4NiIgb3BhY2l0eT0iLjU1Ii8+PHBhdGggZD0iTTU2MCAzMzAgUTc2MCAyMjAgMTAwMCAyMzIgUTExMjAgMjM4IDEyMDAgMjUwIFY0ODAgSDU2MHoiIGZpbGw9IiM2YjY0NTciLz48cmVjdCB4PSI3MDAiIHk9IjE5MCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiNkZGQwYzIiLz48cmVjdCB4PSI3MDAiIHk9IjE5MCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI2IiBmaWxsPSIjOGQ3Zjc4IiBvcGFjaXR5PSIuNiIvPjxyZWN0IHg9IjcxMC4zIiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzEwLjMiIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3MTAuMyIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjcxMC4zIiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzEwLjMiIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3MTAuMyIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjcyNy40IiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzI3LjQiIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3MjcuNCIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjcyNy40IiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzI3LjQiIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3MjcuNCIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc0NC42IiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzQ0LjYiIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NDQuNiIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc0NC42IiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzQ0LjYiIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NDQuNiIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc2MS43IiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzYxLjciIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NjEuNyIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc2MS43IiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzYxLjciIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NjEuNyIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc3OC45IiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzc4LjkiIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NzguOSIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc3OC45IiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzc4LjkiIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3NzguOSIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc5Ni4wIiB5PSIyMTEuMSIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzk2LjAiIHk9IjIyNS40IiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3OTYuMCIgeT0iMjM5LjciIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijc5Ni4wIiB5PSIyNTQuMCIgd2lkdGg9IjkuNCIgaGVpZ2h0PSI2LjQiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iNzk2LjAiIHk9IjI2OC4zIiB3aWR0aD0iOS40IiBoZWlnaHQ9IjYuNCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI3OTYuMCIgeT0iMjgyLjYiIHdpZHRoPSI5LjQiIGhlaWdodD0iNi40IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjgzNiIgeT0iMTcwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjEzMCIgZmlsbD0iI2U2ZGFjYiIvPjxyZWN0IHg9IjgzNiIgeT0iMTcwIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYiIGZpbGw9IiM4ZDdmNzgiIG9wYWNpdHk9Ii42Ii8+PHJlY3QgeD0iODQ2LjUiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4NDYuNSIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg0Ni41IiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODQ2LjUiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4NDYuNSIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg0Ni41IiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODY0LjAiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4NjQuMCIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg2NC4wIiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODY0LjAiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4NjQuMCIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg2NC4wIiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODgxLjUiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4ODEuNSIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg4MS41IiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODgxLjUiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4ODEuNSIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg4MS41IiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODk5LjAiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4OTkuMCIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg5OS4wIiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODk5LjAiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI4OTkuMCIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijg5OS4wIiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTE2LjUiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5MTYuNSIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjkxNi41IiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTE2LjUiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5MTYuNSIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjkxNi41IiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTM0LjAiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5MzQuMCIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjkzNC4wIiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTM0LjAiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5MzQuMCIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjkzNC4wIiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTUxLjUiIHk9IjE5MS45IiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5NTEuNSIgeT0iMjA3LjYiIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijk1MS41IiB5PSIyMjMuMyIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTUxLjUiIHk9IjIzOS4wIiB3aWR0aD0iOS42IiBoZWlnaHQ9IjcuMSIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSI5NTEuNSIgeT0iMjU0LjciIHdpZHRoPSI5LjYiIGhlaWdodD0iNy4xIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9Ijk1MS41IiB5PSIyNzAuNCIgd2lkdGg9IjkuNiIgaGVpZ2h0PSI3LjEiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTkwIiB5PSIxODYiIHdpZHRoPSIxMTAiIGhlaWdodD0iMTEwIiBmaWxsPSIjZDZjOGJhIi8+PHJlY3QgeD0iOTkwIiB5PSIxODYiIHdpZHRoPSIxMTAiIGhlaWdodD0iNiIgZmlsbD0iIzhkN2Y3OCIgb3BhY2l0eT0iLjYiLz48cmVjdCB4PSIxMDAxLjAiIHk9IjIwNy41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTAwMS4wIiB5PSIyMjIuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwMDEuMCIgeT0iMjM3LjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDAxLjAiIHk9IjI1Mi41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTAwMS4wIiB5PSIyNjcuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwMTkuMyIgeT0iMjA3LjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDE5LjMiIHk9IjIyMi41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTAxOS4zIiB5PSIyMzcuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwMTkuMyIgeT0iMjUyLjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDE5LjMiIHk9IjI2Ny41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTAzNy43IiB5PSIyMDcuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwMzcuNyIgeT0iMjIyLjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDM3LjciIHk9IjIzNy41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTAzNy43IiB5PSIyNTIuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwMzcuNyIgeT0iMjY3LjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDU2LjAiIHk9IjIwNy41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTA1Ni4wIiB5PSIyMjIuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwNTYuMCIgeT0iMjM3LjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDU2LjAiIHk9IjI1Mi41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTA1Ni4wIiB5PSIyNjcuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwNzQuMyIgeT0iMjA3LjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDc0LjMiIHk9IjIyMi41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTA3NC4zIiB5PSIyMzcuNSIgd2lkdGg9IjEwLjEiIGhlaWdodD0iNi44IiBmaWxsPSIjNmY2NDcwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwNzQuMyIgeT0iMjUyLjUiIHdpZHRoPSIxMC4xIiBoZWlnaHQ9IjYuOCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMDc0LjMiIHk9IjI2Ny41IiB3aWR0aD0iMTAuMSIgaGVpZ2h0PSI2LjgiIGZpbGw9IiM2ZjY0NzAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iMTExMCIgeT0iMjAwIiB3aWR0aD0iOTAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZGRkMGMyIi8+PHJlY3QgeD0iMTExMCIgeT0iMjAwIiB3aWR0aD0iOTAiIGhlaWdodD0iNiIgZmlsbD0iIzhkN2Y3OCIgb3BhY2l0eT0iLjYiLz48cmVjdCB4PSIxMTIwLjgiIHk9IjIyMC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTIwLjgiIHk9IjIzNC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTIwLjgiIHk9IjI0Ny4zIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTIwLjgiIHk9IjI2MC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTIwLjgiIHk9IjI3NC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTM4LjgiIHk9IjIyMC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTM4LjgiIHk9IjIzNC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTM4LjgiIHk9IjI0Ny4zIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTM4LjgiIHk9IjI2MC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTM4LjgiIHk9IjI3NC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTU2LjgiIHk9IjIyMC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTU2LjgiIHk9IjIzNC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTU2LjgiIHk9IjI0Ny4zIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTU2LjgiIHk9IjI2MC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTU2LjgiIHk9IjI3NC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTc0LjgiIHk9IjIyMC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTc0LjgiIHk9IjIzNC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTc0LjgiIHk9IjI0Ny4zIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTc0LjgiIHk9IjI2MC43IiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iIzZmNjQ3MCIgb3BhY2l0eT0iLjkiLz48cmVjdCB4PSIxMTc0LjgiIHk9IjI3NC4wIiB3aWR0aD0iOS45IiBoZWlnaHQ9IjYuMCIgZmlsbD0iI2YyZDlhNiIgb3BhY2l0eT0iLjkiLz48ZWxsaXBzZSBjeD0iNjkwIiBjeT0iMzE4IiByeD0iMjYiIHJ5PSIyMSIgZmlsbD0iIzVkNjA0OCIvPjxlbGxpcHNlIGN4PSI3NjAiIGN5PSIzMTIiIHJ4PSIzMCIgcnk9IjI0IiBmaWxsPSIjNWQ2MDQ4Ii8+PGVsbGlwc2UgY3g9Ijk4MCIgY3k9IjMwMCIgcng9IjI2IiByeT0iMjEiIGZpbGw9IiM1ZDYwNDgiLz48ZWxsaXBzZSBjeD0iMTA4MCIgY3k9IjMwMCIgcng9IjMyIiByeT0iMjYiIGZpbGw9IiM1ZDYwNDgiLz48ZWxsaXBzZSBjeD0iMTE2MCIgY3k9IjI5NiIgcng9IjI4IiByeT0iMjIiIGZpbGw9IiM1ZDYwNDgiLz48cmVjdCB4PSI0NzAiIHk9IjMwMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2M3YjdhNCIvPjxwYXRoIGQ9Ik00NTUgMzAwIEw2ODUgMzAwIEw2NzAgMjg2IEw0NzAgMjg2eiIgZmlsbD0iIzdkNmE2MiIvPgo8cmVjdCB4PSI0ODAiIHk9IjMxOCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQyIiBmaWxsPSIjZjJkOWE2IiBvcGFjaXR5PSIuOCIvPjxyZWN0IHg9IjUzMCIgeT0iMzE4IiB3aWR0aD0iNDAiIGhlaWdodD0iNDIiIGZpbGw9IiNmMmQ5YTYiIG9wYWNpdHk9Ii42Ii8+PHJlY3QgeD0iNTgwIiB5PSIzMTgiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MiIgZmlsbD0iIzZmNjQ3MCIvPgo8cmVjdCB4PSI1NDUiIHk9IjI5MiIgd2lkdGg9IjUwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZWZlMmNjIi8+CjxyZWN0IHg9IjQzMCIgeT0iMzAwIiB3aWR0aD0iNCIgaGVpZ2h0PSI3MiIgZmlsbD0iIzNkMzYzOCIvPjxjaXJjbGUgY3g9IjQzMiIgY3k9IjI5OCIgcj0iNyIgZmlsbD0iI2ZmZjBjOCIvPjxyZWN0IHg9IjY0MCIgeT0iMTUwIiB3aWR0aD0iNiIgaGVpZ2h0PSIyNDAiIGZpbGw9IiMzZDM2MzgiLz48cmVjdCB4PSI2MjYiIHk9IjE2NiIgd2lkdGg9IjM0IiBoZWlnaHQ9IjQiIGZpbGw9IiMzZDM2MzgiLz4KPHBhdGggZD0iTTMwMCAxMjAgUTQ3MCAxNzAgNjQzIDE2OCBROTAwIDE4MCAxMjAwIDE0MCIgc3Ryb2tlPSIjM2QzNjM4IiBzdHJva2Utd2lkdGg9IjEuNiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMzMwIDEzNSBRNDgwIDE4NSA2NDMgMTcyIFE5MDAgMTkyIDEyMDAgMTU4IiBzdHJva2U9IiMzZDM2MzgiIHN0cm9rZS13aWR0aD0iMS4yIiBmaWxsPSJub25lIi8+CjxnIGZpbGw9IiMzZDM2MzgiPjxwYXRoIGQ9Ik04MjAgMTcyIGw2IC00IGw2IDQgbC02IDJ6Ii8+PHBhdGggZD0iTTg0NSAxNzQgbDYgLTQgbDYgNCBsLTYgMnoiLz48L2c+PHBhdGggZD0iTTAgMzYwIFE2MDAgMzUwIDEyMDAgMzQwIFY0ODAgSDB6IiBmaWxsPSIjOWI4YTc5Ii8+PHBhdGggZD0iTTAgMzkyIFE2MDAgMzgwIDEyMDAgMzcyIFY0ODAgSDB6IiBmaWxsPSIjYjZhNDhmIi8+PHJlY3QgeD0iNzU2IiB5PSI0MDgiIHdpZHRoPSI4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjNGEzYTJjIi8+PHJlY3QgeD0iMTExMiIgeT0iNDA4IiB3aWR0aD0iOCIgaGVpZ2h0PSI0OCIgZmlsbD0iIzRhM2EyYyIvPjxyZWN0IHg9Ijc2MCIgeT0iMzAwIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjExMiIgZmlsbD0iIzViNGEzYSIvPjxyZWN0IHg9Ijc2NiIgeT0iMzA2IiB3aWR0aD0iMzQ0IiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzdhNjY1MCIvPjxyZWN0IHg9Ijc3MiIgeT0iMzEyIiB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiNlZmU0Y2YiLz48dGV4dCB4PSI3NzUiIHk9IjMyMSIgZm9udC1zaXplPSI3IiBmaWxsPSIjN2E2NjUwIiBmb250LWZhbWlseT0ic2VyaWYiPjE8L3RleHQ+PHJlY3QgeD0iNzc1IiB5PSIzMTUiIHdpZHRoPSIzNiIgaGVpZ2h0PSIzNiIgZmlsbD0iI2Q4Y2NiNiIvPjxjaXJjbGUgY3g9Ijc5MyIgY3k9IjMyOSIgcj0iNyIgZmlsbD0iIzZiNWU1MiIvPjxwYXRoIGQ9Ik03ODEgMzUxIHExMiAtMTggMjQgMHoiIGZpbGw9IiM2YjVlNTIiLz48cmVjdCB4PSI3NzgiIHk9IjM0MiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjUiIGZpbGw9IiNmNmVmZTAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iODIwIiB5PSIzMTIiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9IjgyMyIgeT0iMzIxIiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+MjwvdGV4dD48cmVjdCB4PSI4NjgiIHk9IjMxMiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjZWZlNGNmIi8+PHRleHQgeD0iODcxIiB5PSIzMjEiIGZvbnQtc2l6ZT0iNyIgZmlsbD0iIzdhNjY1MCIgZm9udC1mYW1pbHk9InNlcmlmIj4zPC90ZXh0PjxyZWN0IHg9Ijg3MSIgeT0iMzE1IiB3aWR0aD0iMzYiIGhlaWdodD0iMzYiIGZpbGw9IiNkOGNjYjYiLz48Y2lyY2xlIGN4PSI4ODkiIGN5PSIzMjkiIHI9IjciIGZpbGw9IiM2YjVlNTIiLz48cGF0aCBkPSJNODc3IDM1MSBxMTIgLTE4IDI0IDB6IiBmaWxsPSIjNmI1ZTUyIi8+PHJlY3QgeD0iODc0IiB5PSIzNDIiIHdpZHRoPSIzMCIgaGVpZ2h0PSI1IiBmaWxsPSIjZjZlZmUwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjkxNiIgeT0iMzEyIiB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiNlZmU0Y2YiLz48dGV4dCB4PSI5MTkiIHk9IjMyMSIgZm9udC1zaXplPSI3IiBmaWxsPSIjN2E2NjUwIiBmb250LWZhbWlseT0ic2VyaWYiPjQ8L3RleHQ+PHJlY3QgeD0iOTY0IiB5PSIzMTIiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9Ijk2NyIgeT0iMzIxIiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+NTwvdGV4dD48cmVjdCB4PSIxMDEyIiB5PSIzMTIiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9IjEwMTUiIHk9IjMyMSIgZm9udC1zaXplPSI3IiBmaWxsPSIjN2E2NjUwIiBmb250LWZhbWlseT0ic2VyaWYiPjY8L3RleHQ+PHJlY3QgeD0iMTAxNSIgeT0iMzE1IiB3aWR0aD0iMzYiIGhlaWdodD0iMzYiIGZpbGw9IiNkOGNjYjYiLz48Y2lyY2xlIGN4PSIxMDMzIiBjeT0iMzI5IiByPSI3IiBmaWxsPSIjNmI1ZTUyIi8+PHBhdGggZD0iTTEwMjEgMzUxIHExMiAtMTggMjQgMHoiIGZpbGw9IiM2YjVlNTIiLz48cmVjdCB4PSIxMDE4IiB5PSIzNDIiIHdpZHRoPSIzMCIgaGVpZ2h0PSI1IiBmaWxsPSIjZjZlZmUwIiBvcGFjaXR5PSIuOSIvPjxyZWN0IHg9IjEwNjAiIHk9IjMxMiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjZWZlNGNmIi8+PHRleHQgeD0iMTA2MyIgeT0iMzIxIiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+NzwvdGV4dD48cmVjdCB4PSI3NzIiIHk9IjM2MCIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjZWZlNGNmIi8+PHRleHQgeD0iNzc1IiB5PSIzNjkiIGZvbnQtc2l6ZT0iNyIgZmlsbD0iIzdhNjY1MCIgZm9udC1mYW1pbHk9InNlcmlmIj44PC90ZXh0PjxyZWN0IHg9IjgyMCIgeT0iMzYwIiB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiNlZmU0Y2YiLz48dGV4dCB4PSI4MjMiIHk9IjM2OSIgZm9udC1zaXplPSI3IiBmaWxsPSIjN2E2NjUwIiBmb250LWZhbWlseT0ic2VyaWYiPjk8L3RleHQ+PHJlY3QgeD0iODY4IiB5PSIzNjAiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9Ijg3MSIgeT0iMzY5IiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+MTA8L3RleHQ+PHJlY3QgeD0iOTE2IiB5PSIzNjAiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9IjkxOSIgeT0iMzY5IiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+MTE8L3RleHQ+PHJlY3QgeD0iOTE5IiB5PSIzNjMiIHdpZHRoPSIzNiIgaGVpZ2h0PSIzNiIgZmlsbD0iI2Q4Y2NiNiIvPjxjaXJjbGUgY3g9IjkzNyIgY3k9IjM3NyIgcj0iNyIgZmlsbD0iIzZiNWU1MiIvPjxwYXRoIGQ9Ik05MjUgMzk5IHExMiAtMTggMjQgMHoiIGZpbGw9IiM2YjVlNTIiLz48cmVjdCB4PSI5MjIiIHk9IjM5MCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjUiIGZpbGw9IiNmNmVmZTAiIG9wYWNpdHk9Ii45Ii8+PHJlY3QgeD0iOTY0IiB5PSIzNjAiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9Ijk2NyIgeT0iMzY5IiBmb250LXNpemU9IjciIGZpbGw9IiM3YTY2NTAiIGZvbnQtZmFtaWx5PSJzZXJpZiI+MTI8L3RleHQ+PHJlY3QgeD0iMTAxMiIgeT0iMzYwIiB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiNlZmU0Y2YiLz48dGV4dCB4PSIxMDE1IiB5PSIzNjkiIGZvbnQtc2l6ZT0iNyIgZmlsbD0iIzdhNjY1MCIgZm9udC1mYW1pbHk9InNlcmlmIj4xMzwvdGV4dD48cmVjdCB4PSIxMDYwIiB5PSIzNjAiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iI2VmZTRjZiIvPjx0ZXh0IHg9IjEwNjMiIHk9IjM2OSIgZm9udC1zaXplPSI3IiBmaWxsPSIjN2E2NjUwIiBmb250LWZhbWlseT0ic2VyaWYiPjE0PC90ZXh0PjxyZWN0IHg9IjEwNjMiIHk9IjM2MyIgd2lkdGg9IjM2IiBoZWlnaHQ9IjM2IiBmaWxsPSIjZDhjY2I2Ii8+PGNpcmNsZSBjeD0iMTA4MSIgY3k9IjM3NyIgcj0iNyIgZmlsbD0iIzZiNWU1MiIvPjxwYXRoIGQ9Ik0xMDY5IDM5OSBxMTIgLTE4IDI0IDB6IiBmaWxsPSIjNmI1ZTUyIi8+PHJlY3QgeD0iMTA2NiIgeT0iMzkwIiB3aWR0aD0iMzAiIGhlaWdodD0iNSIgZmlsbD0iI2Y2ZWZlMCIgb3BhY2l0eT0iLjkiLz48ZyBmaWxsPSIjNGEzZjNhIj48Y2lyY2xlIGN4PSI3MDAiIGN5PSIzNzIiIHI9IjciLz48cGF0aCBkPSJNNjkyIDQwNGMwLTE2IDMtMjQgOC0yNHM4IDggOCAyNHoiLz48Y2lyY2xlIGN4PSIxMTUwIiBjeT0iMzgwIiByPSI3Ii8+PHBhdGggZD0iTTExNDIgNDEyYzAtMTYgMy0yNCA4LTI0czggOCA4IDI0eiIvPjwvZz48L2c+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNDgwIiBmaWxsPSJ1cmwoI2ZhZGVMKSIvPjxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjQ4MCIgZmlsbD0idXJsKCNmYWRlQikiLz48L3N2Zz4=" width="1200" height="480" alt="夕暮れの丘に団地と駅前の町並みが広がり、手前に選挙ポスターの掲示板が立つ絵"></div><figcaption><p>プレイヤーはそれぞれ、立候補者のうち１名の参謀としてこの選挙戦に参加します。</p><p>選挙戦期間、すなわち5ラウンドのあいだ、自候補を応援する「演説会」や他の候補を陥れる「うわさ」、それにSNS戦略や、期日前投票への動員など、あらゆる手段を講じて、支援する候補を勝たせることがあなたのミッションです。</p><p>誰が誰の参謀かが明らかにならないまま、街のあちこちで活動をしながら情報を集めていく参謀たち。街の次のリーダーは誰だ？</p></figcaption></figure>'+
- '<div class="card"><p class="gd-lead">舞台は有権者およそ 5 万人の市です。あなたの打つ手は、どれも<b>封筒</b>に入れて投函箱へ届けます。封筒は混ぜてから配られるので、街で起きた動きが誰の差し金なのかは、開票の日まで分かりません。ほかの参謀の封筒の中身を読みながら、どの地区に手を打てば票が動くのかを見極めてください。</p>'+
- '<div class="gd-startrow"><button class="pri" id="gd-tut-start">チュートリアルを始める</button><span class="small">チュートリアル形式で、実際の盤面を使ってルールと操作を確認できます。毎回同じ局面から始まる 4 人戦です。</span></div></div>'+
- '<h3>1 局の流れ</h3><p>選挙戦は 5 ラウンド続きます。毎ラウンド、街にニュースが届き、参謀たちが封筒を出し、それを開けるたびに街の空気が少しずつ動いていきます。ラウンド 2 と 4 の終わりには世論調査の結果が公表され、5 ラウンドを終えると投票日を迎えます。</p><p>ラウンドごとに、参謀の一人が<b>選管</b>を持ち回りで務めます。選管は選挙管理委員会の役で、ニュースの札をめくり、封筒を混ぜて配り、開票やくじでは袋を扱います。卓を回すための役なので、ゲームの中の誰の味方でもありません。</p><div class="gd-fig">'+svgFlow()+'</div>'+
- '<h3>袋と票コマ（引いて、替えて、戻す）</h3><p>地区ごとに置かれた袋は、そこに暮らす人たちの心の中です。コマ 1 個は有権者 1000 人を表します。<b>白いコマ</b>はまだ誰に入れるか決めていない人たち、色のコマはその色の候補を支持している人たちです。演説やうわさが届くと、袋からコマを何個か引いて、心が動いた人のコマを替えてから袋に戻します。<b>封筒を開けた人と、その左隣の立会人だけが</b>、引いたコマの情報を見ることができます。</p><div class="gd-fig">'+svgBag()+'</div>'+
+ '<div class="card"><p class="gd-lead">人口 5 万人ほどの市の<b>市長選</b>です。全員がどこかの候補の<b>参謀</b>になり、誰の参謀かは開票まで秘密です。5 ラウンドのあいだ、演説やうわさ、SNS、動員などを<b>封筒</b>で打ちます。開票で自分の候補がいちばん多く票を取れば勝ちです。読み合うのは、<b>どの封筒が誰のものか</b>と、<b>どこに打てば効くか</b>です。</p>'+
+ '<div class="gd-startrow"><button class="pri" id="gd-tut-start">チュートリアルを始める</button><span class="small">実際の盤面で 1 局を案内します。4 人戦で、毎回同じ局面から始まります。</span></div></div>'+
+ '<h3>1 局の流れ</h3><div class="gd-fig">'+svgFlow()+'</div>'+
+ '<h3>候補者（10 人から 4 人）</h3><p>準備で候補者カード 10 枚から 4 枚を引き、時計塔、橋、桜、広場の 4 つの席に置きます。色と紋章は席が持っています。候補者カードの<b>地盤</b>は、はじめから袋に入っている支持者のコマです。地盤は表向きなので、はじめの袋の中身は全員が知っています。</p>'+
+ '<div class="tw"><table><tr><th>候補</th><th>得意</th><th class="n">討論</th><th>公約</th><th>弱み</th><th>地盤</th></tr>'+kt+'</table></div>'+
+ '<ul class="gd-ul small"><li>得意の手段で自分の候補を広めるときは、1 個多く引けます。</li><li>公約は、ニュース「選挙公報が届く」で、その課題の地区に効きます。</li><li>弱みの課題の地区では、その候補を狙ううわさの上限がなくなります。</li><li>得意が強い候補ほど、地盤を薄くしてあります。ネットが得意な候補は 1 個、対面は 2〜3 個、紙電波は 3〜5 個です。</li></ul>'+
+ '<h3>袋と票コマ（引いて、替えて、戻す）</h3><p>地区ごとに袋が 1 つあります。コマ 1 個が有権者 1 千人です。<b>白は浮動票</b>で、色はその候補の支持者です。袋の操作は、全部「引いて、替えて、戻す」の 1 つの型です。引いたコマの色は、<b>封筒を開けた人と、左隣の立会人</b>が見ます。</p><div class="gd-fig">'+svgBag()+'</div>'+
  '<h3>封筒の配り方</h3><p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>立会人は、封筒を開けた人の左隣の参謀が務めます。</p><div class="gd-fig">'+svgEnv()+'</div>'+
- '<p class="small">選挙戦が始まった時点では、候補者カードに書かれた地盤から、どの地区にどの候補の支持者がいるかを全員が同じように知っています。そこから先、街の人の心がどう動いたかは、自分が開けた封筒や立会人として見たコマと、公開世論調査から推し量ることになります。</p>'+
- '<h3>公開世論調査</h3><p>ラウンド 2 と 4 の終わりには、新聞社が世論調査の結果を出します。すべての地区で袋からコマを 2 個ずつ引いて全員に見せるので、このときは全員が同じ手がかりを手にします。</p><div class="gd-fig">'+svgPoll()+'</div>'+
- '<h3>行動</h3><p>参謀の手札は 12 枚あり、一度使ったカードは戻ってきません。毎ラウンド 2 枚ずつ封筒に入れていくと、選挙戦が終わるときに 2 枚が使われずに残ります。どの手をどのラウンドに使うかも、参謀の腕の見せどころです。</p><div class="gd-acts">'+at+'</div>'+
- '<h3>地区</h3><p>街は 5 つの地区に分かれていて、有権者の数も、投票に行く人の数も、話が届きやすい手段も地区ごとに違います。</p><div class="tw"><table><tr><th>地区</th><th class="n">有権者</th><th class="n">投票する人</th><th class="n">演説</th><th class="n">SNS</th><th class="n">新聞<br>テレビ</th></tr>'+dist+'</table></div><ul class="gd-ul">'+g0.ds.map(function(D){return '<li>'+esc(mmTalk(D))+'</li>';}).join('')+'</ul>'+
- '<ul class="gd-ul small"><li>「投票に行く人」は、投票日に実際に投票所へ足を運ぶ人の数です。開票では、この数のコマをその地区の袋から引きます。団地では、有権者 1 万人のうち 8 千人が投票に行きます。</li><li>演説、SNS、新聞テレビの列は、その手段で袋から引けるコマの数です。「投票する人」の列は、投票に行く人の数です。3 個なら、3 千人の心に触れることができます。うわさは手段を選ばず、どの地区でも 3 個引きます。</li><li>候補にはそれぞれ得意な手段があります。その手段で自分の候補を広めると、話がもう 1 千人に届き、コマを 1 個多く引きます。</li></ul>'+
+ '<p class="small">はじめの袋の中身は全員が同じだけ知っています。そこから先の手がかりは、自分が見たコマと、公開世論調査と、読み上げられた中身です。</p>'+
+ '<h3>公開世論調査（ラウンド 2 と 4 の終わり）</h3><div class="gd-fig">'+svgPoll()+'</div>'+
+ '<h3>行動（手札 14 枚と大勝負 1 枚）</h3><p class="small">封筒は毎ラウンド 2 枚です。5 ラウンドで 10 枚を使うので、5 枚は使わずに終わります。何を残すかも作戦です。</p>'+at+
+ '<h3>注目の印とうわさの上限</h3><ul class="gd-ul"><li>新聞テレビを打つと、その候補に注目の印が付きます。印は次のラウンドの終わりに外れます。SNS には付きません。</li><li>うわさで白に戻すのは、ふだんは 2 個までです。狙った候補に注目の印があるとき、弱みの地区のとき、ニュース「疑心暗鬼が広がる」のラウンドには、上限がなくなります。</li><li>火消しトークンがあれば、うわさは止まります。</li></ul>'+
+ '<h3>ニュース（9 枚から 5 枚）</h3><div class="tw"><table><tr><th>ニュース</th><th>効き方</th></tr>'+evs+'</table></div>'+
+ '<h3>地区（固定の 5 地区）</h3><div class="tw"><table><tr><th>地区</th><th class="n">有権者</th><th class="n">投票に行く人</th><th class="n">対面</th><th class="n">ネット</th><th class="n">紙電波</th><th>町の課題</th></tr>'+dist+'</table></div>'+
+ '<ul class="gd-ul small"><li>投票に行く人は、開票でその地区の袋から引く数です。ニュースと投票の呼びかけで増えたり減ったりします。有権者より 1 千人少ない数で止まります。</li><li>◎ ○ × は、その手段の行動で何個引けるかを決めます。</li><li>町の課題は、地盤と公約と弱みが効く地区を決めます。</li></ul>'+
  '<h3>開票と勝ち方</h3><div class="gd-fig">'+svgCount()+'</div>'+
- '<ul class="gd-ul"><li>投票日には、地区 1 から順に開票します。投票に行く人と同じ数のコマを袋から引いて、色ごとに数えます。白いコマは、棄権や白票として数えません。</li><li>期日前に投票を済ませた人の票も足します。全地区の合計がいちばん多い候補が新しい市長になり、その参謀の勝ちです。</li><li>票が並んだときは、くじで決めます。開票のやり直しはありません。開票とくじでは、選管が袋を扱います。3 人で遊ぶときは、候補も 3 人で争います。</li></ul>'+
- '<h3>しゃべってよいこと</h3><p>作戦を練っているあいだも、封筒を開けているあいだも、何を話してもかまいません。駆け引きの嘘も自由です。ただし、参謀カードと、自分が見たコマは、ほかの人に見せないでください。何が出たかを口で伝えるのはかまいませんし、そこで嘘をつくのも作戦のうちです。</p>';
+ '<ul class="gd-ul"><li>地区 1 から順に、投票に行く人の数だけ袋から引きます。期日前の箱の票を足します。</li><li>白は、その地区でいちばん票の多い候補に入ります。色の票が 1 つも無い地区では、白は棄権になります。</li><li>全地区の合計がいちばん多い候補が当選し、その参謀の勝ちです。同数のときはくじで決めます。</li><li>3 人で遊ぶときは、候補者も 3 人にします。地盤は「3 人のとき」の行を使います。</li></ul>'+
+ '<h3>しゃべってよいこと</h3><p>作戦中も開封中も、何を言ってもかまいません。嘘もかまいません。見せてはいけないのは、参謀カードと、自分が見たコマと、期日前の箱の中身です。何が出たかを口で言うのは自由です。</p>';
 }
 var nav=$('.tabs'),secPlay=$('#tab-play');
 var btn=document.createElement('button');btn.id='tabbtn-guide';btn.dataset.tab='guide';btn.textContent='遊び方';
@@ -1081,21 +1519,13 @@ $$('.tabs button').forEach(function(b){if(b!==btn)b.addEventListener('click',fun
 if(store('mm-tab')==='guide')showTab('guide');
 $('#gd-tut-start').addEventListener('click',startTut);
 function envDesc(){
- var g=G(),out=[];if(!g)return out;
- $$('#tab-play .env').forEach(function(el){
-   var v=function(k){var s=el.querySelector('select[data-k="'+k+'"]');return s?s.value:null;};
-   var e={type:v('type'),cand:v('cand')==null?null:+v('cand'),d:v('d')==null?null:+v('d'),good:v('good')!=='0'};
-   var c=e.cand,D=e.d!=null?g.ds[e.d]:null,cn=c!=null?CN[c]:'',t='';
-   switch(e.type){
-    case 'speech':t='演説「'+cn+'・'+D.name+'」: '+D.name+'の袋から '+MM.kFace(g,e.d,c,true)+' 個引き、白が出たら'+cn+'に替えます。白が減り、'+cn+'が増えます';break;
-    case 'rumor':t='うわさ「'+cn+'・'+D.name+'」: '+MM.kRumor(g,e.d,c)+' 個引き、'+cn+'が出たら白に戻します。'+cn+'が減り、白が増えます';break;
-    case 'sns':t='SNS「'+cn+'・'+D.name+'・'+(e.good?'良':'悪')+'」: '+MM.kNet(g,e.d,c,e.good)+' 個引きます。'+(e.good?'白が減り、'+cn+'が増えます':cn+'が減り、白が増えます');break;
-    case 'tv':t='新聞テレビ「'+cn+'」: 全地区で少しずつ引きます。白が減り、'+cn+'が増えます';break;
-    case 'mob':t='動員「'+cn+'・'+D.name+'」: 期日前トレイの'+cn+'が '+g.mobN+' 増えます。袋は変わりません';break;
-    case 'fire':t='火消し「'+cn+'」: '+cn+'の火消しトークンが 1 増えます';break;
-    case 'poll':t='世論調査「'+D.name+'」: 3 個引いて全員に見せる（何も変わらない）';break;
-   }
-   out.push(t);
+ var out=[];
+ $$('#tab-play div[class="env"]').forEach(function(el){
+   var t=el.querySelector('select[data-k="type"]'),nm=t?t.options[t.selectedIndex].text.replace(/（残り.*$/,''):'';
+   var c=el.querySelector('select[data-k="cand"]'),d=el.querySelector('select[data-k="d"]');
+   var arg=[c?c.options[c.selectedIndex].text:'',d?d.options[d.selectedIndex].text.replace(/^\d+ /,''):''].filter(Boolean).join('・');
+   var hint=el.querySelector('.small');
+   out.push(nm+(arg?'「'+arg+'」':'')+': '+(hint?hint.textContent:''));
  });
  return out;
 }
@@ -1104,7 +1534,7 @@ function evLines(){var g=G();if(!g)return [];return roundLog(g.round).filter(fun
 function newsText(){
  var g=G();if(!g)return '';var ev=MM.EVENTS[g.events[g.round-1]];
  var x=evLines();
- return '<p>ラウンド '+g.round+' のニュースは<b>「'+esc(ev.name)+'」</b>です。'+esc(ev.text)+'</p>'+(x.length?'<p>このラウンドで起きたこと: '+esc(x.join('／'))+'</p>':'<p>このニュースは、封筒を開けるときに効きます。今はまだ何も動いていません。</p>');
+ return '<p>ラウンド '+g.round+' のニュースは<b>「'+esc(ev.name)+'」</b>です。'+esc(ev.text)+'</p>'+(x.length?'<p>このラウンドで起きたこと: '+esc(x.join('／'))+'</p>':'<p>封筒を開けるときに効きます。今はまだ何も動いていません。</p>');
 }
 function pollLine(){
  var g=G();if(!g)return null;var l=roundLog(g.round).filter(function(x){return /^公開世論調査/.test(x.t);})[0];
@@ -1112,64 +1542,66 @@ function pollLine(){
 }
 function pollEl(){return $$('#tab-play .roundres .ln').filter(function(el){return /^公開世論調査/.test(el.textContent);})[0]||null;}
 function q(s){return function(){return $(s);};}
+function newsCard(){return $$('#tab-play .card').filter(function(x){return /ニュース:/.test(x.textContent)&&!x.classList.contains('cand');})[0]||null;}
 var STEPS=[
  {id:'intro',title:'はじめに',next:true,sel:q('#tab-play .card'),text:function(){
-   return '<p>これは練習の 1 局です。あなたとコンピュータ 3 人が、それぞれ候補の参謀として 5 つの地区で選挙戦を戦います。毎回同じ局面から始まります。</p><p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>ラウンド 2 と 4 の終わりには、<b>公開世論調査</b>の結果が出ます。</p><p>光っている所を押すと進みます。説明の手順は「次へ」で進みます。「やめる」を押すと、いつでも普通の対戦に戻れます。</p>';}},
+   return '<p>これは練習の 1 局です。あなた 1 人とコンピュータ 3 人の 4 人戦で、毎回同じ局面から始まります。</p><p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>ラウンド 2 と 4 の終わりには、<b>公開世論調査</b>の結果が出ます。</p><p>光っている所を押すと進みます。説明だけの手順は「次へ」で進みます。「やめる」を押すと、いつでも普通の対戦に戻れます。</p>';}},
  {id:'role',title:'あなたの立場',next:true,sel:q('#tab-play .card.me'),text:function(){
    var P=me();
-   return '<p>あなたは '+cname(P.cand)+' の候補を支える参謀です。誰の参謀なのかは、開票の日まで明かしません。</p><p>候補者カードの<b>地盤</b>を見れば、どの地区にどの候補の支持者がいるかは全員が同じように知っています。ここから先は、<b>自分が開けた封筒や立会人として見たコマ</b>と<b>公開世論調査</b>を手がかりに、街の人の心の動きを推し量ります。</p>';}},
- {id:'news',title:'ニュース',next:true,sel:function(){var c=$$('#tab-play .card');return c[1]||null;},text:newsText},
+   return '<p>あなたは '+cname(P.cand)+' の陣営の候補、'+esc(kn(P.cand))+'さんの参謀です。これは開票まで誰にも見せません。</p><p>はじめの袋の中身は、候補者カードの<b>地盤</b>から全員が同じだけ知っています。ここから先の手がかりは、<b>自分が見たコマ</b>と、<b>公開世論調査</b>です。</p>';}},
+ {id:'news',title:'ニュース',next:true,sel:newsCard,text:newsText},
  {id:'board',title:'地区と候補の見方',next:true,sel:function(){var h=$$('#tab-play h3').filter(function(x){return x.textContent==='地区';})[0];return h?h.nextElementSibling:null;},text:function(){
-   var g=G(),P=me(),bd0=g.baseD[P.cand],d0=bd0[0][0],D=g.ds[d0],t=MM.effT(g,d0),C=MM.CANDS[P.cand];
+   var g=G(),P=me(),bd0=g.baseD[P.cand],d0=bd0.length?bd0[0][0]:0,D=g.ds[d0],t=MM.effT(g,d0),C=g.C[P.cand];
    var bd=bd0.map(function(x){return g.ds[x[0]].name+' '+x[1];}).join('、');
-   return '<p>地区のカードの「投票に行く人」は、開票でその袋から引くコマの数を表しています。'+esc(D.name)+'では、有権者 '+MMV.p(D.pop)+'のうち <b>'+MMV.p(t)+'</b>が投票に行くので、開票では袋からコマを '+t+' 個引きます。</p>'+
-     '<p>地区のカードの「引ける数」は、その手段で話がどれだけ届くかを表しています。'+esc(mmTalk(D))+'</p>'+
-     '<p>あなたの候補の地盤は <b>'+esc(bd)+'</b> です。はじめから色コマが入っていて、ほかの候補の地盤も全員に見えています。得意は'+MM.CHN[C.fav]+'で、その手段で自分を広めると 1 個多く引けます。</p>';}},
- {id:'env',title:'封筒に入れる',next:true,sel:q('#tab-play .env'),text:function(){
+   return '<p>地区のカードの「投票に行く人」は、開票でその袋から引く数です。'+esc(D.name)+'なら有権者 '+MMV.p(D.pop)+'のうち、<b>'+MMV.p(t)+'</b>が投票に行きます。コマなら '+t+' 個を引きます。</p>'+
+     '<p>対面とネットと紙電波の ◎ ○ × は、その手段の行動で何個引けるかを決めます。'+esc(D.name)+'は対面 '+MM.MARK[D.lv.face]+'、ネット '+MM.MARK[D.lv.net]+'です。</p>'+
+     '<p>あなたの候補の地盤は <b>'+esc(bd||'なし')+'</b> です。はじめから色のコマが入っています。ほかの候補の地盤も、全員に見えています。得意は'+MM.CHN[C.fav]+'で、その手段で自分を広めると 1 個多く引けます。</p>';}},
+ {id:'env',title:'封筒に入れる（2 枚）',next:true,sel:function(){return $$('#tab-play div[class="env"]')[0]||null;},text:function(){
    var d=envDesc();
-   return '<p>封筒 1 枚には、行動カード 1 枚と、候補チップと地区チップを 1 つずつ入れます。今は次の 2 枚が入っています。</p><ul class="gd-ul">'+d.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'+
-     '<p>どちらも、白が出れば増えます。白が出なければ何も起きず、空振りもそのまま残ります。中身は選び直せます。他人の候補を選んでもかまいません。自分の候補ばかり助けると、誰の参謀か読まれやすくなります。</p>';}},
+   return '<p>封筒 1 枚に、行動カード 1 枚と、カードが求めるチップを入れます。今は次の 2 枚が入っています。</p><ul class="gd-ul">'+d.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'+
+     '<p>中身は選び直してかまいません。ほかの人の候補を選んでもかまいません。自分の候補ばかり助けると、誰の参謀か読まれやすくなります。</p>';}},
  {id:'submit1',title:'投函する',sel:q('#submit'),done:function(){return phase()==='result';},text:function(){
-   return '<p>封筒は毎ラウンド 2 枚です。手札は 12 枚あり、5 ラウンドで 10 枚使うので、2 枚が残ります。</p><span class="gd-do">「投函する」を押してください。</span>';}},
+   return '<p>封筒は毎ラウンド 2 枚です。手札は 15 枚で、5 ラウンドで 10 枚を使います。5 枚は使わずに終わります。</p><span class="gd-do">「投函する」を押してください。</span>';}},
  {id:'open1',title:'開封の結果を読む',next:true,sel:q('#tab-play .roundres'),text:function(){
    var g=G(),all=roundLog(g.round).map(function(l){return parseLine(l.t);}).filter(Boolean),n=all.length;
-   var my=all.filter(function(o){return o.mine;}),byMe=all.filter(function(o){return o.byMe;});
-   return '<p>封筒 <b>'+n+' 枚</b>が、選管の左から 1 枚ずつ配られました。受け取った人が中身を読み上げ、左隣の立会人と一緒に結果を見ました。</p>'+
-     '<p>あなたが開けた封筒は '+byMe.length+' 枚です。その行と、あなたが立会人として見た行は、引いたコマの色が見えています。立会人として見た行には「立会人として見ました」と出ます。</p>'+
-     '<p>あなたの封筒の行には、背景に色が付いています。</p><ul class="gd-ul">'+my.map(function(o){return '<li>'+esc(o.kind+'「'+o.arg+'」')+' → '+esc(changeText(o))+'</li>';}).join('')+'</ul>'+
-     '<p>ほかの '+(n-my.length)+' 枚は、誰の差し金か分かりません。どの色の候補をどの地区で動かそうとしたのかを手がかりに、誰が誰の参謀なのかを推理してください。</p>';}},
+   var my=all.filter(function(o){return o.mine;});
+   return '<p>封筒 <b>'+n+' 枚</b>を混ぜ、選管の左から 1 枚ずつ配りました。受け取った人が中身を読み上げ、左隣の<b>立会人</b>と 2 人で袋から引いて替えました。</p>'+
+     '<p>あなたが開けた行と、あなたが立会人として見た行は、引いたコマの色が見えています。立会人として見た行には「立会人として見ました」と出ます。ほかの行は、何個引いたかが分かります。</p>'+
+     '<p>あなたの封筒は、背景に色が付いた行です。</p><ul class="gd-ul">'+my.map(function(o){return '<li>'+esc(o.kind+'「'+o.arg+'」')+' → '+esc(changeText(o))+'</li>';}).join('')+'</ul>'+
+     '<p>ほかの '+(n-my.length)+' 枚は、誰の封筒か分かりません。候補と打った地区から、誰が誰の参謀かを読み合います。</p>';}},
  {id:'next1',title:'次のラウンドへ',sel:q('#next'),done:function(){var g=G();return g&&g.round>=2&&phase()==='plan';},text:function(){
-   return '<p>開封が済むと、ラウンドは終わります。選管マーカーが左へ移ります。</p><span class="gd-do">「ラウンド 2 へ」を押してください。</span>';}},
- {id:'news2',title:'ラウンド 2 のニュース',next:true,sel:function(){var c=$$('#tab-play .card');return c[1]||null;},text:newsText},
+   return '<p>開封が済むと、ラウンドは終わりです。選管マーカーが左へ移ります。</p><span class="gd-do">「ラウンド 2 へ」を押してください。</span>';}},
+ {id:'news2',title:'ラウンド 2 のニュース',next:true,sel:newsCard,text:newsText},
  {id:'submit2',title:'ラウンド 2 の封筒',sel:q('#submit'),done:function(){return phase()==='result';},text:function(){
    var d=envDesc();
-   return '<p>封筒は '+esc(d.join('／'))+' です。選び直すこともできます。</p><p>このラウンドの終わりには、公開世論調査があります。</p><span class="gd-do">「投函する」を押してください。</span>';}},
+   return '<p>今の封筒は、'+esc(d.map(function(x){return x.split(':')[0];}).join('と'))+'です。選び直してもかまいません。</p><p>このラウンドの終わりには、公開世論調査があります。</p><span class="gd-do">「投函する」を押してください。</span>';}},
  {id:'poll',title:'公開世論調査',next:true,skip:function(){return !pollLine();},sel:pollEl,text:function(){
    var pl=pollLine(),P=me();if(!pl)return '';
    var wm=0,opp=[];pl.ds.forEach(function(x){wm=Math.max(wm,x.drawn[W]);for(var c=0;c<4;c++)if(c!==P.cand&&x.drawn[c])opp.push(x.name+'の'+CN[c]);});
    var wTop=pl.ds.filter(function(x){return wm>0&&x.drawn[W]===wm;}).map(function(x){return x.name;});
    var mine=pl.ds.filter(function(x){return x.drawn[P.cand];}).map(function(x){return x.name;});
    return '<p>開封のあと、<b>全部の袋から 2 個ずつ</b>引いて全員に見せ、そのまま戻しました。袋は変わりません。全員が同じ手がかりを持ちます。</p><ul class="gd-ul">'+
-     (wTop.length?'<li>'+esc(wTop.join('と'))+'で、白がいちばん多く'+(wTop.length>1?'それぞれ ':'')+wm+' 個出ました。演説や良い話の SNS で、まだ増やせそうです。</li>':'<li>白は 1 個も出ませんでした。浮動票が減ってきています。</li>')+
-     (opp.length?'<li>'+esc(opp.join('、'))+'で相手の色が出ました。うわさが空振りしにくい所です。</li>':'<li>相手の色は 1 個も出ませんでした。</li>')+
-     (mine.length?'<li>'+esc(mine.join('、'))+'で、あなたの候補の'+CN[P.cand]+'が出ました。</li>':'<li>あなたの候補の'+CN[P.cand]+'は、どこにも出ませんでした。</li>')+'</ul>'+
-     '<p>2 個なので、袋の一部しか分かりません。次の公開世論調査は、ラウンド 4 の終わりにあります。</p>';}},
+     (wTop.length?'<li>白がいちばん多く出たのは、'+esc(wTop.join('と'))+'です。演説で増やせる余地がありそうです。</li>':'<li>白は 1 個も出ませんでした。浮動票が減ってきています。</li>')+
+     (opp.length?'<li>相手の色が出たのは、'+esc(opp.join('と'))+'です。うわさが空振りしにくい所です。</li>':'<li>相手の色は 1 個も出ませんでした。</li>')+
+     '<li>あなたの候補（'+CN[P.cand]+'）が出たのは、'+(mine.length?esc(mine.join('と'))+'です':'どこにもありませんでした')+'。</li></ul>'+
+     '<p>2 個ずつなので、袋の一部にすぎません。次はラウンド 4 の終わりです。</p>';}},
  {id:'next2',title:'次のラウンドへ',sel:q('#next'),done:function(){var g=G();return g&&g.round>=3;},text:function(){
-   return '<p>これで 1 ラウンドの流れをひととおり見ました。ニュースを読んで封筒を出して開け、ラウンド 2 と 4 では公開世論調査をして、選管を引き継ぎます。</p><span class="gd-do">「ラウンド 3 へ」を押してください。</span>';}},
+   return '<p>これで 1 ラウンドの手順は全部です。ニュース、封筒、開封のあと、ラウンド 2 と 4 では公開世論調査をして、選管を回します。</p><span class="gd-do">「ラウンド 3 へ」を押してください。</span>';}},
  {id:'free',title:'ラウンド 3〜5',ff:true,sel:q('#submit'),done:function(){return phase()==='count';},text:function(){
    var g=G();
-   return '<p>いまラウンド '+(g?g.round:3)+' です。ここからは、自分で封筒を選んで進めてください。ラウンド 4 の終わりに、もう一度公開世論調査があります。開票の画面になったら、また案内します。</p><p>急ぐときは「早送り」を押すと、画面に出ている封筒のままラウンド 5 まで進みます。</p>';}},
+   return '<p>今はラウンド '+(g?g.round:3)+' です。ここからは、自分で封筒を選んで進めてください。大勝負は 1 局に 1 回使えます。開票の画面になったら、また案内します。</p><p>急ぐときは「早送り」を押すと、画面に出ている封筒のままラウンド 5 まで進みます。</p>';}},
  {id:'count',title:'開票',sel:function(){return $('#count-next');},done:function(){return !!$('#again');},text:function(){
    var k=opened(),res=cur.res,g=G();
-   if(k<1||!res)return '<p>5 ラウンドが終わったので、開票します。開票は地区 1 から順に行い、<b>投票に行く人と同じ数</b>のコマを袋から引きます。白は棄権か白票なので数えません。期日前トレイの票は必ず数えます。</p><span class="gd-do">「1 '+esc(g.ds[0].name)+' を開票する」を押してください。</span>';
-   var x=res.per[k-1],D=g.ds[x.d],got=[0,1,2,3].filter(function(c){return x.drawn[c]+x.tray[c];}).map(function(c){return CN[c]+' '+MMV.v(x.drawn[c]+x.tray[c]);});
-   return '<p>'+esc(D.name)+'では '+x.t+' 個引き、白の '+x.drawn[W]+' 個は棄権でした。期日前を含めた得票は、'+esc(got.join('、')||'ありません')+'です。</p><p>累計は、'+x.run.map(function(n,c){return CN[c]+' '+MMV.v(n);}).join('、')+' です。</p>'+
+   if(k<1||!res)return '<p>5 ラウンドが終わったので、開票です。地区 1 から順に、<b>投票に行く人の数だけ</b>袋から引きます。期日前の箱の票も数えます。白は、その地区でいちばん票の多い候補に入ります。</p><span class="gd-do">「1 '+esc(g.ds[0].name)+'を開票する」を押してください。</span>';
+   var x=res.per[k-1],D=g.ds[x.d],pr=k>1?res.per[k-2].run:[0,0,0,0];
+   var got=[0,1,2,3].filter(function(c){return x.run[c]-pr[c];}).map(function(c){return CN[c]+' '+(x.run[c]-pr[c]);});
+   return '<p>'+esc(D.name)+'では '+x.t+' 個を引きました。白は '+x.drawn[W]+' 個でした。期日前の箱と白を足した得票は、'+esc(got.join('、')||'なし')+' です。</p><p>累計は '+x.run.map(function(n,c){return c===g.out?'':CN[c]+' '+n;}).filter(Boolean).join('、')+' です。</p>'+
      (k<5?'<span class="gd-do">次の地区「'+(k+1)+' '+esc(g.ds[k].name)+'」を開票してください。</span>':'');}},
  {id:'result',title:'結果',next:true,last:true,sel:function(){var a=$('#again');return a?a.closest('.card'):null;},text:function(){
    var res=cur.res,P=me(),g=G();if(!res)return '';
    var win=res.winP>=0&&g.players[res.winP]===P;
-   return '<p>'+cname(res.win)+'の候補が、'+MMV.v(res.tot[res.win])+'を集めて当選しました。'+(res.tied.length>1?'同数だったので、くじで決まりました。':'2 位との差は '+MMV.v(res.margin)+'です。')+'</p><p>'+(win?'<b>あなたの勝ちです。</b>':'あなたの候補の'+CN[P.cand]+'は '+MMV.v(res.tot[P.cand])+'で、今回は負けでした。')+
-     'ここで全員の参謀カードを公開します。誰がどの封筒を出していたかは、ログで答え合わせができます。</p><p>チュートリアルはここで終わりです。「もう 1 局」を押すと、毎回ちがう局面で普通の対戦が始まります。</p>';}}
+   return '<p>当選は '+cname(res.win)+' の '+esc(kn(res.win))+'さんで、'+MMV.v(res.tot[res.win])+'でした。'+(res.tied.length>1?'同数だったので、くじで決まりました。':'2 位との差は '+MMV.v(res.margin)+'です。')+'</p><p>'+(win?'<b>あなたの勝ちです。</b>':'あなたの候補（'+CN[P.cand]+'）は '+MMV.v(res.tot[P.cand])+'で、今回は負けでした。')+
+     'ここで全員の参謀カードを公開します。誰がどの封筒を出していたかは、ログで答え合わせができます。</p><p>チュートリアルはここまでです。「もう 1 局」を押すと、普通の対戦が始まります。毎回ちがう局面になります。</p>';}}
 ];
 var bub=null;
 function ensureBub(){
@@ -1215,7 +1647,7 @@ function fastForward(){
 }
 function tick(){
  if(!T.on)return;
- if(T.i>0&&phase()==='setup'){stopTut('最初からに戻ったので、チュートリアルを終えた');return;}
+ if(T.i>0&&phase()==='setup'){stopTut('最初からに戻ったので、チュートリアルを終えました');return;}
  var st=STEPS[T.i],guard=0;
  while(st&&guard++<30){
    if(st.skip&&st.skip()){T.i++;st=STEPS[T.i];continue;}
@@ -1228,7 +1660,7 @@ function tick(){
 }
 function draw(st){
  ensureBub();
- var body='';try{body=st.text();}catch(e){body='<p>（この手順の説明を出せませんでした）</p>';}
+ var body='';try{body=st.text();}catch(e){body='<p>この手順の説明を作れませんでした。</p>';}
  var bt='';
  if(st.next)bt+='<button class="pri" data-gd="next">'+(st.last?'終わる':'次へ')+'</button>';
  if(st.ff&&!T.ff)bt+='<button data-gd="ff">早送りで開票まで</button>';
