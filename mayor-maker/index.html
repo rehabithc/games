@@ -1099,9 +1099,9 @@ function render(){
 }
 function votesOf(i){var x=res.per[i],pr=i>0?res.per[i-1].run:[0,0,0,0],v=[0,0,0,0],wa=[0,0,0,0],ws=0;
  for(var c=0;c<4;c++){v[c]=x.run[c]-pr[c];wa[c]=v[c]-x.drawn[c]-x.tray[c];ws+=wa[c];}
- return {v:v,wa:wa,voidN:x.white-ws};}
+ return {v:v,wa:wa,voidN:x.white-ws,col:v.reduce(function(a,b){return a+b;},0)-ws};}
 function whiteText(o){var to=[0,1,2,3].filter(function(c){return o.wa[c]>0;});
- if(!to.length)return '色の票が無かったので、棄権';
+ if(!to.length)return o.col>0?'いちばんの候補が並び、分けきれないので無効票':'色の票が無かったので、棄権';
  return to.map(function(c){return CN[c]+'に '+o.wa[c];}).join('、')+(o.voidN?'、端数の '+o.voidN+' 個は無効票':'');}
 function countTable(){
  var rows='';
