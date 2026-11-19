@@ -145,6 +145,7 @@ figcaption b{color:var(--accent)}
 .kv-sub{margin:4px 0 0;font-size:14px;color:var(--kv-ink)}
 .kv-ask{margin:2px 0 0;font-size:14px;font-weight:700;color:var(--kv-accent,var(--kv-ink))}
 .kv-title p[hidden]{display:none}
+.kv-circle-b{display:none}
 .sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .kv.has-logo .kv-art{display:none}
 .kv.has-logo .kv-title{max-width:100%;margin-top:10px}
@@ -183,7 +184,31 @@ button,select{border-radius:999px}
 @keyframes kdrop{0%{opacity:0;transform:translateY(-14px) scale(.85,1.15)}45%{opacity:1;transform:translateY(0) scale(1.22,.8)}70%{transform:scale(.94,1.07)}100%{opacity:1;transform:scale(1)}}
 .bdot{fill:var(--bdot)}
 .kv.has-logo .kv-top{max-width:none}
-@media (max-width:640px){.kv-logo{max-width:min(230px,62vw) !important;margin-top:4px}}
+/* 見出しの枠（2026-11-19 本人「上の枠の高さは半分くらいで、ロゴは上下端断ち切られるくらいでも良い」）。
+   ロゴを左に大きく置き、枠より少し大きくして上下を枠で切る。文とボタンは右に並べる */
+.kv.has-logo{--lg:250px;--cut:16px;--pad:14px;display:grid;grid-template-columns:var(--lg) minmax(0,1fr);grid-template-rows:auto 1fr auto auto auto auto;
+  column-gap:22px;padding:var(--pad) 20px var(--pad) 28px;min-height:0}
+.kv.has-logo .kv-title{display:contents}
+.kv.has-logo .kv-top{grid-column:2;grid-row:1}
+.kv.has-logo .kv-logo{grid-column:1;grid-row:1 / -1;width:var(--lg);height:var(--lg);max-width:none !important;align-self:center;
+  margin:calc(-1 * (var(--pad) + var(--cut))) 0}
+.kv.has-logo .kv-sub{grid-column:2;grid-row:3;margin:0;font-size:15px}
+.kv.has-logo .kv-ask{grid-column:2;grid-row:4;margin:2px 0 0;font-size:15.5px}
+.kv.has-logo .kv-kana{grid-column:2;grid-row:5;margin:4px 0 0}
+.kv.has-logo .kv-kana:empty{display:none}
+.kv.has-logo .kv-circle-b{grid-column:2;grid-row:6}
+@media (max-width:640px){
+  /* 指の幅: ボタンを上の 1 行に、ロゴを左下に置き、ロゴの下の端を枠で切る */
+  .kv.has-logo{--lg:min(144px,37vw);--pad:10px;grid-template-rows:auto auto auto auto 1fr;column-gap:12px;padding:var(--pad) 12px 0 8px}
+  .kv.has-logo .kv-top{grid-column:1 / -1;grid-row:1;justify-content:flex-end;margin-bottom:4px}
+  .kv.has-logo .kv-top .kv-circle{display:none}
+  .kv.has-logo .kv-logo{grid-row:2 / -1;align-self:end;margin:0 0 -10px}
+  .kv.has-logo .kv-sub{grid-row:2;font-size:13px;line-height:1.45;margin-top:2px}
+  .kv.has-logo .kv-ask{grid-row:3;font-size:13.5px;line-height:1.45;margin-top:4px}
+  .kv.has-logo .kv-kana{grid-row:4}
+  /* サークル名は指の幅では見出しから外す（画面の下の © に出ている）。枠の高さを今の半分ほどに収めるため */
+  .kv.has-logo .kv-ask{margin-bottom:10px}
+}
 .fx-cloudlet{animation:kcl .36s ease-in both}
 .fx-cloudlet.p1,.fx-billow.p1{fill:var(--s1);stroke:var(--s1-edge);stroke-width:1.2}
 .fx-cloudlet.p2,.fx-billow.p2{fill:var(--s2);stroke:var(--s2-edge);stroke-width:1.2}
@@ -193,7 +218,7 @@ button,select{border-radius:999px}
 @keyframes kbil{0%{opacity:0;transform:translate(0,0) scale(.2)}35%{opacity:.95;transform:translate(calc(var(--dx)*.5),calc(var(--dy)*.5)) scale(1.1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.5)}}
 
 @media (prefers-reduced-motion: reduce){
-  .pop,.drop,.st.pop,.st.drop,.st.pie-in,.st.pie-out,.piebanner.on{animation:none !important}
+  .pop,.drop,.st.pop,.st.drop,.st.pie-in,.st.pie-out,.piebanner.on,.armring{animation:none !important}
   .fx{display:none}
   .kv-art *{animation:none !important}
 }
@@ -205,7 +230,7 @@ button,select{border-radius:999px}
 <header class="kv">
   <div class="kv-art" aria-hidden="true"><svg viewBox="0 0 300 160" preserveAspectRatio="xMaxYMid meet"><circle cx="196" cy="86" r="72" class="a-dish"/><circle cx="196" cy="86" r="62" class="a-agar"/><g class="a-bob" style="animation-delay:0ms"><circle cx="168" cy="68" r="27" style="fill:url(#P1)"/></g><g class="a-bob" style="animation-delay:700ms"><circle cx="224" cy="100" r="31" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:1300ms"><circle cx="182" cy="122" r="19" style="fill:url(#P1)"/></g><g class="a-bob" style="animation-delay:400ms"><circle cx="238" cy="54" r="17" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:1000ms"><circle cx="146" cy="104" r="15" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:200ms"><circle cx="214" cy="140" r="11" style="fill:url(#P1)"/></g><path d="M112 31 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:0ms"/><path d="M282 21 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:600ms"/><path d="M286 119 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:1200ms"/><path d="M120 131 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:900ms"/></svg></div>
   <div class="kv-top"><span class="kv-circle">Clinica Fermentica</span><span class="kv-btns"><button id="themeBtn" type="button">明るさを切り替える</button></span></div>
-  <div class="kv-title"><h1 id="tJa"></h1><p class="kv-en" id="tEn" hidden></p><p class="kv-sub" id="tSub" hidden></p><p class="kv-ask" id="tAsk" hidden></p><p class="kv-kana" id="tKana"></p></div>
+  <div class="kv-title"><h1 id="tJa"></h1><p class="kv-en" id="tEn" hidden></p><p class="kv-sub" id="tSub" hidden></p><p class="kv-ask" id="tAsk" hidden></p><p class="kv-kana" id="tKana"></p><p class="kv-circle kv-circle-b" aria-hidden="true">Clinica Fermentica</p></div>
 </header>
 <p class="lead">ルールをシャーレ（盤）の図で説明します。図では見やすいように小さなシャーレを使いますが、本番のシャーレは 61 マスです。<a href="index.html">シャーレで遊ぶ</a></p>
 <p class="lead">着想はコンウェイのライフゲーム（セルオートマトン）です。「となりの数がそろった空きマスに命が生まれる」という誕生の決まりを借り、2 人が 1 株ずつ配置して、次にどこが増殖するかを読み合う対戦にしました。ライフゲームと違って株は死なず、増えた菌はシャーレに残ります。</p>

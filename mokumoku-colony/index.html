@@ -153,6 +153,7 @@ th:first-child,td:first-child{text-align:left}
 .kv-sub{margin:4px 0 0;font-size:14px;color:var(--kv-ink)}
 .kv-ask{margin:2px 0 0;font-size:14px;font-weight:700;color:var(--kv-accent,var(--kv-ink))}
 .kv-title p[hidden]{display:none}
+.kv-circle-b{display:none}
 .sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .kv.has-logo .kv-art{display:none}
 .kv.has-logo .kv-title{max-width:100%;margin-top:10px}
@@ -208,7 +209,31 @@ button,select{border-radius:999px}
 @keyframes kdrop{0%{opacity:0;transform:translateY(-14px) scale(.85,1.15)}45%{opacity:1;transform:translateY(0) scale(1.22,.8)}70%{transform:scale(.94,1.07)}100%{opacity:1;transform:scale(1)}}
 .bdot{fill:var(--bdot)}
 .kv.has-logo .kv-top{max-width:none}
-@media (max-width:640px){.kv-logo{max-width:min(230px,62vw) !important;margin-top:4px}}
+/* 見出しの枠（2026-11-19 本人「上の枠の高さは半分くらいで、ロゴは上下端断ち切られるくらいでも良い」）。
+   ロゴを左に大きく置き、枠より少し大きくして上下を枠で切る。文とボタンは右に並べる */
+.kv.has-logo{--lg:250px;--cut:16px;--pad:14px;display:grid;grid-template-columns:var(--lg) minmax(0,1fr);grid-template-rows:auto 1fr auto auto auto auto;
+  column-gap:22px;padding:var(--pad) 20px var(--pad) 28px;min-height:0}
+.kv.has-logo .kv-title{display:contents}
+.kv.has-logo .kv-top{grid-column:2;grid-row:1}
+.kv.has-logo .kv-logo{grid-column:1;grid-row:1 / -1;width:var(--lg);height:var(--lg);max-width:none !important;align-self:center;
+  margin:calc(-1 * (var(--pad) + var(--cut))) 0}
+.kv.has-logo .kv-sub{grid-column:2;grid-row:3;margin:0;font-size:15px}
+.kv.has-logo .kv-ask{grid-column:2;grid-row:4;margin:2px 0 0;font-size:15.5px}
+.kv.has-logo .kv-kana{grid-column:2;grid-row:5;margin:4px 0 0}
+.kv.has-logo .kv-kana:empty{display:none}
+.kv.has-logo .kv-circle-b{grid-column:2;grid-row:6}
+@media (max-width:640px){
+  /* 指の幅: ボタンを上の 1 行に、ロゴを左下に置き、ロゴの下の端を枠で切る */
+  .kv.has-logo{--lg:min(144px,37vw);--pad:10px;grid-template-rows:auto auto auto auto 1fr;column-gap:12px;padding:var(--pad) 12px 0 8px}
+  .kv.has-logo .kv-top{grid-column:1 / -1;grid-row:1;justify-content:flex-end;margin-bottom:4px}
+  .kv.has-logo .kv-top .kv-circle{display:none}
+  .kv.has-logo .kv-logo{grid-row:2 / -1;align-self:end;margin:0 0 -10px}
+  .kv.has-logo .kv-sub{grid-row:2;font-size:13px;line-height:1.45;margin-top:2px}
+  .kv.has-logo .kv-ask{grid-row:3;font-size:13.5px;line-height:1.45;margin-top:4px}
+  .kv.has-logo .kv-kana{grid-row:4}
+  /* サークル名は指の幅では見出しから外す（画面の下の © に出ている）。枠の高さを今の半分ほどに収めるため */
+  .kv.has-logo .kv-ask{margin-bottom:10px}
+}
 .fx-cloudlet{animation:kcl .36s ease-in both}
 .fx-cloudlet.p1,.fx-billow.p1{fill:var(--s1);stroke:var(--s1-edge);stroke-width:1.2}
 .fx-cloudlet.p2,.fx-billow.p2{fill:var(--s2);stroke:var(--s2-edge);stroke-width:1.2}
@@ -219,7 +244,7 @@ button,select{border-radius:999px}
 #board .st{r:16.5px}
 
 @media (prefers-reduced-motion: reduce){
-  .pop,.drop,.st.pop,.st.drop,.st.pie-in,.st.pie-out,.piebanner.on{animation:none !important}
+  .pop,.drop,.st.pop,.st.drop,.st.pie-in,.st.pie-out,.piebanner.on,.armring{animation:none !important}
   .fx{display:none}
   .kv-art *{animation:none !important}
 }
@@ -231,6 +256,18 @@ button,select{border-radius:999px}
 .piebanner b{font-size:clamp(26px,7.4vw,42px);line-height:1.15;white-space:nowrap;letter-spacing:.04em}
 .piebanner span{font-size:clamp(12px,3.3vw,15px);line-height:1.45;white-space:nowrap}
 .piebanner.on{display:flex;animation:pieban 2.6s ease-out both}
+/* 勝負がついたときの一言（乗っ取り変異と同じ出し方。少し長く出す） */
+.piebanner.end.on{animation:endban 4.2s ease-out both}
+@keyframes endban{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-6deg)}8%{opacity:1;transform:translate(-50%,-50%) scale(1.12) rotate(2deg)}
+  13%{transform:translate(-50%,-50%) scale(1) rotate(0)}90%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.96)}}
+/* 指で 1 回押したあと（もう一度押すと配置する）の案内と印 */
+.armbanner{position:absolute;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:6px;padding:8px 18px;border-radius:999px;
+  background:var(--place);color:var(--bg);font-weight:bold;font-size:clamp(16px,4.6vw,20px);white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.25);pointer-events:none;z-index:2}
+.armbanner.on{display:flex}
+.armring{fill:none;stroke:var(--place);stroke-width:3.2;stroke-dasharray:5 3;pointer-events:none;transform-box:fill-box;transform-origin:center;animation:armp 1s ease-in-out infinite alternate}
+.armdot{fill:var(--place);stroke:#fff;stroke-width:1.2;pointer-events:none}
+@keyframes armp{from{transform:scale(1)}to{transform:scale(1.14)}}
+.moves li.end{background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:3px 8px;margin:3px 0;font-weight:bold}
 @keyframes pieban{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-6deg)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.12) rotate(2deg)}
   20%{transform:translate(-50%,-50%) scale(1) rotate(0)}84%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.96)}}
 #board .st.pie-in{animation:piein 1s cubic-bezier(.3,1.4,.5,1) both}
@@ -262,13 +299,13 @@ button,select{border-radius:999px}
 <header class="kv">
   <div class="kv-art" aria-hidden="true"><svg viewBox="0 0 300 160" preserveAspectRatio="xMaxYMid meet"><circle cx="196" cy="86" r="72" class="a-dish"/><circle cx="196" cy="86" r="62" class="a-agar"/><g class="a-bob" style="animation-delay:0ms"><circle cx="168" cy="68" r="27" style="fill:url(#P1)"/></g><g class="a-bob" style="animation-delay:700ms"><circle cx="224" cy="100" r="31" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:1300ms"><circle cx="182" cy="122" r="19" style="fill:url(#P1)"/></g><g class="a-bob" style="animation-delay:400ms"><circle cx="238" cy="54" r="17" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:1000ms"><circle cx="146" cy="104" r="15" style="fill:url(#P2)"/></g><g class="a-bob" style="animation-delay:200ms"><circle cx="214" cy="140" r="11" style="fill:url(#P1)"/></g><path d="M112 31 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:0ms"/><path d="M282 21 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:600ms"/><path d="M286 119 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:1200ms"/><path d="M120 131 l2.5 6.5 l6.5 2.5 l-6.5 2.5 l-2.5 6.5 l-2.5 -6.5 l-6.5 -2.5 l6.5 -2.5 z" class="a-spark" style="animation-delay:900ms"/></svg></div>
   <div class="kv-top"><span class="kv-circle">Clinica Fermentica</span><span class="kv-btns"><button id="bgmBtn" class="bgm" type="button" aria-pressed="false">♪ BGM オフ</button><button class="theme" id="themeBtn" type="button">明るさを切り替える</button></span></div>
-  <div class="kv-title"><h1 id="tJa"></h1><p class="kv-en" id="tEn" hidden></p><p class="kv-sub" id="tSub" hidden></p><p class="kv-ask" id="tAsk" hidden></p><p class="kv-kana" id="tKana"></p></div>
+  <div class="kv-title"><h1 id="tJa"></h1><p class="kv-en" id="tEn" hidden></p><p class="kv-sub" id="tSub" hidden></p><p class="kv-ask" id="tAsk" hidden></p><p class="kv-kana" id="tKana"></p><p class="kv-circle kv-circle-b" aria-hidden="true">Clinica Fermentica</p></div>
 </header>
 <p class="lead">交互に自分の色の菌株を蒔いて陣地を広げます。仲間を増やして増殖させて、効率よくシャーレ（盤）を埋め尽くそう！<a href="遊び方.html">図で見る遊び方</a></p>
 
 <div id="gameview">
 <div class="layout">
-  <div class="panel boardbox"><svg id="board" role="img" aria-label="六角形のシャーレ"></svg><div class="piebanner" id="pieBanner" role="status" aria-live="polite"><b></b><span></span></div></div>
+  <div class="panel boardbox"><svg id="board" role="img" aria-label="六角形のシャーレ"></svg><div class="piebanner" id="pieBanner" role="status" aria-live="polite"><b></b><span></span></div><div class="piebanner end" id="endBanner" role="status" aria-live="polite"><b></b><span></span></div><div class="armbanner" id="armBanner" aria-hidden="true"></div></div>
   <div>
     <div class="panel">
       <p class="status" id="status"></p>
@@ -315,13 +352,13 @@ button,select{border-radius:999px}
       </label>
       <p class="note">選び直したら「はじめから」を押してください。</p>
       <div class="sound" id="soundBox">
-        <p class="sound-h">音（BGM は見出しの ♪ のボタンで鳴らします）</p>
+        <p class="sound-h">音</p>
         <div class="sound-row">
           <label>曲 <select id="bgmSong"></select></label>
           <label>音量 <input type="range" id="bgmVol" min="0" max="100" step="5" aria-label="音量"></label>
           <button id="seBtn" type="button" aria-pressed="false">効果音 オフ</button>
         </div>
-        <p class="note">曲と効果音は、このページの中で作る自作の音です。最初は鳴りません。</p>
+        <p class="note">BGM は 3 曲から選べます。</p>
       </div>
     </div>
     <details class="panel movelog" id="logBox" open>
@@ -664,7 +701,7 @@ function isCpuTurn(){ return !S.over && S.owner[S.p] === 'cpu'; }
 
 // ---- 盤を描く ----
 var cellEls = [], stoneLayer, ghostLayer, fxLayer, dropCell = -1, dropAt = 0, SZ = 20;
-var pieCell = -1, pieAt = 0, pieTimer = 0;
+var pieCell = -1, pieAt = 0, pieTimer = 0, endTimer = 0;
 function pos(i){ var g = S.g; return [SZ * Math.sqrt(3) * (g.q[i] + g.r[i] / 2), SZ * 1.5 * g.r[i]]; }
 function hexPts(x, y, s){ var a = []; for (var k = 0; k < 6; k++){ var t = Math.PI / 180 * (60 * k - 30); a.push((x + s * Math.cos(t)).toFixed(2) + ',' + (y + s * Math.sin(t)).toFixed(2)); } return a.join(' '); }
 function drawBoard(){
@@ -712,8 +749,13 @@ function drawStones(skip){
 function drawGhost(){
   while (ghostLayer.firstChild) ghostLayer.removeChild(ghostLayer.firstChild);
   var c = isTouch ? armed : hoverCell;
+  var armOk = isTouch && !(c < 0 || S.b[c] || S.over || busy || isCpuTurn() || S.swapPending);
+  armUI(armOk ? c : -1);
   if (c < 0 || S.b[c] || S.over || busy || isCpuTurn() || S.swapPending) return;
   ghostLayer.appendChild(stone(c, S.p, 'ghost'));
+  if (armOk){ var axy = pos(c), ring = document.createElementNS(NS, 'circle'); ring.setAttribute('cx', axy[0].toFixed(2)); ring.setAttribute('cy', axy[1].toFixed(2));
+    ring.setAttribute('r', (SZ * 0.9).toFixed(2)); ring.setAttribute('class', 'armring'); ghostLayer.appendChild(ring);
+    var dot = document.createElementNS(NS, 'circle'); dot.setAttribute('cx', axy[0].toFixed(2)); dot.setAttribute('cy', axy[1].toFixed(2)); dot.setAttribute('r', '3.2'); dot.setAttribute('class', 'armdot'); ghostLayer.appendChild(dot); }
   var gr = Kamo.growth(S.g, S.b, S.p, c);
   for (var k = 0; k < gr.length; k++){ var s = stone(gr[k], S.p, 'ghost'); s.setAttribute('r', (SZ * 0.5).toFixed(2)); ghostLayer.appendChild(s); }
   $('hint').textContent = gr.length ? 'ここに配置すると ' + gr.length + ' マス増殖します。' : 'ここに配置しても増殖しません。';
@@ -735,6 +777,7 @@ function render(){
     var w = n1 > n2 ? 1 : 2;
     $('status').textContent = 'シャーレが埋まりました。';
     res.className = 'result on';
+    var ER = endResult(); $('status').textContent += (ER.w ? ER.head + 'です。' : '引き分けです。') + ER.score + ' でした。';
     res.textContent = COLOR[1] + 'は ' + n1 + ' 株、' + COLOR[2] + 'は ' + n2 + ' 株です。' + name(S.owner[w]) + 'の' + COLOR[w] + 'が ' + Math.abs(n1 - n2) + ' 株多く、勝ちました。';
   } else {
     res.className = 'result';
@@ -744,7 +787,7 @@ function render(){
   }
   drawLog();
 }
-function clearAnims(){ animTimers.forEach(clearTimeout); animTimers = []; busy = false; if (fxLayer) while (fxLayer.firstChild) fxLayer.removeChild(fxLayer.firstChild); pieCell = -1; var pb = document.getElementById('pieBanner'); if (pb) pb.className = 'piebanner'; }
+function clearAnims(){ animTimers.forEach(clearTimeout); animTimers = []; busy = false; if (fxLayer) while (fxLayer.firstChild) fxLayer.removeChild(fxLayer.firstChild); pieCell = -1; var pb = document.getElementById('pieBanner'); if (pb) pb.className = 'piebanner'; var eb = document.getElementById('endBanner'); if (eb) eb.className = 'piebanner end'; }
 
 // ---- 手を進める ----
 function place(c){
@@ -781,6 +824,7 @@ function place(c){
 }
 function after(){
   $('hint').textContent = S.over ? '「はじめから」で次の局を始められます。' : (isTouch ? '配置したいマスに指を当てると、増殖するマスが薄く出ます。もう一度押すと配置します。' : '配置したいマスに矢印を合わせると、増殖するマスが薄く出ます。押すと配置します。');
+  if (S.over) showEnd();
   maybeCpu();
 }
 function doSwap(){
@@ -804,6 +848,7 @@ function drawLog(){
     if (e.pie) return '<li class="pie">初手の' + PIE.name + '：' + e.who + 'が初手を' + PIE.did + '。最初の株が' + (SIDES[1].color || COLOR[2]) + 'に変わりました。</li>';
     n++; return '<li>' + n + '. ' + COLOR[e.p] + ' ' + cellName(e.c) + (e.n ? '（' + e.n + ' マス増殖）' : '') + '</li>';
   });
+  if (S.over){ var R = endResult(); items.push('<li class="end">結果：' + R.head + '　' + R.score + '</li>'); }
   ol.innerHTML = items.join('') || '<li class="none">まだ配置していません。</li>';
   $('logCount').textContent = n ? '（' + n + ' 手）' : '';
   ol.scrollTop = ol.scrollHeight;
@@ -824,6 +869,30 @@ function showPie(c){
       KFX.mv(sp, Math.cos(a) * 30, Math.sin(a) * 30); KFX.at(sp, 380); KFX.gone(sp, 1300); }
   }
   if (window.KMUSIC) KMUSIC.se('pie');
+}
+// ---- 勝負がついたときの一言（2026-11-19 本人「乗っ取り変異と同じような感じで」） ----
+function endResult(){
+  var n1 = Kamo.count(S.b, 1), n2 = Kamo.count(S.b, 2);
+  if (n1 === n2) return { w: 0, head: '引き分け', score: n1 + ' 対 ' + n2, who: '' };
+  var w = n1 > n2 ? 1 : 2;
+  return { w: w, head: COLOR[w] + 'の勝ち', score: Math.max(n1, n2) + ' 対 ' + Math.min(n1, n2), who: name(S.owner[w]) };
+}
+function showEnd(){
+  var R = endResult(), bn = $('endBanner');
+  bn.querySelector('b').textContent = R.head + '！';
+  bn.querySelector('span').textContent = R.score + (R.who ? '　' + R.who + 'の勝ちです。' : '');
+  bn.className = 'piebanner end'; void bn.offsetWidth; bn.className = 'piebanner end on';
+  clearTimeout(endTimer); endTimer = setTimeout(function(){ bn.className = 'piebanner end'; }, 4200);
+  window.__endShown = (window.__endShown || 0) + 1;
+}
+// ---- 指で 1 回押したとき: 盤の上か下に「もう一度押すと配置します」を出し、予告のマスに印を付ける ----
+function armUI(c, n){
+  var bn = $('armBanner'); if (!bn) return;
+  if (c < 0){ bn.className = 'armbanner'; return; }
+  bn.textContent = 'もう一度押すと配置します';
+  // 押したマスが隠れないよう、マスと反対の側に出す
+  if (pos(c)[1] <= 0){ bn.style.top = ''; bn.style.bottom = '10px'; } else { bn.style.bottom = ''; bn.style.top = '10px'; }
+  bn.className = 'armbanner on';
 }
 
 // ---- コンピューター ----
@@ -1182,12 +1251,35 @@ var KMUSIC = (function(){
 
   // ------------------------------------------------------------ 鳴らす・止める
   var ctx = null, G = null, an = null, timer = 0, playing = false, cur = null, vol = 40, seOn = false, wantSong = SONGS[0].id;
+  // iPhone は消音スイッチ（マナーモード）が入っていると Web Audio が無音になる（2026-11-19 本人の iPhone で鳴らなかった）。
+  // 新しい iOS は navigator.audioSession を「再生」にする。無い古い iOS では、押したときに無音の <audio> を一緒に流して再生扱いにする
+  // （山越え谷越えの 2026-11-13 の直しと同じ形）。無音の音はその場で作り、外の音声ファイルは使わない。
+  var IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), keep = null;
+  function silentWav(){ // 0.2 秒の無音（8kHz・8bit）
+    var n = 1600, sr = 8000, u = new Uint8Array(44 + n), dv = new DataView(u.buffer), s = '', k;
+    function w(o, t){ for (var i = 0; i < t.length; i++) u[o + i] = t.charCodeAt(i); }
+    w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+    dv.setUint32(24, sr, true); dv.setUint32(28, sr, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true);
+    for (k = 44; k < u.length; k++) u[k] = 128;
+    for (k = 0; k < u.length; k++) s += String.fromCharCode(u[k]);
+    return 'data:audio/wav;base64,' + btoa(s);
+  }
+  function playback(){
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e){}
+    if (!IS_IOS || navigator.audioSession) return;
+    try {
+      if (!keep){ keep = document.createElement('audio'); keep.src = silentWav(); keep.loop = true; keep.preload = 'auto'; keep.setAttribute('playsinline', ''); keep.setAttribute('x-webkit-airplay', 'deny'); }
+      var pr = keep.play(); if (pr && pr.catch) pr.catch(function(){});
+    } catch(e){}
+  }
   function ensure(){
+    playback(); // 音の箱を作る前に決める。押した手番の中で毎回呼ぶ
     if (ctx) return ctx;
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
     ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 1024; an.connect(ctx.destination);
     G = Graph(ctx, an); setVolume(vol);
-    document.addEventListener('visibilitychange', function(){ if (!ctx) return; if (document.hidden) ctx.suspend(); else if (playing || seOn) ctx.resume(); });
+    document.addEventListener('visibilitychange', function(){ if (!ctx) return;
+      if (document.hidden){ ctx.suspend(); if (keep) keep.pause(); } else if (playing || seOn) ctx.resume(); });
     return ctx;
   }
   function songOf(id){ for (var i = 0; i < SONGS.length; i++) if (SONGS[i].id === id) return SONGS[i]; return SONGS[0]; }
