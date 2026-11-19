@@ -6,9 +6,10 @@
 |---|---|
 | 山越え谷越え／Along The Trail（半協力の登山ボードゲーム・2〜4 人） | https://rehabithc.github.io/games/along-the-trail/ |
 | メイヤーメイカー／The Mayor Maker（市長選のゲーム・3〜4 人） | https://rehabithc.github.io/games/mayor-maker/ |
+| もくもくコロニー／The Mokumoku Colony（2 人のアブストラクトゲーム） | https://rehabithc.github.io/games/mokumoku-colony/ |
 
 - 初めての人は、準備画面の「はじめての人へ」（練習）から。ルールは画面の「ルールの早見」にあります。
-- どのゲームも通信はしません。フォルダ 1 つにファイル 1 つで動き、スマホでも遊べます。
+- どのゲームも通信はしません。ゲームごとのフォルダ 1 つで動き、スマホでも遊べます。
 
 ## 著作権・利用条件
 
