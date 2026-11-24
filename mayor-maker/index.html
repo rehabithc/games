@@ -268,7 +268,7 @@ footer#pubFoot a{color:var(--ink)}
   <p>市や地区、候補者、出来事は、ゲームのための作り話です。実在の自治体や選挙、人物、団体とは関係ありません。</p>
   <p>© 2026 株式会社リハビット　制作: Clinica Fermentica　ゲームデザイン: 華佗東香<br>無料で遊べます。無断で再配布したり販売したりするのはご遠慮ください。</p>
   <p>通信はしません。この端末のブラウザには、開いていた画面を保存します。外へは送りません。</p>
-  <p><b>α版</b>　ルールを調整している途中の版です。遊びながら変わることがあります。<br>v0.4、2026-11-20<span id="pubFb">　<a href="{感想フォームURL}" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
+  <p><b>α版</b>　ルールを調整している途中の版です。遊びながら変わることがあります。<br>v0.4、2026-11-24<span id="pubFb">　<a href="{感想フォームURL}" target="_blank" rel="noopener">感想を送る（匿名）</a></span></p>
 </footer>
 </div>
 <div id="fbPop" class="fbpop" role="dialog" aria-modal="true" aria-labelledby="fbT" hidden><div class="box">
@@ -315,7 +315,7 @@ var EVENTS={
  koho:{name:'選挙公報が届く',text:'各候補の公約の課題が付いた地区で、1 個ずつ引きます。白が出たら、その候補のコマに替えます。'}};
 var EVIDS=Object.keys(EVENTS);
 var ACT={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',fire:'火消し',poll:'世論調査',call:'投票の呼びかけ',chill:'白けさせる',firm:'支持者を固める',firmB:'支持者を連れて行く'};
-ACT.gamble='大勝負';var HAND0={speech:3,rumor:3,sns:2,tv:1,mob:2,fire:1,poll:1};
+ACT.gamble='政策転換';var HAND0={speech:3,rumor:3,sns:2,tv:1,mob:2,fire:1,poll:1};
 var SPC={};
 var SPIDS=Object.keys(SPC).filter(function(k){return k!=='sp_rebut';});
 Object.keys(SPC).forEach(function(k){ACT[k]=SPC[k].name;});
@@ -559,7 +559,7 @@ function validPlan(G,p,plan){
    if(e.type!=='poll'&&!(e.cand>=0&&e.cand<4))return '候補が不正';
    if(e.type!=='poll'&&G.out>=0&&e.cand===G.out)return CN[e.cand]+'は使わない色（3 人戦は候補 3 人）';
    if((['speech','rumor','sns','mob','poll'].indexOf(e.type)>=0||(SPC[e.type]&&SPC[e.type].need))&&!(e.d>=0&&e.d<5))return '地区が不正';
-   if(e.type==='gamble'&&(!G.gb||e.cand!==P.cand))return '大勝負は自分の候補にだけ';
+   if(e.type==='gamble'&&(!G.gb||e.cand!==P.cand))return '政策転換は自分の候補にだけ';
    if((e.type==='sp_poach')&&!(e.tgt>=0&&e.tgt<4&&e.tgt!==e.cand&&e.tgt!==G.out))return '狙う候補が不正';}
  if(plan.envs.length===2&&plan.envs.some(function(e){return gxOf(G,e)==='cost';}))return '全体技は封筒 2 枚分（そのラウンドはほかの封筒を出せない）';
  return null;
@@ -878,7 +878,7 @@ function resolveGamble(G,e,obs,pre){var GB=G.gb,c=e.cand,A0=tallyW(G),L=(G.nP===
      var bs=sum(b)||1,cap=G.supply[c]+gained;for(var x2=0;x2<5;x2++){if(x2===c)continue;var ex=Math.min(k*b[x2]/bs,b[x2]);b[x2]-=ex;b[c]+=ex;P.u[d]+=ex;}});
    if(G.learn&&k>0){var after=dr.slice();for(var x3=0;x3<5;x3++){if(x3===c)continue;after[x3]-=mv[x3];after[c]+=mv[x3];}blend(G,d,after,obs);}});
  var A2=tallyW(G);G.gbLog.push({owner:e.owner,opener:G.opener,round:G.round,c:c,hit:hit?1:0,hk:hd.length,lost:lost,gained:gained,stole:stole,short:short,seen:seen,loss:A1[c]-A0[c],net:A2[c]-A0[c]});
- var shG=showTo(G,obs);lg(G,pre+'大勝負「'+CN[c]+'」→ 1 の目 '+hd.length+' 地区で'+(hit?'当たり':'外れ')+(shG?'（先に失った '+lost+' 個'+(hit?'・替わった '+gained+' 個':'')+'）':hidTxt(G)));}
+ var shG=showTo(G,obs);lg(G,pre+'政策転換「'+CN[c]+'」→ 1 の目 '+hd.length+' 地区で'+(hit?'当たり':'外れ')+(shG?'（先に失った '+lost+' 個'+(hit?'・替わった '+gained+' 個':'')+'）':hidTxt(G)));}
 function check(G){
  for(var d=0;d<5;d++){var D=G.ds[d];for(var c=0;c<5;c++)if(D.bag[c]<0||!Number.isInteger(D.bag[c]))throw new Error('袋の数が不正 '+D.name+' '+CN[c]+'='+D.bag[c]);
    if(sum(D.bag)+(D.early||0)-(D.refill||0)!==D.pop)throw new Error('袋の合計が人口と合わない '+D.name);for(var c2=0;c2<4;c2++)if(D.tray[c2]<0)throw new Error('トレイが負');}
@@ -946,7 +946,7 @@ document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener
 var G=null,phase='setup',sel=null,res=null,cidx=0,human=0,cfg={nP:4};
 var NAMES=['あなた','コンピュータA','コンピュータB','コンピュータC'];
 var ORDER=['speech','rumor','sns','tv','mob','call','fire','gamble'];
-var ANAME={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',call:'投票の呼びかけ',fire:'火消し',gamble:'大勝負'};
+var ANAME={speech:'演説',rumor:'うわさ',sns:'SNS',tv:'新聞テレビ',mob:'動員',call:'投票の呼びかけ',fire:'火消し',gamble:'政策転換'};
 function cols(){return [0,1,2,3].filter(function(c){return c!==G.out;});}
 function others(c){return cols().filter(function(x){return x!==c;});}
 function bestD(c){var b=-1,bi=0;G.ds.forEach(function(D,j){var v=D.bag[W]*MM.kFace(G,j,c,true);if(v>b){b=v;bi=j;}});return bi;}
@@ -972,7 +972,7 @@ function submit(){
  MM.submitPlans(G,plans);MM.resolveAll(G);MM.surveyPhase(G,{});
  phase='result';render();window.scrollTo(0,0);
 }
-function errText(e){if(/足りない/.test(e))return e.replace('のカードが足りない','のカードが足りません。');if(/大勝負/.test(e))return '大勝負は自分の候補にだけ打てます。';return e;}
+function errText(e){if(/足りない/.test(e))return e.replace('のカードが足りない','のカードが足りません。');if(/政策転換/.test(e))return '政策転換は自分の候補にだけ打てます。';return e;}
 function nextRound(){
  MM.endRound(G);
  if(G.round<5){MM.startRound(G);sel=defaultSel();phase='plan';}
@@ -1217,7 +1217,7 @@ function parseDrawn(s){
  s.split('・').forEach(function(p){var m=p.match(new RegExp('^'+CRE+' (\\d+)'));if(m)a[C2I[m[1]]]+=+m[2];});return a;
 }
 function parseLine(t){
- var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?(?:〔立会人として見ました〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|投票の呼びかけ|大勝負)「([^」]*)」→ (.*)$/);
+ var m=t.match(/^封筒 (\d+)\/(\d+)(（あなたの封筒）)?(?:〔開封: ([^〕]*)〕)?(?:〔立会人として見ました〕)?: (演説|うわさ|SNS（良）|SNS（悪）|新聞テレビ|動員|火消し|投票の呼びかけ|政策転換)「([^」]*)」→ (.*)$/);
  if(!m)return null;
  var o={i:+m[1],n:+m[2],mine:!!m[3],opener:m[4]||null,kind:m[5],arg:m[6],rest:m[7]};
  o.byMe=o.opener==='あなた';o.witness=t.indexOf('〔立会人として見ました〕')>=0;
@@ -1235,7 +1235,7 @@ function parseLine(t){
  o.fireSet=/火消しトークン \+1/.test(o.rest);
  o.fireMiss=o.kind==='火消し'&&/空振り/.test(o.rest);
  o.callVoid=o.kind==='投票の呼びかけ'&&/効かない/.test(o.rest);
- o.hit=o.kind==='大勝負'&&/当たり/.test(o.rest);
+ o.hit=o.kind==='政策転換'&&/当たり/.test(o.rest);
  var gd=o.rest.match(/1 の目 (\d+) 地区/);o.dice=gd?+gd[1]:null;
  return o;
 }
@@ -1244,7 +1244,7 @@ function changeText(o){
  if(o.nullified)return cn+'の火消しトークンで止まりました。トークンが 1 個減り、袋は変わりません。';
  if(o.kind==='動員')return o.mobN?o.dname+'で '+o.mobN+' 人が期日前に投票しました。'+(o.mob?'期日前の箱に'+CN[o.mob.c]+'が '+o.mob.n+' 個入りました。':'誰の票かは、開けた人と立会人しか知りません。'):'誰も応じませんでした。';
  if(o.kind==='投票の呼びかけ')return o.callVoid?'その地区にはもう呼びかけの印があったので、効きませんでした。':o.dname+'で投票に行く人が 2 千人増えました。';
- if(o.kind==='大勝負')return 'サイコロの 1 の目は '+(o.dice||0)+' 地区で、'+(o.hit?'当たりでした。':'外れでした。');
+ if(o.kind==='政策転換')return 'サイコロの 1 の目は '+(o.dice||0)+' 地区で、'+(o.hit?'当たりでした。':'外れでした。');
  if(o.hidden)return (o.opener?o.opener+'が':'開けた人が')+'立会人と開けて引きました。引いたコマと替わった数は、あなたには分かりません。';
  switch(o.kind){
   case '演説':case 'SNS（良）':case '新聞テレビ':
@@ -1267,7 +1267,7 @@ function miniHtml(o){
  if(o.kind==='投票の呼びかけ'){
    return '<div class="gd-mini">'+d+'<span>'+(o.callVoid?'印があるので効きません':'投票に行く人 +2 千人')+'</span></div>';
  }
- if(o.kind==='大勝負'){
+ if(o.kind==='政策転換'){
    var dc='';for(var z=0;z<5;z++)dc+='<span class="gd-die'+(z<(o.dice||0)?' one':'')+'">'+(z<(o.dice||0)?'1':'・')+'</span>';
    return '<div class="gd-mini"><span>サイコロ</span>'+dc+'<span>'+(o.hit?'当たり':'外れ')+'</span></div>';
  }
@@ -1497,7 +1497,7 @@ function guideHtml(){
   ['動員',2,'確実な票を先に固めるための行動です。','候補と地区を選んで封筒に入れます。封筒を開けた人は、その地区の袋から 3 個引き、その候補のコマが出たら、出た分を全部その地区の期日前の箱へ入れます。読み上げるのは地区の名前と人数だけで、候補の名前は言いません。','1 個は、1000 人が期日前投票を済ませたということです。この票は開票で必ず数えられます。誰に入れたかは、開票まで分かりません。'],
   ['投票の呼びかけ',1,'その地区で、投票に行く人を増やすための行動です。','地区を選んで封筒に入れます。候補は選びません。その地区で投票に行く人が 2 千人増え、開票で袋から引く数が 2 個増えます。呼びかけの印を置き、その地区にはもう呼びかけを出せません。','支持者の多い地区で呼びかけると、その分だけ得をします。白い浮動票も、その地区でいちばんの候補に流れます。'],
   ['火消し',1,'うわさや悪い話から候補を守るための行動です。','候補を選んで封筒に入れます。封筒を開けた人は、その候補の席に火消しトークンを置きます。トークンは 1 つまでなので、すでにあるときは何も起きません。','次にその候補へのうわさか悪い SNS が来たとき、トークンを 1 つ使ってそれを止めます。悪い話が広がる前に打ち消せたということです。'],
-  ['大勝負',1,'候補者が打って出る、大きな賭けの一手です。1 局に 1 回使えます。','自分の候補を選んで封筒に入れます。全部の地区で袋から 3 個ずつ引き、自分の候補のコマを白に戻します。3 人で遊ぶときは 2 個です。そのあと 5 つの地区でサイコロを振り、1 の目が 2 地区以上で出たら当たりです。当たった地区では 5 個引いて、引いたコマを全部自分の候補のコマに替えます。','当たるのは 5 回に 1 回ほどで、平均すると損をします。当たれば大きく伸びる、振れ幅の大きい札です。']];
+  ['政策転換',1,'候補者が政策を大きく切り替える、賭けの一手です。1 局に 1 回使えます。','自分の候補を選んで封筒に入れます。全部の地区で袋から 3 個ずつ引き、自分の候補のコマを白に戻します。3 人で遊ぶときは 2 個です。そのあと 5 つの地区でサイコロを振り、1 の目が 2 地区以上で出たら当たりです。当たった地区では 5 個引いて、引いたコマを全部自分の候補のコマに替えます。','当たるのは 5 回に 1 回ほどで、平均すると損をします。当たれば大きく伸びる、振れ幅の大きい札です。']];
  var at=ACTS.map(function(a){return '<div class="gd-act"><div class="gd-actcard" aria-hidden="true"><span class="gd-actk">行動</span><b>'+a[0]+'</b><span class="gd-actn">手札 '+a[1]+' 枚</span></div><div class="gd-acttx"><p>'+a[2]+'</p><p>'+a[3]+'</p><p class="gd-actmean">'+a[4]+'</p></div></div>';}).join('');
  var evs=Object.keys(MM.EVENTS).filter(function(k){return k!=='paperpoll';}).map(function(k){return '<tr><td><b>'+esc(MM.EVENTS[k].name)+'</b></td><td class="gd-w">'+esc(MM.EVENTS[k].text)+'</td></tr>';}).join('');
  var leg='<div class="gd-leg">'+[0,1,2,3].map(function(c){return '<span>'+cube(c)+' <span class="t'+c+'">'+CN[c]+'</span><span class="small">（'+COLN[c]+'）</span></span>';}).join('')+'<span>'+cube(4)+' 白<span class="small">（浮動票）</span></span></div>';
@@ -1515,7 +1515,7 @@ function guideHtml(){
  '<h3>作戦と開封（封筒の配り方）</h3><p>ラウンドごとに、参謀は全員、封筒 2 枚に行動カードを 1 枚ずつ入れます。打つ候補と地区は、候補チップと地区チップを一緒に入れて決めます。どの封筒を誰が出したかは、出した人にしか分かりません。</p>'+
  '<p>参謀たちの指示書の入った封筒は闇に紛れて実施されます。ゲームではランダムに混ぜられて配られ、受け取った人が開けて立会人付きで処理をします。指示がどの程度の成果をあげたかを参謀が把握できるとは限らないのです。</p><p>立会人は、封筒を開けた人の左隣の参謀が務めます。</p><div class="gd-fig">'+svgEnv()+'</div>'+
  '<p class="small">はじめの袋の中身は全員が同じだけ知っています。そこから先の手がかりは、自分が見たコマと、公開世論調査と、読み上げられた中身です。</p>'+
- '<h3>行動（手札 14 枚と大勝負 1 枚）</h3><p class="small">封筒は毎ラウンド 2 枚です。5 ラウンドで 10 枚を使うので、5 枚は使わずに終わります。何を残すかも作戦です。候補者カードの得意と弱みは、ここで効き方を説明します。中身は候補者の節で 1 人ずつ紹介します。</p>'+at+
+ '<h3>行動（手札 14 枚と政策転換 1 枚）</h3><p class="small">封筒は毎ラウンド 2 枚です。5 ラウンドで 10 枚を使うので、5 枚は使わずに終わります。何を残すかも作戦です。候補者カードの得意と弱みは、ここで効き方を説明します。中身は候補者の節で 1 人ずつ紹介します。</p>'+at+
  '<h3>注目の印とうわさの上限</h3><ul class="gd-ul"><li>新聞テレビを打つと、その候補に注目の印が付きます。印は次のラウンドの終わりに外れます。SNS には付きません。</li><li>うわさで白に戻すのは、ふだんは 2 個までです。狙った候補に注目の印があるとき、弱みの地区のとき、ニュース「疑心暗鬼が広がる」のラウンドには、上限がなくなります。</li><li>火消しトークンがあれば、うわさは止まります。</li></ul>'+
  '<h3>公開世論調査（ラウンド 2 と 4 の終わり）</h3><p>ラウンド 2 と 4 の開封のあとに、全部の袋から 2 個ずつ引いて、全員に見せます。</p><div class="gd-fig">'+svgPoll()+'</div>'+
  '<h3>ニュース（9 枚から 5 枚）</h3><p>ラウンドのはじめに 1 枚めくり、そのラウンドの間だけ効きます。討論と公約は、候補者カードの数と課題です。</p><div class="tw"><table><tr><th>ニュース</th><th>効き方</th></tr>'+evs+'</table></div>'+
@@ -1618,7 +1618,7 @@ var STEPS=[
    return '<p>これで 1 ラウンドの手順は全部です。ニュース、封筒、開封のあと、ラウンド 2 と 4 では公開世論調査をして、選管を回します。</p><span class="gd-do">「ラウンド 3 へ」を押してください。</span>';}},
  {id:'free',title:'ラウンド 3〜5',ff:true,sel:q('#submit'),done:function(){return phase()==='count';},text:function(){
    var g=G();
-   return '<p>今はラウンド '+(g?g.round:3)+' です。ここからは、自分で封筒を選んで進めてください。大勝負は 1 局に 1 回使えます。開票の画面になったら、また案内します。</p><p>急ぐときは「早送り」を押すと、画面に出ている封筒のままラウンド 5 まで進みます。</p>';}},
+   return '<p>今はラウンド '+(g?g.round:3)+' です。ここからは、自分で封筒を選んで進めてください。政策転換は 1 局に 1 回使えます。開票の画面になったら、また案内します。</p><p>急ぐときは「早送り」を押すと、画面に出ている封筒のままラウンド 5 まで進みます。</p>';}},
  {id:'count',title:'開票',sel:function(){return $('#count-next');},done:function(){return !!$('#again');},text:function(){
    var k=opened(),res=cur.res,g=G();
    if(k<1||!res)return '<p>5 ラウンドが終わったので、開票です。地区 1 から順に、<b>投票に行く人の数だけ</b>袋から引きます。期日前の箱の票も数えます。白は、その地区でいちばん票の多い候補に入ります。</p><span class="gd-do">「1 '+esc(g.ds[0].name)+'を開票する」を押してください。</span>';
